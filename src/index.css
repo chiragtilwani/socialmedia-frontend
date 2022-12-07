@@ -1,0 +1,11 @@
+:root {
+    --purple-1: #8A4FFF;
+    --purple-2: #C3BEF7;
+    --purple-3: #E5ECF4;
+  }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
