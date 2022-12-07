@@ -121,12 +121,12 @@ const Login = () => {
           <form className={classes.form}>
             <input
               type="text"
-              placeholder="username"
+              placeholder="Username"
               className={classes.input}
             />
             <input
               type="text"
-              placeholder="password"
+              placeholder="Password"
               className={classes.input}
             />
             <button type="submit" className={classes.btn}>
