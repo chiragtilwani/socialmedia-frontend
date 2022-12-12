@@ -125,7 +125,7 @@ const Login = () => {
               className={classes.input}
             />
             <input
-              type="text"
+              type="password"
               placeholder="Password"
               className={classes.input}
             />

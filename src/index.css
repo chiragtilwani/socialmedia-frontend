@@ -1,7 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Nerko+One&family=Permanent+Marker&display=swap');
 :root {
+    /* Colors */
     --purple-1: #8A4FFF;
     --purple-2: #C3BEF7;
     --purple-3: #E5ECF4;
+    /* Fonts */
+    --logo:'Permanent Marker', cursive;
   }
 
 * {

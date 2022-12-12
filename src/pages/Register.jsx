@@ -95,7 +95,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Login = () => {
+const Register = () => {
   const classes = useStyles();
   return (
     <div className={classes.container}>
@@ -114,7 +114,7 @@ const Login = () => {
               className={classes.input}
             />
             <input
-              type="text"
+              type="password"
               placeholder="Password"
               className={classes.input}
             />
@@ -144,4 +144,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
