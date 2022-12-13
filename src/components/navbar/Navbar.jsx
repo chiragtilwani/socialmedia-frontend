@@ -5,7 +5,11 @@ import { RiSearchFill } from "react-icons/ri";
 import Badge from "@mui/material/Badge";
 import { IoMdNotifications } from "react-icons/io";
 import { BsFillChatDotsFill } from "react-icons/bs";
-import Sizes from "../Sizes";
+import Avatar from "@mui/material/Avatar";
+import { useState } from "react";
+
+import UserMenu from "./UserMenu";
+import Sizes from "../../Sizes";
 
 const useStyles = makeStyles({
   container: {
@@ -24,7 +28,8 @@ const useStyles = makeStyles({
     alignItems: "center",
     padding: "0 1rem",
     [Sizes.up("xl")]: {
-      width:'80%'
+      width: "80%",
+      padding: "0",
     },
   },
   logo: {
@@ -68,9 +73,9 @@ const useStyles = makeStyles({
     fontSize: "1.4rem",
     color: "white",
     transitionDuration: ".2s",
-    '&:hover':{
-      color:'#0000007d',
-    }
+    "&:hover": {
+      color: "#0000007d",
+    },
   },
   span: {
     fontSize: "1rem",
@@ -81,7 +86,7 @@ const useStyles = makeStyles({
     fontWeight: "bold",
     border: "1px solid",
     transitionDuration: ".2s",
-    letterSpacing:'.05rem',
+    letterSpacing: ".05rem",
     "&:hover": {
       opacity: ".7",
     },
@@ -89,10 +94,39 @@ const useStyles = makeStyles({
       boxShadow: "inset .1rem .1rem rgba(0,0,0,0.8)",
     },
   },
+  avatar: {
+    cursor: "pointer",
+  },
+  userMenu: {
+    position: "absolute",
+    right: "2rem",
+    top: "3.5rem",
+    display: "none",
+    transitionDuration: "2s",
+    "&:hover": {
+      display: "block",
+    },
+    [Sizes.up("xl")]:{
+      right: "12rem",
+    }
+  },
 });
 
 const Navbar = () => {
   const classes = useStyles();
+  const [isOpen, setIsOpen] = useState(false);
+
+  function handleClick() {
+    setIsOpen(!isOpen);
+  }
+  function handleClose() {
+    setIsOpen(false);
+  }
+  function handleOpen() {
+    setIsOpen(true);
+  }
+  
+
   return (
     <div className={classes.container}>
       <div className={classes.innerContainer}>
@@ -127,22 +161,14 @@ const Navbar = () => {
               </Badge>
             </Link>
           </div>
-          <div>
-            <span
-              className={classes.span}
-              style={{ backgroundColor: "#ffbc4c" }}
-            >
-              Register
-            </span>
-            <span
-              className={classes.span}
-              style={{ backgroundColor: "#42d542" }}
-            >
-              Login
-            </span>
-            <span className={classes.span} style={{ backgroundColor: "red" }}>
-              Logout
-            </span>
+          <div className={classes.avatar} onClick={handleClick} onMouseEnter={handleOpen} >
+            <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+          </div>
+          <div
+            className={classes.userMenu}
+            style={{ display: isOpen ? "block" : "none" }}
+          >
+            <UserMenu />
           </div>
         </div>
       </div>
