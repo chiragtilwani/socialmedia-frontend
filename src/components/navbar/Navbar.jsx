@@ -19,7 +19,8 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    position:'fixed'
+    position: "fixed",
+    top: 0,
   },
   innerContainer: {
     width: "100%",
@@ -38,18 +39,18 @@ const useStyles = makeStyles({
     color: "white",
     textDecoration: "none",
     fontSize: "2rem",
-    [Sizes.down('sm')]:{
-      display:'none'
-    }
+    [Sizes.down("sm")]: {
+      display: "none",
+    },
   },
-  smLogo:{
+  smLogo: {
     fontWeight: "900",
     color: "white",
     textDecoration: "none",
     fontSize: "1.5rem",
-    [Sizes.up('sm')]:{
-      display:'none'
-    }
+    [Sizes.up("sm")]: {
+      display: "none",
+    },
   },
   center: {
     backgroundColor: "white",
@@ -69,18 +70,18 @@ const useStyles = makeStyles({
     "&:focus": {
       width: "25rem",
     },
-    [Sizes.down('sm')]:{
-      width:'5rem',
-      '&:focus':{
-        width:'12rem'
-      }
+    [Sizes.down("sm")]: {
+      width: "5rem",
+      "&:focus": {
+        width: "12rem",
+      },
     },
-    [Sizes.down('xs')]:{
-      width:'5rem',
-      '&:focus':{
-        width:'7rem'
-      }
-    }
+    [Sizes.down("xs")]: {
+      width: "5rem",
+      "&:focus": {
+        width: "7rem",
+      },
+    },
   },
   searchIcon: {
     backgroundColor: "white",
@@ -98,9 +99,9 @@ const useStyles = makeStyles({
     "&:hover": {
       color: "#0000007d",
     },
-    [Sizes.down('md')]:{
-      display:'none'
-    }
+    [Sizes.down("md")]: {
+      display: "none",
+    },
   },
   span: {
     fontSize: "1rem",
@@ -131,9 +132,9 @@ const useStyles = makeStyles({
     "&:hover": {
       display: "block",
     },
-    [Sizes.up("xl")]:{
+    [Sizes.up("xl")]: {
       right: "12rem",
-    }
+    },
   },
 });
 
@@ -150,7 +151,6 @@ const Navbar = () => {
   function handleOpen() {
     setIsOpen(true);
   }
-  
 
   return (
     <div className={classes.container}>
@@ -189,7 +189,11 @@ const Navbar = () => {
               </Badge>
             </Link>
           </div>
-          <div className={classes.avatar} onClick={handleClick} onMouseEnter={handleOpen} >
+          <div
+            className={classes.avatar}
+            onClick={handleClick}
+            onMouseEnter={handleOpen}
+          >
             <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
           </div>
           <div
