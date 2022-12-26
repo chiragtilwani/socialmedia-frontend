@@ -1,6 +1,9 @@
 import { makeStyles } from "@mui/styles";
 
 import Sizes from "../Sizes";
+import Navbar from "../components/navbar/Navbar";
+import BottomNavbar from "../components/navbar/BottomNavbar";
+
 
 const useStyles = makeStyles({
   outterContainer: {
@@ -9,7 +12,6 @@ const useStyles = makeStyles({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "var(--purple-3)",
-    
   },
 
   container: {
@@ -19,7 +21,10 @@ const useStyles = makeStyles({
     height: "100vh",
     columnGap: "2rem",
     width: "100%",
-    marginTop:'.5rem',
+    marginTop: "3rem",
+    [Sizes.down('md')]:{
+      marginBottom:'2.5rem'
+    },
     [Sizes.up("xl")]: {
       width: "80%",
     },
@@ -33,13 +38,17 @@ const Home = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.outterContainer}>
-      <div className={classes.container}>
-        <div className={`${classes.left} ${classes.childContainer}`}></div>
-        <div className={`${classes.center} ${classes.childContainer}`}></div>
-        <div className={`${classes.right} ${classes.childContainer}`}></div>
+    <>
+      <Navbar />
+      <div className={classes.outterContainer}>
+        <div className={classes.container}>
+          <div className={`${classes.left} ${classes.childContainer}`}></div>
+          <div className={`${classes.center} ${classes.childContainer}`}></div>
+          <div className={`${classes.right} ${classes.childContainer}`}></div>
+        </div>
       </div>
-    </div>
+      <BottomNavbar/>
+    </>
   );
 };
 

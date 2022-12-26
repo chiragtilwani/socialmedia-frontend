@@ -19,6 +19,7 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    position:'fixed'
   },
   innerContainer: {
     width: "100%",
@@ -37,8 +38,18 @@ const useStyles = makeStyles({
     color: "white",
     textDecoration: "none",
     fontSize: "2rem",
-    // margin: "0rem .5rem",
-    // fontFamily:'var(--logo)'
+    [Sizes.down('sm')]:{
+      display:'none'
+    }
+  },
+  smLogo:{
+    fontWeight: "900",
+    color: "white",
+    textDecoration: "none",
+    fontSize: "1.5rem",
+    [Sizes.up('sm')]:{
+      display:'none'
+    }
   },
   center: {
     backgroundColor: "white",
@@ -58,13 +69,24 @@ const useStyles = makeStyles({
     "&:focus": {
       width: "25rem",
     },
+    [Sizes.down('sm')]:{
+      width:'5rem',
+      '&:focus':{
+        width:'12rem'
+      }
+    },
+    [Sizes.down('xs')]:{
+      width:'5rem',
+      '&:focus':{
+        width:'7rem'
+      }
+    }
   },
   searchIcon: {
     backgroundColor: "white",
   },
   right: {
     display: "flex",
-    // width:'20rem',
     justifyContent: "space-between",
     alignItems: "center",
   },
@@ -76,6 +98,9 @@ const useStyles = makeStyles({
     "&:hover": {
       color: "#0000007d",
     },
+    [Sizes.down('md')]:{
+      display:'none'
+    }
   },
   span: {
     fontSize: "1rem",
@@ -133,6 +158,9 @@ const Navbar = () => {
         <div className={classes.left}>
           <Link to="/" className={classes.logo}>
             CONNECT
+          </Link>
+          <Link to="/" className={classes.smLogo}>
+            Cnct.
           </Link>
         </div>
         <div className={classes.center}>

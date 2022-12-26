@@ -1,6 +1,8 @@
 import { makeStyles } from "@mui/styles";
 import { Link } from "react-router-dom";
 
+import Sizes from '../Sizes'
+
 const useStyles = makeStyles({
   container: {
     width: "100vw",
@@ -9,12 +11,17 @@ const useStyles = makeStyles({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "var(--purple-2)",
+    flexDirection: "column"
   },
   card: {
     width: "50%",
     height: "70vh",
     display: "flex",
     flexDirection: "row",
+    [Sizes.down("md")]:{
+      width:'100vw',
+      height:'100vh',
+    }
   },
   right: {
     width: "50%",
@@ -26,7 +33,13 @@ const useStyles = makeStyles({
       'linear-gradient(rgba(39, 11, 96, 0.5), rgba(39, 11, 96, 0.5)), url("https://images.pexels.com/photos/3228727/pexels-photo-3228727.jpeg?auto=compress&cs=tinysrgb&w=1600")',
     backgroundPosition: "center",
     backgroundSize: "100% 100%",
-    borderRadius:'0rem 2rem 0rem 0rem'
+    borderRadius: "0rem 2rem 0rem 0rem",
+    [Sizes.down("md")]:{
+      borderRadius:'0rem'
+    },
+    [Sizes.down('sm')]:{
+      display:'none',
+    }
   },
   left: {
     width: "50%",
@@ -35,7 +48,18 @@ const useStyles = makeStyles({
     justifyContent: "center",
     padding: "2rem",
     backgroundColor: "white",
-    borderRadius:'0rem 0rem 0rem 2rem'
+    borderRadius: "0rem 0rem 0rem 2rem",
+    [Sizes.down("md")]:{
+      borderRadius:'0rem'
+    },
+    [Sizes.down('sm')]:{
+      width: "100%",
+      height: "100%",
+      borderRadius:'0rem',
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    }
   },
   h1: {
     fontSize: "4rem",
@@ -70,6 +94,9 @@ const useStyles = makeStyles({
     display: "flex",
     justifyContent: "center",
     flexDirection: "column",
+    [Sizes.down('sm')]:{
+      width: "100%",
+    }
   },
   input: {
     margin: "1rem 0rem",
@@ -93,6 +120,23 @@ const useStyles = makeStyles({
     borderRadius: ".2rem",
     fontWeight: "bold",
   },
+  linkContainer:{
+    [Sizes.down('sm')]:{
+      marginTop: "3rem",
+    }
+  },
+  loginLink: {
+    fontWeight: "300",
+    letterSpacing: ".05rem",
+    [Sizes.up('sm')]:{
+      display:'none'
+    }
+  },
+  homePageLink: {
+    marginTop: "1rem",
+    fontWeight: "300",
+    letterSpacing: ".05rem",
+  },
 });
 
 const Register = () => {
@@ -108,11 +152,7 @@ const Register = () => {
               placeholder="Username"
               className={classes.input}
             />
-            <input
-              type="email"
-              placeholder="Email"
-              className={classes.input}
-            />
+            <input type="email" placeholder="Email" className={classes.input} />
             <input
               type="password"
               placeholder="Password"
@@ -122,6 +162,20 @@ const Register = () => {
               Register
             </button>
           </form>
+          <div className={classes.linkContainer}>
+            <p className={classes.loginLink}>
+              Already have an account ?
+              <Link to="/login" style={{ fontWeight: "900" }}>
+                Login
+              </Link>
+            </p>
+            <p className={classes.homePageLink}>
+              Back to{" "}
+              <Link to="/" style={{ fontWeight: "900" }}>
+                Home
+              </Link>
+            </p>
+          </div>
         </div>
         <div className={classes.right}>
           <h1 className={classes.h1}>Connect.</h1>
