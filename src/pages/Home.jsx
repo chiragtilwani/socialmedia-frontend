@@ -4,6 +4,7 @@ import Sizes from "../Sizes";
 import Navbar from "../components/navbar/Navbar";
 import BottomNavbar from "../components/navbar/BottomNavbar";
 import PofileCard from "../components/PofileCard";
+import FollowingYou from "../components/FollowingYou";
 
 const useStyles = makeStyles({
   outterContainer: {
@@ -12,10 +13,10 @@ const useStyles = makeStyles({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "var(--purple-3)",
-    position:'fixed',
-    top: "3rem",
+    // position: "fixed",
+    marginTop: "3rem",
   },
-  
+
   container: {
     border: ".2rem solid",
     display: "grid",
@@ -23,20 +24,39 @@ const useStyles = makeStyles({
     height: "100vh",
     columnGap: "2rem",
     width: "100%",
-    overflow:'scroll',
+    overflow: "scroll",
     [Sizes.down("md")]: {
       marginBottom: "2.5rem",
+      gridTemplateColumns:'4fr'
     },
     [Sizes.up("xl")]: {
       width: "80%",
     },
+    '&::-webkit-scrollbar':{
+      display:'none'
+    }
   },
   childContainer: {
     border: ".2rem solid",
   },
-  left:{
+  left: {
     display: "flex",
-    justifyContent: "center",
+    alignItems: "center",
+    flexDirection:'column',
+    height:'100%',
+    overflowY:'scroll',
+    [Sizes.down("md")]: {
+      display: "none",
+    },
+  },
+  right: {
+    [Sizes.down("md")]: {
+      display: "none",
+    },
+  },
+  h3:{
+    marginTop:'2rem',
+    textTransform:'capitalize'
   }
 });
 
@@ -45,12 +65,13 @@ const Home = () => {
 
   return (
     <>
-      <Navbar />
       <div className={classes.outterContainer}>
+        <Navbar />
         <div className={classes.container}>
           <div className={`${classes.left} ${classes.childContainer}`}>
             <PofileCard />
-            {/* who is following you */}
+            <h3 className={classes.h3}>who is following you</h3>
+            <FollowingYou/>
           </div>
           <div className={`${classes.center} ${classes.childContainer}`}></div>
           <div className={`${classes.right} ${classes.childContainer}`}>

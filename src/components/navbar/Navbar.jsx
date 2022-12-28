@@ -21,6 +21,7 @@ const useStyles = makeStyles({
     justifyContent: "center",
     position: "fixed",
     top: 0,
+    zIndex:'2'
   },
   innerContainer: {
     width: "100%",
@@ -144,9 +145,6 @@ const Navbar = () => {
 
   function handleClick() {
     setIsOpen(!isOpen);
-  }
-  function handleClose() {
-    setIsOpen(false);
   }
   function handleOpen() {
     setIsOpen(true);

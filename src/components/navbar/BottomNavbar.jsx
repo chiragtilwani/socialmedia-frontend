@@ -18,6 +18,7 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    zIndex:'2',
     [Sizes.up("md")]: {
       display: "none",
     },
