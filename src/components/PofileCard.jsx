@@ -3,7 +3,7 @@ import { makeStyles } from "@mui/styles";
 const useStyles = makeStyles({
   container: {
     width: "90%",
-    height: "20rem",
+    minHeight: "20rem",
     backgroundColor: "white",
     marginTop: "1rem",
     borderRadius: "1rem",
@@ -40,7 +40,7 @@ const useStyles = makeStyles({
     wordBreak: "break-word",
     padding: ".5rem",
     marginBottom: "1rem",
-    textTransform:'capitalize'
+    textTransform: "capitalize",
   },
   line: {
     width: "90%",
@@ -77,18 +77,18 @@ const PofileCard = () => {
       <div className={classes.line}></div>
       <div className={classes.stats}>
         <div className={classes.innerStats}>
-          <span style={{fontWeight:'bold',fontSize:'.9rem'}}>1234</span>
-          <span style={{fontSize:'.8rem'}}>Followers</span>
+          <span style={{ fontWeight: "bold", fontSize: ".9rem" }}>1234</span>
+          <span style={{ fontSize: ".8rem" }}>Followers</span>
         </div>
         <div className={classes.centerLine}></div>
         <div className={classes.innerStats}>
-          <span style={{fontWeight:'bold',fontSize:'.9rem'}}>1234</span>
-          <span style={{fontSize:'.8rem'}}>Followings</span>
+          <span style={{ fontWeight: "bold", fontSize: ".9rem" }}>1234</span>
+          <span style={{ fontSize: ".8rem" }}>Followings</span>
         </div>
         <div className={classes.centerLine}></div>
         <div className={classes.innerStats}>
-          <span style={{fontWeight:'bold',fontSize:'.9rem'}}>1234</span>
-          <span style={{fontSize:'.8rem'}}>Posts</span>
+          <span style={{ fontWeight: "bold", fontSize: ".9rem" }}>1234</span>
+          <span style={{ fontSize: ".8rem" }}>Posts</span>
         </div>
       </div>
       <div className={classes.line}></div>
