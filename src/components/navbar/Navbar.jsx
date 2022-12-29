@@ -5,6 +5,7 @@ import { RiSearchFill } from "react-icons/ri";
 import Badge from "@mui/material/Badge";
 import { IoMdNotifications } from "react-icons/io";
 import { BsFillChatDotsFill } from "react-icons/bs";
+import { MdDarkMode } from "react-icons/md";
 import Avatar from "@mui/material/Avatar";
 import { useState } from "react";
 
@@ -21,7 +22,7 @@ const useStyles = makeStyles({
     justifyContent: "center",
     position: "fixed",
     top: 0,
-    zIndex:'2'
+    zIndex: "2",
   },
   innerContainer: {
     width: "100%",
@@ -174,6 +175,11 @@ const Navbar = () => {
             <Link to="/" className={classes.iconLink}>
               <Badge badgeContent={4} color="primary" variant="dot">
                 <AiTwotoneHome />
+              </Badge>
+            </Link>
+            <Link className={classes.iconLink}>
+              <Badge badgeContent={0} color="primary">
+                <MdDarkMode />
               </Badge>
             </Link>
             <Link to="/" className={classes.iconLink}>

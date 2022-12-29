@@ -5,6 +5,8 @@ import Navbar from "../components/navbar/Navbar";
 import BottomNavbar from "../components/navbar/BottomNavbar";
 import PofileCard from "../components/PofileCard";
 import UsersList from "../components/UsersList";
+import UploadPost from "../components/UploadPost";
+import Post from "../components/Post";
 
 const useStyles = makeStyles({
   outterContainer: {
@@ -72,6 +74,9 @@ const useStyles = makeStyles({
     fontWeight: "bold",
     color: "var(--purple-1)",
   },
+  postContainer:{
+    width:'90%'
+  }
 });
 
 const Home = () => {
@@ -143,6 +148,48 @@ const Home = () => {
     },
   ];
 
+  const posts = [
+    {
+      id: 1,
+      name: "chirag tilwani",
+      username: "chiragTilwani",
+      desc: "this is first dummy post",
+      postImg: "https://images.pexels.com/photos/1004014/pexels-photo-1004014.jpeg?cs=srgb&dl=pexels-min-an-1004014.jpg&fm=jpg",
+      likes: 1234,
+    },
+    {
+      id: 2,
+      name: "chirag tilwani",
+      username: "chiragTilwani",
+      desc: "this is second dummy post",
+      likes: 560,
+    },
+    {
+      id: 3,
+      name: "chirag tilwani",
+      username: "chiragTilwani",
+      desc: "this is third dummy post",
+      postImg: "https://images.pexels.com/photos/1004014/pexels-photo-1004014.jpeg?cs=srgb&dl=pexels-min-an-1004014.jpg&fm=jpg",
+      likes: 700,
+    },
+    {
+      id: 4,
+      name: "chirag tilwani",
+      username: "chiragTilwani",
+      desc: "this is fourth dummy post",
+      postImg: "https://images.pexels.com/photos/1004014/pexels-photo-1004014.jpeg?cs=srgb&dl=pexels-min-an-1004014.jpg&fm=jpg",
+      likes: 12,
+    },
+    {
+      id: 5,
+      name: "chirag tilwani",
+      username: "chiragTilwani",
+      desc: "this is fourth dummy post",
+      postImg: "https://images.pexels.com/photos/1004014/pexels-photo-1004014.jpeg?cs=srgb&dl=pexels-min-an-1004014.jpg&fm=jpg",
+      likes: 12,
+    },
+  ];
+
   return (
     <>
       <div className={classes.outterContainer}>
@@ -154,7 +201,14 @@ const Home = () => {
             <UsersList users={users} />
             {/*here we will send list of users who are following currentUser instead of users with propname user*/}
           </div>
-          <div className={`${classes.center} ${classes.childContainer}`}></div>
+          <div className={`${classes.center} ${classes.childContainer}`}>
+            <UploadPost />
+            <div className={classes.postContainer}>
+              {posts.map((post) => (
+                <Post id={post.id} {...post} />
+              ))}
+            </div>
+          </div>
           <div className={`${classes.right} ${classes.childContainer}`}>
             <h2 className={classes.h2} style={{ marginTop: "1rem" }}>
               Whom you follow

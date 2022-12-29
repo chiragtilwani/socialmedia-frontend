@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { AiTwotoneHome } from "react-icons/ai";
 import { IoMdNotifications } from "react-icons/io";
 import { BsFillChatDotsFill } from "react-icons/bs";
+import { MdDarkMode } from "react-icons/md";
 
 import Sizes from "../../Sizes";
 
@@ -49,6 +50,11 @@ function BottomNavbar() {
             <AiTwotoneHome />
           </Badge>
         </Link>
+        <Link className={classes.iconLink}>
+              <Badge badgeContent={0} color="primary">
+                <MdDarkMode />
+              </Badge>
+            </Link>
         <Link to="/" className={classes.iconLink}>
           <Badge badgeContent={4} color="primary" variant="dot">
             <IoMdNotifications />
