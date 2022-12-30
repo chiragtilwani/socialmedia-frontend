@@ -38,7 +38,7 @@ const useStyles = makeStyles({
     },
   },
   childContainer: {
-    border: ".2rem solid",
+    // border: ".2rem solid",
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
@@ -205,7 +205,7 @@ const Home = () => {
             <UploadPost />
             <div className={classes.postContainer}>
               {posts.map((post) => (
-                <Post id={post.id} {...post} />
+                <Post key={post.id} {...post} />
               ))}
             </div>
           </div>

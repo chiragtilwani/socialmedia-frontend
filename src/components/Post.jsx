@@ -1,16 +1,20 @@
 import { makeStyles } from "@mui/styles";
-import { AiOutlineHeart } from "react-icons/ai";
-import { BiCommentDetail } from "react-icons/bi";
+import { BsFillHeartFill } from "react-icons/bs";
+import { FaCommentAlt } from "react-icons/fa";
 import { IoIosShare } from "react-icons/io";
 import { Link } from "react-router-dom";
+import {useState} from 'react'
+
+import Comment from './Comment';
 
 const useStyles = makeStyles({
   container: {
     width: "100%",
-    border: ".2rem solid",
     borderRadius: ".5rem",
     backgroundColor: "white",
     margin: "2rem 0rem",
+    padding:'.5rem 0rem',
+    boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
   },
   name_username: {
     display: "flex",
@@ -57,14 +61,34 @@ const useStyles = makeStyles({
   icon:{
     margin:'0rem .4rem',
     fontSize: '1.4rem',
-    cursor:'pointer'
+    cursor:'pointer',
+    transitionDuration:".2s",
+    '&:hover':{
+      transform:'scale(.8)'
+    }
   },
   like_comment_count:{
     fontSize:'.9rem',
-  }
+  },
+  Hdivider: {
+    width: "100%",
+    height: ".2rem",
+    backgroundColor: "var(--purple-3)",
+  },
 });
 const Post = (props) => {
   const classes = useStyles();
+
+  const [liked,setLiked]=useState(false)
+  const [showComments,setShowComments]=useState(false)
+
+
+  function handleLikeClick(){
+    setLiked(prevProp=>!prevProp)
+  }
+  function handleCommentClick(){
+    setShowComments(prevProp=>!prevProp)
+  }
   return (
     <div className={classes.container}>
       <div className={classes.name_username}>
@@ -77,22 +101,27 @@ const Post = (props) => {
           background: `url(${props.postImg})`,
           backgroundSize: "100% 100%",
           backgroundPosition: "center",
+          display:!props.postImg?'none':'block'
         }}
       ></div>
       <p className={classes.desc}>{props.desc}</p>
       <div className={classes.btnContainer}>
         <div className={classes.btn}>
-          <AiOutlineHeart
-            className={`${classes.icon} ${classes.heart}`}
+          <BsFillHeartFill
+            className={classes.icon}
             title="LIKE"
-          />
+            style={{color:liked?'tomato':''}}
+            onClick={handleLikeClick}
+            />
           {/*will make tile dynamic like/unlike*/}
-          <BiCommentDetail
-            className={`${classes.icon} ${classes.heart}`}
+          <FaCommentAlt
+            className={classes.icon}
             title="COMMENT"
+            style={{color:showComments?'#efce7b':''}}
+            onClick={handleCommentClick}
           />
           <IoIosShare
-            className={`${classes.icon} ${classes.heart}`}
+            className={classes.icon}
             title="SHARE"
           />
         </div>
@@ -100,6 +129,8 @@ const Post = (props) => {
           <strong>{props.likes}</strong> likes and <strong>455</strong> comments
         </div>
       </div>
+      <div className={classes.Hdivider} style={{display:showComments?'block':'none'}}></div>
+      <Comment showComments={showComments}/>
     </div>
   );
 };

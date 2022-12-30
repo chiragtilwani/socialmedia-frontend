@@ -35,7 +35,7 @@ const UserMenu = () => {
     let settings=['Account','Register','Login','Logout'];
 
   return <div className={classes.container}>
-    {settings.map(setting =><Link to={setting==='Account' ?'/profile':`/${setting.toLowerCase()}`} className={classes.item}>{setting}</Link>
+    {settings.map((setting,idx) =><Link to={setting==='Account' ?'/profile':`/${setting.toLowerCase()}`} key={idx} className={classes.item}>{setting}</Link>
     )}
   </div>
 }
