@@ -19,7 +19,6 @@ const useStyles = makeStyles({
   },
 
   container: {
-    border: ".2rem solid",
     display: "grid",
     gridTemplateColumns: "2fr 4fr 2fr",
     height: "100vh",
@@ -38,7 +37,6 @@ const useStyles = makeStyles({
     },
   },
   childContainer: {
-    // border: ".2rem solid",
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
@@ -153,7 +151,6 @@ const Home = () => {
       id: 1,
       name: "chirag tilwani",
       username: "chiragTilwani",
-      desc: "this is first dummy post",
       postImg: "https://images.pexels.com/photos/1004014/pexels-photo-1004014.jpeg?cs=srgb&dl=pexels-min-an-1004014.jpg&fm=jpg",
       likes: 1234,
     },

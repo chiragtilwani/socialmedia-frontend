@@ -4,8 +4,16 @@ import { FaCommentAlt } from "react-icons/fa";
 import { IoIosShare } from "react-icons/io";
 import { Link } from "react-router-dom";
 import {useState} from 'react'
+import TimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en.json'
+import ru from 'javascript-time-ago/locale/ru.json'
+import ReactTimeAgo from 'react-time-ago'
+
 
 import Comment from './Comment';
+
+TimeAgo.addDefaultLocale(en)
+TimeAgo.addLocale(ru)
 
 const useStyles = makeStyles({
   container: {
@@ -60,9 +68,10 @@ const useStyles = makeStyles({
   },
   icon:{
     margin:'0rem .4rem',
-    fontSize: '1.4rem',
+    fontSize: '2rem',
     cursor:'pointer',
     transitionDuration:".2s",
+    padding:'.2rem',
     '&:hover':{
       transform:'scale(.8)'
     }
@@ -75,6 +84,12 @@ const useStyles = makeStyles({
     height: ".2rem",
     backgroundColor: "var(--purple-3)",
   },
+  xMinAgo:{
+    marginLeft:'.5rem',
+    fontSize:'.8rem',
+    color:'var(--purple-2)',
+    fontWeight: 'bold',
+  }
 });
 const Post = (props) => {
   const classes = useStyles();
@@ -92,7 +107,7 @@ const Post = (props) => {
   return (
     <div className={classes.container}>
       <div className={classes.name_username}>
-        <Link className={classes.name}>{props.name}</Link>
+        <div><Link className={classes.name}>{props.name}</Link><ReactTimeAgo date='31 jan 2004' locale="en-US" className={classes.xMinAgo}/></div>
         <Link className={classes.username}><i>@{props.username}</i></Link>
       </div>
       <div
@@ -104,7 +119,9 @@ const Post = (props) => {
           display:!props.postImg?'none':'block'
         }}
       ></div>
-      <p className={classes.desc}>{props.desc}</p>
+      <p className={classes.desc} style={{
+          display:!props.desc?'none':'block'
+        }}>{props.desc}</p>
       <div className={classes.btnContainer}>
         <div className={classes.btn}>
           <BsFillHeartFill
