@@ -214,7 +214,7 @@ const Home = () => {
             <UsersList users={users} />
             {/*here we will send list of users whom you are following instead of users with propname user*/}
             <h2 className={classes.h2} style={{ marginTop: "1rem" }}>
-              Friends Suggestion
+              Suggestions for you
             </h2>
             <UsersList users={users} />
             {/*here we will send list of users whom you are following instead of users with propname user*/}

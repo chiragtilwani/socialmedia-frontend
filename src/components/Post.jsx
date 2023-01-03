@@ -10,7 +10,7 @@ import ru from "javascript-time-ago/locale/ru.json";
 import ReactTimeAgo from "react-time-ago";
 
 import Comment from "./Comment";
-import video from "../video.mp4";
+import Sizes from '../Sizes'
 
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(ru);
@@ -75,9 +75,15 @@ const useStyles = makeStyles({
     "&:hover": {
       transform: "scale(.8)",
     },
+    [Sizes.down('md')]:{
+      fontSize:'1.5rem' 
+    }
   },
   like_comment_count: {
     fontSize: ".9rem",
+    [Sizes.down('md')]:{
+     fontSize:'.7rem' 
+    }
   },
   Hdivider: {
     width: "100%",

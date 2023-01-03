@@ -153,7 +153,7 @@ const Navbar = () => {
   }
 
   return (
-    <div className={classes.container}>
+    <div className={classes.container} onClick={isOpen?handleClick:null}>
       <div className={classes.innerContainer}>
         <div className={classes.left}>
           <Link to="/" className={classes.logo}>
