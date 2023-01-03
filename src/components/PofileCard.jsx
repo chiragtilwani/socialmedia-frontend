@@ -1,4 +1,5 @@
 import { makeStyles } from "@mui/styles";
+import {Link} from 'react-router-dom'
 
 const useStyles = makeStyles({
   container: {
@@ -74,7 +75,7 @@ const PofileCard = () => {
     <div className={classes.container}>
       <div className={classes.coverImg}></div>
       <div className={classes.profileImg}></div>
-      <div className={classes.name}>Chirag Tilwani</div>
+      <div className={classes.name}><Link to={`/profile/1`} style={{textDecoration:'none',color:'black'}}>Chirag Tilwani</Link></div>
       <div className={classes.line}></div>
       <div className={classes.stats}>
         <div className={classes.innerStats}>

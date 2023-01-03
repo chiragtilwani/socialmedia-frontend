@@ -8,7 +8,7 @@ const useStyles = makeStyles({
     margin: "1rem 0rem",
     padding: ".5rem",
     backgroundColor: "white",
-    borderRadius:'1.2rem',
+    borderRadius:'.5rem',
     boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
   },
   profile_textfield: {

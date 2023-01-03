@@ -7,6 +7,7 @@ import PofileCard from "../components/PofileCard";
 import UsersList from "../components/UsersList";
 import UploadPost from "../components/UploadPost";
 import Post from "../components/Post";
+import video from '../video.mp4'
 
 const useStyles = makeStyles({
   outterContainer: {
@@ -151,7 +152,7 @@ const Home = () => {
       id: 1,
       name: "chirag tilwani",
       username: "chiragTilwani",
-      postImg: "https://images.pexels.com/photos/1004014/pexels-photo-1004014.jpeg?cs=srgb&dl=pexels-min-an-1004014.jpg&fm=jpg",
+      postImg: {video},
       likes: 1234,
     },
     {
