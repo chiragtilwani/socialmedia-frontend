@@ -1,5 +1,7 @@
 import { makeStyles } from "@mui/styles";
 import {Link} from 'react-router-dom'
+import {useState} from 'react'
+import Backdrop from "@mui/material/Backdrop";
 
 const useStyles = makeStyles({
   container: {
@@ -21,6 +23,7 @@ const useStyles = makeStyles({
       "url(https://images.pexels.com/photos/1323206/pexels-photo-1323206.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)",
     backgroundSize: "100% 100%",
     backgroundPosition: "center",
+    cursor:'pointer'
   },
   profileImg: {
     width: "5rem",
@@ -33,6 +36,7 @@ const useStyles = makeStyles({
     backgroundSize: "100% 100%",
     backgroundPosition: "center",
     boxShadow: "0rem 0rem .5rem .05rem var(--purple-2)",
+    cursor:'pointer'
   },
   name: {
     marginTop: "-1.5rem",
@@ -67,14 +71,59 @@ const useStyles = makeStyles({
     width: ".1rem",
     backgroundColor: "var(--purple-3)",
   },
+  profileOverlay:{
+    width:'50%',
+    height:'80vh',
+  }
 });
 
 const PofileCard = () => {
   const classes = useStyles();
+  const [coverClick, setCoverClick] = useState(false);
+  const [profileClick, setProfileClick] = useState(false);
+
+  function handleCoverClick() {
+    setCoverClick((prevState) => !prevState);
+  }
+  function handleProfileClick() {
+    setProfileClick((prevState) => !prevState);
+  }
   return (
+    <>
+          <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={profileClick}
+        onClick={handleProfileClick}
+      >
+        <div
+          className={classes.profileOverlay}
+          style={{
+            background:`url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTazRa-UljlJ57z2tqmSNSz5X_C5RkD1S-Nfj46b_ZO&s)`,
+            backgroundSize: "auto",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+          }}
+        ></div>
+      </Backdrop>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={coverClick}
+        onClick={handleCoverClick}
+      >
+        <div
+          className={classes.profileOverlay}
+          style={{
+            background:`url(https://images.pexels.com/photos/1323206/pexels-photo-1323206.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)`,
+            backgroundSize: "auto",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+          }}
+        ></div>
+      </Backdrop>
+
     <div className={classes.container}>
-      <div className={classes.coverImg}></div>
-      <div className={classes.profileImg}></div>
+      <div className={classes.coverImg} onClick={handleCoverClick}></div>
+      <div className={classes.profileImg} onClick={handleProfileClick}></div>
       <div className={classes.name}><Link to={`/profile/1`} style={{textDecoration:'none',color:'black'}}>Chirag Tilwani</Link></div>
       <div className={classes.line}></div>
       <div className={classes.stats}>
@@ -95,6 +144,7 @@ const PofileCard = () => {
       </div>
       <div className={classes.line}></div>
     </div>
+    </>
   );
 };
 

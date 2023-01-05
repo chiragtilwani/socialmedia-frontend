@@ -71,7 +71,8 @@ const UserListItem = (props) => {
         <span className={classes.name}>{props.userInfo.name}</span>
       </div>
       <button className={classes.btn}>Follow</button>
-      {/*later we will dynamically change this button's text to follow/unfollow based on if current user's following list have this user or not*/}
+      {/*later we will dynamically change this button's text to follow/following based on if current user's following list have this user or not*/}
+      {/* if it is following then on clicking this button we will alert user with msg 'if you change your mind,you'll have to request to follow username_of_user_we_are_unfollowing again. */}
     </div>
   );
 };

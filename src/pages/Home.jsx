@@ -200,7 +200,7 @@ const Home = () => {
             {/*here we will send list of users who are following currentUser instead of users with propname user*/}
           </div>
           <div className={`${classes.center} ${classes.childContainer}`}>
-            <UploadPost />
+            <UploadPost profile="https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg"/>
             <div className={classes.postContainer}>
               {posts.map((post) => (
                 <Post key={post.id} {...post} />

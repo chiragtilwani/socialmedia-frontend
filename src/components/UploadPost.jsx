@@ -1,6 +1,8 @@
 import { makeStyles } from "@mui/styles";
 import { IoMdPhotos } from "react-icons/io";
 import { MdVideoCall } from "react-icons/md";
+import Vdivider from "./Vdivider";
+import Hdivider from "./Hdivider";
 
 const useStyles = makeStyles({
   container: {
@@ -31,16 +33,6 @@ const useStyles = makeStyles({
     outline:'none',
     border:'.2rem solid var(--purple-2)',
     padding:'1rem'
-  },
-  Hdivider: {
-    width: "100%",
-    height: ".2rem",
-    backgroundColor: "var(--purple-3)",
-  },
-  Vdivider: {
-    height: "100%",
-    width: ".2rem",
-    backgroundColor: "var(--purple-3)",
   },
   btnContainer:{
     display:'flex',
@@ -80,7 +72,7 @@ btn:{
   }
 });
 
-const UploadPost = () => {
+const UploadPost = (props) => {
   const classes = useStyles();
   return (
     <div className={classes.container}>
@@ -90,7 +82,7 @@ const UploadPost = () => {
             className={classes.profile}
             style={{
               background:
-                "url(https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg)",
+                `url(${props.profile})`,
               backgroundSize: "100% 100%",
               backgroundPosition: "center",
             }}
@@ -100,15 +92,15 @@ const UploadPost = () => {
             placeholder="What's Happening ?"
           />
         </div>
-        <div className={classes.Hdivider}></div>
+        <Hdivider/>
         <div className={classes.btnContainer}>
           <IoMdPhotos className={classes.photoUploader} title="PHOTO"/>
-          <div className={classes.Vdivider}></div>
+          <Vdivider/>
           <MdVideoCall className={classes.videoUploader} title="VIDEO"/>
-          <div className={classes.Vdivider}></div>
+          <Vdivider/>
           <button className={classes.btn}>POST</button>
         </div>
-        <div className={classes.Hdivider}></div>
+        <Hdivider/>
       </form>
     </div>
   );

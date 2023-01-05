@@ -2,6 +2,8 @@ import { makeStyles } from "@mui/styles";
 import { BsFillHeartFill } from "react-icons/bs";
 import { FaCommentAlt } from "react-icons/fa";
 import { IoIosShare } from "react-icons/io";
+import { FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import TimeAgo from "javascript-time-ago";
@@ -10,7 +12,8 @@ import ru from "javascript-time-ago/locale/ru.json";
 import ReactTimeAgo from "react-time-ago";
 
 import Comment from "./Comment";
-import Sizes from '../Sizes'
+import Sizes from "../Sizes";
+import Hdivider from "./Hdivider";
 
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(ru);
@@ -24,10 +27,15 @@ const useStyles = makeStyles({
     padding: ".5rem 0rem",
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
   },
+  header: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    margin: ".5rem 1rem",
+  },
   name_username: {
     display: "flex",
     flexDirection: "column",
-    margin: ".5rem 1rem",
   },
   name: {
     fontWeight: "bold",
@@ -75,20 +83,15 @@ const useStyles = makeStyles({
     "&:hover": {
       transform: "scale(.8)",
     },
-    [Sizes.down('md')]:{
-      fontSize:'1.5rem' 
-    }
+    [Sizes.down("md")]: {
+      fontSize: "1.5rem",
+    },
   },
   like_comment_count: {
     fontSize: ".9rem",
-    [Sizes.down('md')]:{
-     fontSize:'.7rem' 
-    }
-  },
-  Hdivider: {
-    width: "100%",
-    height: ".2rem",
-    backgroundColor: "var(--purple-3)",
+    [Sizes.down("md")]: {
+      fontSize: ".7rem",
+    },
   },
   xMinAgo: {
     marginLeft: ".5rem",
@@ -96,6 +99,21 @@ const useStyles = makeStyles({
     color: "var(--purple-2)",
     fontWeight: "bold",
   },
+  iconContainer:{
+    width:'4rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    fontSize:'1.5rem',
+  },
+  edit_delete_icon:{
+    cursor:'pointer',
+    transitionDuration:".2s",
+    '&:hover':{
+      color:'var(--purple-1)',
+      transform:'scale(.8)'
+    }
+  }
 });
 const Post = (props) => {
   const classes = useStyles();
@@ -110,13 +128,17 @@ const Post = (props) => {
     setShowComments((prevProp) => !prevProp);
   }
 
-  function handleDoubleClick(){
+  function handleDoubleClick() {
     setLiked((prevProp) => !prevProp);
   }
 
   let content;
-  if (typeof(props.postImg)==='object') {
-    content = <div className={classes.postImg}><video src={props.postImg.video} controls width='100%' height='100%' /></div>;
+  if (typeof props.postImg === "object") {
+    content = (
+      <div className={classes.postImg}>
+        <video src={props.postImg.video} controls width="100%" height="100%" />
+      </div>
+    );
   } else {
     content = (
       <div
@@ -130,21 +152,26 @@ const Post = (props) => {
       ></div>
     );
   }
-  console.log(typeof(props.postImg))
   return (
     <div className={classes.container} onDoubleClick={handleDoubleClick}>
-      <div className={classes.name_username}>
-        <div>
-          <Link className={classes.name}>{props.name}</Link>
-          <ReactTimeAgo
-            date="31 jan 2004"
-            locale="en-US"
-            className={classes.xMinAgo}
-          />
+      <div className={classes.header}>
+        <div className={classes.name_username}>
+          <div>
+            <Link className={classes.name}>{props.name}</Link>
+            <ReactTimeAgo
+              date="31 jan 2004"
+              locale="en-US"
+              className={classes.xMinAgo}
+            />
+          </div>
+          <Link className={classes.username}>
+            <i>@{props.username}</i>
+          </Link>
         </div>
-        <Link className={classes.username}>
-          <i>@{props.username}</i>
-        </Link>
+        <div className={classes.iconContainer}>
+          <FaEdit className={classes.edit_delete_icon} title="Edit"/>
+          <MdDelete className={classes.edit_delete_icon} title="Delete"/>
+        </div>
       </div>
       {content}
       <p
@@ -176,10 +203,7 @@ const Post = (props) => {
           <strong>{props.likes}</strong> likes and <strong>455</strong> comments
         </div>
       </div>
-      <div
-        className={classes.Hdivider}
-        style={{ display: showComments ? "block" : "none" }}
-      ></div>
+      {showComments?<Hdivider />:null}
       <Comment showComments={showComments} />
     </div>
   );
