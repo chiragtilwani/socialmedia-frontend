@@ -74,7 +74,8 @@ const useStyles = makeStyles({
     color: "var(--purple-1)",
   },
   postContainer:{
-    width:'90%'
+    width:'90%',
+    marginBottom: "2rem"
   }
 });
 

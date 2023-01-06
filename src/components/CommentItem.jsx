@@ -13,13 +13,6 @@ const useStyles = makeStyles({
       "rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset",
     padding: ".5rem 0rem",
     transitionDuration: ".2s",
-    "&:hover": {
-      cursor: "pointer",
-      backgroundColor: "var(--purple-2)",
-      "& $username": {
-        color: "black",
-      },
-    },
   },
   name_username: {
     display: "flex",
@@ -56,15 +49,18 @@ const useStyles = makeStyles({
     justifyContent: "space-evenly",
     fontSize: "1.5rem",
     marginRight: ".2rem",
-    flexDirection:'column'
+    flexDirection: "column",
   },
   icons: {
     cursor: "pointer",
-    transitionDuration:'.2s',
+    transitionDuration: ".2s",
     "&:hover": {
       transform: "scale(.8)",
     },
   },
+  descContainer:{
+    display:'flex'
+  }
 });
 
 const CommentItem = (props) => {
@@ -89,7 +85,11 @@ const CommentItem = (props) => {
             <i>@{props.username}</i>
           </Link>
         </div>
-        <p className={classes.desc}>{props.text}</p>
+        <div className={classes.descContainer}>
+          <p className={classes.desc}>{props.text}</p>
+          <Link style={{color:'var(--purple-2)',margin:'0 .5rem'}}>Edit</Link>
+          <Link style={{color:'var(--purple-2)',margin:'0 .5rem'}}>Delete</Link>
+        </div>
       </div>
       <div className={classes.btns}>
         <div>
@@ -104,7 +104,9 @@ const CommentItem = (props) => {
             onClick={handleDislikeClick}
           />
         </div>
-        <span style={{fontSize:'.9rem'}}><strong>{props.likes}</strong> likes</span>
+        <span style={{ fontSize: ".9rem" }}>
+          <strong>{props.likes}</strong> likes
+        </span>
       </div>
     </div>
   );

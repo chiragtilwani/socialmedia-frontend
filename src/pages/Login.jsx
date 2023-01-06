@@ -94,9 +94,9 @@ const useStyles = makeStyles({
     display: "flex",
     justifyContent: "center",
     flexDirection: "column",
-    [Sizes.down('sm')]:{
+    [Sizes.down("sm")]: {
       width: "100%",
-    }
+    },
   },
   input: {
     margin: "1rem 0rem",
@@ -110,7 +110,7 @@ const useStyles = makeStyles({
     },
   },
   btn: {
-    marginTop: "1rem",
+    margin: "1rem 0rem",
     height: "2.5rem",
     width: "50%",
     fontSize: "1.2rem",
@@ -120,17 +120,17 @@ const useStyles = makeStyles({
     borderRadius: ".2rem",
     fontWeight: "bold",
   },
-  linkContainer:{
-    [Sizes.down('sm')]:{
+  linkContainer: {
+    [Sizes.down("sm")]: {
       marginTop: "3rem",
-    }
+    },
   },
   registerLink: {
     fontWeight: "300",
     letterSpacing: ".05rem",
-    [Sizes.up('sm')]:{
-      display:'none'
-    }
+    [Sizes.up("sm")]: {
+      display: "none",
+    },
   },
   homePageLink: {
     marginTop: "1rem",
@@ -165,7 +165,7 @@ const Login = () => {
           <form className={classes.form}>
             <input
               type="text"
-              placeholder="Username"
+              placeholder="Username or Email"
               className={classes.input}
             />
             <input
@@ -184,6 +184,9 @@ const Login = () => {
                 Register
               </Link>
             </p>
+            <Link to="/" style={{ fontWeight: "900"}}>
+              Forgot Password
+            </Link>
             <p className={classes.homePageLink}>
               Back to{" "}
               <Link to="/" style={{ fontWeight: "900" }}>

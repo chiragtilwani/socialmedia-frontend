@@ -16,3 +16,8 @@
 html::-webkit-scrollbar{
   display: none;
 }
+html{
+  overflow: hidden;
+  height:100vh;
+  width:100vw
+}

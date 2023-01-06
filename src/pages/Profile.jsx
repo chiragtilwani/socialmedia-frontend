@@ -1,6 +1,7 @@
 import { makeStyles } from "@mui/styles";
 import { useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
+import { Link } from "react-router-dom";
 
 import Navbar from "../components/navbar/Navbar";
 import UploadPost from "../components/UploadPost";
@@ -12,7 +13,10 @@ import BottomNavbar from "../components/navbar/BottomNavbar";
 
 const useStyles = makeStyles({
   outterContainer:{
-    backgroundColor:'var(--purple-3)'
+    backgroundColor:'var(--purple-3)',
+    height:'100vh',
+    width:'100vw',
+    overflow:'hidden',
   },
   container: {
     width: "100vw",
@@ -176,17 +180,21 @@ const useStyles = makeStyles({
     backgroundColor: "var(--purple-1)",
     color: "white",
     fontWeight: "bold",
-    letterSpacing: ".1rem",
     cursor: "pointer",
     borderRadius: ".2rem",
     outline: "none",
     border: "none",
+    display:"flex",
+    alignItems: "center",
+    justifyContent: "center",
+    textDecoration:'none',
     "&:hover": {
       opacity: 0.8,
     },
   },
   postContainer: {
     width: "90%",
+    marginBottom:'2rem'
   },
   profileOverlay:{
     width:'100%',
@@ -416,7 +424,8 @@ const Profile = () => {
               </div>
               {/* edit profile btn / follow btn if profile of other people */}
               <div className={classes.btnContainer}>
-                <button className={classes.btn}>Edit Profile</button>
+                <Link to='/update/user/1' className={classes.btn}>Edit Profile</Link>{/*here in 'to' attribute instead of  1 userId must come */}
+                {/* we weill make text dynamic b/w Edit profile/Follow/Following if current_userId!=uid from params */}
               </div>
             </div>
           </div>

@@ -1,6 +1,9 @@
 import { makeStyles } from "@mui/styles";
+import {useState} from 'react'
+import Backdrop from "@mui/material/Backdrop";
 
 import Sizes from "../Sizes";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   container: {
@@ -14,9 +17,8 @@ const useStyles = makeStyles({
     padding: ".2rem",
     cursor: "pointer",
     transitionDuration: ".2s",
-    "&:hover": {
-      backgroundColor: "var(--purple-2)",
-    },
+    textDecoration:'none',
+    color:'black'
   },
   profile: {
     width: "4rem",
@@ -33,12 +35,17 @@ const useStyles = makeStyles({
       fontSize: ".8rem",
     },
   },
-  username: {
+  name: {
     marginBottom: ".1rem",
     fontWeight: "bold",
-  },
-  name: {
     textTransform: "capitalize",
+    color:'black',
+  },
+  username: {
+    color: "var(--purple-2)",
+    fontWeight: "bold",
+    transitionDuration: ".2s",
+    cursor: "pointer",
   },
   btn: {
     padding: ".5rem",
@@ -52,12 +59,37 @@ const useStyles = makeStyles({
       cursor: "pointer",
     },
   },
+  profileOverlay:{
+    width:'50%',
+    height:'80vh',
+  }
 });
 
 const UserListItem = (props) => {
   const classes = useStyles();
+  const [profileClick, setProfileClick] = useState(false);
+
+  function handleProfileClick() {
+    setProfileClick((prevState) => !prevState);
+  }
+
   return (
-    <div className={classes.container}>
+    <Link to="/profile/1" className={classes.container}>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={profileClick}
+        onClick={handleProfileClick}
+      >
+        <div
+          className={classes.profileOverlay}
+          style={{
+            background:`url(${props.userInfo.profilePicture})`,
+            backgroundSize: "auto",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+          }}
+        ></div>
+      </Backdrop>
       <div
         className={classes.profile}
         style={{
@@ -65,15 +97,16 @@ const UserListItem = (props) => {
           backgroundSize: "100% 100%",
           backgroundPosition: "center",
         }}
+        onClick={handleProfileClick}
       ></div>
       <div className={classes.name_username}>
-        <span className={classes.username}>{props.userInfo.username}</span>
         <span className={classes.name}>{props.userInfo.name}</span>
+        <span className={classes.username}>{props.userInfo.username}</span>
       </div>
       <button className={classes.btn}>Follow</button>
       {/*later we will dynamically change this button's text to follow/following based on if current user's following list have this user or not*/}
       {/* if it is following then on clicking this button we will alert user with msg 'if you change your mind,you'll have to request to follow username_of_user_we_are_unfollowing again. */}
-    </div>
+    </Link>
   );
 };
 

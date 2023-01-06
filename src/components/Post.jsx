@@ -26,6 +26,11 @@ const useStyles = makeStyles({
     margin: "2rem 0rem",
     padding: ".5rem 0rem",
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+    "&:hover": {
+      "& $iconContainer": {
+        display: "flex",
+      },
+    },
   },
   header: {
     display: "flex",
@@ -99,21 +104,28 @@ const useStyles = makeStyles({
     color: "var(--purple-2)",
     fontWeight: "bold",
   },
-  iconContainer:{
-    width:'4rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    fontSize:'1.5rem',
+  iconContainer: {
+    width: "4rem",
+    display: "none",
+    alignItems: "center",
+    justifyContent: "space-between",
+    fontSize: "1.5rem",
   },
-  edit_delete_icon:{
-    cursor:'pointer',
-    transitionDuration:".2s",
-    '&:hover':{
-      color:'var(--purple-1)',
-      transform:'scale(.8)'
-    }
-  }
+  edit_delete_icon: {
+    cursor: "pointer",
+    transitionDuration: ".2s",
+    "&:hover": {
+      color: "var(--purple-1)",
+      transform: "scale(.8)",
+    },
+  },
+  link: {
+    color: "black",
+    textDecoration: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
 const Post = (props) => {
   const classes = useStyles();
@@ -169,8 +181,11 @@ const Post = (props) => {
           </Link>
         </div>
         <div className={classes.iconContainer}>
-          <FaEdit className={classes.edit_delete_icon} title="Edit"/>
-          <MdDelete className={classes.edit_delete_icon} title="Delete"/>
+          <Link to="/update/post/1" className={classes.link}>
+            <FaEdit className={classes.edit_delete_icon} title="Edit" />
+          </Link>
+          {/*here instead of 1 in 'to' attribute post id must come*/}
+          <MdDelete className={classes.edit_delete_icon} title="Delete" />
         </div>
       </div>
       {content}
@@ -203,7 +218,7 @@ const Post = (props) => {
           <strong>{props.likes}</strong> likes and <strong>455</strong> comments
         </div>
       </div>
-      {showComments?<Hdivider />:null}
+      {showComments ? <Hdivider /> : null}
       <Comment showComments={showComments} />
     </div>
   );
