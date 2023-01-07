@@ -10,6 +10,9 @@ import ReactTimeAgo from "react-time-ago";
 
 import Sizes from "../Sizes";
 
+TimeAgo.addDefaultLocale(en);
+TimeAgo.addLocale(ru);
+
 const useStyles = makeStyles({
   container: {
     display: "flex",
