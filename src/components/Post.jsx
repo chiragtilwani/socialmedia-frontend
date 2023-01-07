@@ -169,14 +169,14 @@ const Post = (props) => {
       <div className={classes.header}>
         <div className={classes.name_username}>
           <div>
-            <Link className={classes.name}>{props.name}</Link>
+            <Link to={`/profile/${props.username}`} className={classes.name}>{props.name}</Link>
             <ReactTimeAgo
               date="31 jan 2004"
               locale="en-US"
               className={classes.xMinAgo}
             />
           </div>
-          <Link className={classes.username}>
+          <Link to={`/profile/${props.username}`} className={classes.username}>
             <i>@{props.username}</i>
           </Link>
         </div>

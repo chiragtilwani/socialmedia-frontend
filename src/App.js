@@ -13,7 +13,7 @@ function App() {
         <Route path="/" element={<Home/>}/>
         <Route path='/login' element={<Login/>} />
         <Route path='/register' element={<Register/>} />
-        <Route path='/profile/:id' element={<Profile/>} />
+        <Route path='/profile/:username' element={<Profile/>} />
         <Route path='/update/post/:pid' element={<Update postUpdate={true} />} />
         <Route path='/update/user/:uid' element={<Update postUpdate={false} />} />
       </Routes>

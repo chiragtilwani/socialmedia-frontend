@@ -183,7 +183,7 @@ const Register = () => {
             Welcome to <span className={classes.span}>CONNECT</span>.
           </p>
           <p className={classes.p}>
-            Stay connected to the world with{" "}
+          Stay connected with friends and the world around you on{" "}
             <span className={classes.span}>CONNECT</span>.
           </p>
           <p className={classes.p} style={{ marginTop: "1.5rem" }}>

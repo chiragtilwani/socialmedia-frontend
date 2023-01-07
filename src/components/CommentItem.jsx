@@ -3,6 +3,13 @@ import { Link } from "react-router-dom";
 import { AiFillDislike } from "react-icons/ai";
 import { AiFillLike } from "react-icons/ai";
 import { useState } from "react";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en.json";
+import ru from "javascript-time-ago/locale/ru.json";
+import ReactTimeAgo from "react-time-ago";
+
+import Sizes from "../Sizes";
+
 const useStyles = makeStyles({
   container: {
     display: "flex",
@@ -25,6 +32,9 @@ const useStyles = makeStyles({
     cursor: "pointer",
     textDecoration: "none",
     color: "black",
+    [Sizes.down("sm")]: {
+      fontSize: ".9rem",
+    },
   },
   username: {
     marginLeft: ".3rem",
@@ -34,13 +44,21 @@ const useStyles = makeStyles({
     transitionDuration: ".2s",
     cursor: "pointer",
     textDecoration: "none",
+    display:'inline-block',
+    width:'fit-content',
     "&:hover": {
       color: "black",
+    },
+    [Sizes.down("sm")]: {
+      fontSize: ".7rem",
     },
   },
   desc: {
     margin: "0rem 1.3rem",
     fontSize: "1.1rem",
+    [Sizes.down("sm")]: {
+      fontSize: ".8rem",
+    },
   },
   btns: {
     width: "5rem",
@@ -58,9 +76,34 @@ const useStyles = makeStyles({
       transform: "scale(.8)",
     },
   },
-  descContainer:{
-    display:'flex'
-  }
+  descContainer: {
+    display: "flex",
+    [Sizes.down("sm")]: {
+      flexDirection: "column",
+    },
+  },
+  xMinAgo: {
+    marginLeft: ".5rem",
+    fontSize: ".8rem",
+    color: "var(--purple-2)",
+    fontWeight: "bold",
+    [Sizes.down("sm")]: {
+      fontSize: ".7rem",
+    },
+  },
+  edit_delete_container:{
+    width:'5rem',
+    display:'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    [Sizes.down('sm')]:{
+      margin: ".2rem 1.3rem",
+      fontSize:'.8rem'
+    }
+  },
+  edit_delete: {
+    color: "var(--purple-2)",
+  },
 });
 
 const CommentItem = (props) => {
@@ -80,15 +123,24 @@ const CommentItem = (props) => {
     <div className={classes.container}>
       <div className={classes.name_text}>
         <div className={classes.name_username}>
-          <Link className={classes.name}>{props.name}</Link>
-          <Link className={classes.username}>
+          <div>
+            <Link to={`/profile/${props.username}`} className={classes.name}>{props.name}</Link>
+            <ReactTimeAgo
+              date="31 jan 2004"
+              locale="en-US"
+              className={classes.xMinAgo}
+            />
+          </div>
+          <Link to={`/profile/${props.username}`} className={classes.username}>
             <i>@{props.username}</i>
           </Link>
         </div>
         <div className={classes.descContainer}>
           <p className={classes.desc}>{props.text}</p>
-          <Link style={{color:'var(--purple-2)',margin:'0 .5rem'}}>Edit</Link>
-          <Link style={{color:'var(--purple-2)',margin:'0 .5rem'}}>Delete</Link>
+          <div className={classes.edit_delete_container}>
+            <Link className={classes.edit_delete}>Edit</Link>
+            <Link className={classes.edit_delete}>Delete</Link>
+          </div>
         </div>
       </div>
       <div className={classes.btns}>
