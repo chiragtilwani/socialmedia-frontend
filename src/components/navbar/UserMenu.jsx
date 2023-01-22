@@ -33,6 +33,10 @@ const useStyles = makeStyles({
 const UserMenu = () => {
   const classes = useStyles();
 
+function handleLogoutClick(){
+  window.localStorage.removeItem("user")
+}
+
   return (
     <div className={classes.container}>
       <Link to={`/profile/1`} className={classes.item}>{/*here instead of 1 we will use currentUser's id*/}
@@ -44,7 +48,7 @@ const UserMenu = () => {
       <Link to="/login" className={classes.item}>
         Login
       </Link>
-      <Link to="" className={classes.item}>
+      <Link to="" onClick={handleLogoutClick} className={classes.item}>
         Logout
       </Link>
     </div>

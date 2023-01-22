@@ -5,15 +5,27 @@ import Home from './pages/Home'
 import Register from './pages/Register'
 import Profile from './pages/Profile'
 import Update from './pages/Update'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 
 function App() {
+  const [currentUser,setCurrentUser] = useState(null)
+  useEffect(()=>{
+    const fetchCurrentUser=async()=>{
+      const res=await axios.get(`${process.env.REACT_APP_BASE_URL}/users?userId=6394c7dbe63735002feff0de`)
+      setCurrentUser(res.data)
+    }
+    fetchCurrentUser()
+  },[])
+
   return (
+
     <div className="App">
       <Routes>
-        <Route path="/" element={<Home/>}/>
+        <Route path="/" element={currentUser && <Home {...currentUser}/>}/>
         <Route path='/login' element={<Login/>} />
         <Route path='/register' element={<Register/>} />
-        <Route path='/profile/:username' element={<Profile/>} />
+        <Route path='/profile/:uname' element={<Profile/>} />
         <Route path='/update/post/:pid' element={<Update postUpdate={true} />} />
         <Route path='/update/user/:uid' element={<Update postUpdate={false} />} />
       </Routes>

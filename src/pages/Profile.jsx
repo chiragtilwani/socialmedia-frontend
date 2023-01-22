@@ -1,22 +1,25 @@
 import { makeStyles } from "@mui/styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import axios from "axios";
 
 import Navbar from "../components/navbar/Navbar";
 import UploadPost from "../components/UploadPost";
 import UsersList from "../components/UsersList";
 import Post from "../components/Post";
 import video from "../video.mp4";
-import Sizes from '../Sizes'
+import Sizes from "../Sizes";
 import BottomNavbar from "../components/navbar/BottomNavbar";
+import noAvatar from "../assests/noAvatar.png";
+import noCover from "../assests/noCover.png";
 
 const useStyles = makeStyles({
-  outterContainer:{
-    backgroundColor:'var(--purple-3)',
-    height:'100vh',
-    width:'100vw',
-    overflow:'hidden',
+  outterContainer: {
+    backgroundColor: "var(--purple-3)",
+    height: "100vh",
+    width: "100vw",
+    overflow: "hidden",
   },
   container: {
     width: "100vw",
@@ -41,7 +44,7 @@ const useStyles = makeStyles({
     },
     [Sizes.up("xl")]: {
       width: "80%",
-      margin:'auto'
+      margin: "auto",
     },
     [Sizes.down("md")]: {
       gridTemplateColumns: "1fr",
@@ -69,8 +72,11 @@ const useStyles = makeStyles({
         backgroundColor: "var(--purple-1)",
       },
     },
-    [Sizes.down('md')]:{
-      display:"none"
+    [Sizes.down("md")]: {
+      display: "none",
+    },
+    [Sizes.up('xl')]:{
+      padding: "8rem 0rem 3rem 0rem",
     }
   },
   right: {
@@ -100,16 +106,17 @@ const useStyles = makeStyles({
   },
   infoContainer: {
     backgroundColor: "white",
-    boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
+    boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
   },
   coverPic: {
     width: "100%",
     height: "20rem",
     cursor: "pointer",
     transitionDuration: ".2s",
-    [Sizes.up('xl')]:{
+    objectFit: "fill",
+    [Sizes.up("xl")]: {
       height: "25rem",
-    }
+    },
   },
   profilePic: {
     width: "5rem",
@@ -118,7 +125,7 @@ const useStyles = makeStyles({
     border: ".2rem solid var(--purple-1)",
     transform: "translateY(-50%)",
     boxShadow: "0rem 0rem .5rem .05rem var(--purple-2)",
-    margin: "auto",
+    marginLeft: "2rem",
     cursor: "pointer",
   },
   details: {
@@ -184,151 +191,56 @@ const useStyles = makeStyles({
     borderRadius: ".2rem",
     outline: "none",
     border: "none",
-    display:"flex",
+    display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    textDecoration:'none',
+    textDecoration: "none",
     "&:hover": {
       opacity: 0.8,
     },
   },
   postContainer: {
     width: "90%",
-    marginBottom:'2rem'
+    marginBottom: "2rem",
   },
-  profileOverlay:{
-    width:'100%',
-    height:'100%',
-  }
+  profileOverlay: {
+    width: "100%",
+    height: "100%",
+  },
 });
-
-const dummyUser = {
-  id: 1,
-  name: "rahul tilwani",
-  username: "rtilwani03",
-  profilePicture:
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTazRa-UljlJ57z2tqmSNSz5X_C5RkD1S-Nfj46b_ZO&s",
-  coverPicture:
-    "https://images.pexels.com/photos/1323206/pexels-photo-1323206.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-  bio: "this is dummy bio",
-  followers: 1234,
-  followings: 750,
-};
-
-const dummyUsers = [
-  {
-    id: 1,
-    name: "rahul tilwani",
-    username: "rtilwani03",
-    profilePicture:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTazRa-UljlJ57z2tqmSNSz5X_C5RkD1S-Nfj46b_ZO&s",
-  },
-  {
-    id: 2,
-    name: "sid tilwani",
-    username: "rtilwani03",
-    profilePicture:
-      "https://media.istockphoto.com/id/1321610286/photo/smiling-hispanic-mature-man-front-and-profile-mugshots.jpg?s=612x612&w=is&k=20&c=cZcMC5MoaEKVJ92hX8JoHkiGuWZA2jbaTzbyAlv3t9Q=",
-  },
-  {
-    id: 3,
-    name: "lavina tilwani",
-    username: "ltilwani03",
-    profilePicture:
-      "https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg",
-  },
-  {
-    id: 4,
-    name: "lavina tilwani",
-    username: "ltilwani03",
-    profilePicture:
-      "https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg",
-  },
-  {
-    id: 5,
-    name: "lavina tilwani",
-    username: "ltilwani03",
-    profilePicture:
-      "https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg",
-  },
-  {
-    id: 6,
-    name: "lavina tilwani",
-    username: "ltilwani03",
-    profilePicture:
-      "https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg",
-  },
-  {
-    id: 7,
-    name: "lavina tilwani",
-    username: "ltilwani03",
-    profilePicture:
-      "https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg",
-  },
-  {
-    id: 8,
-    name: "lavina tilwani",
-    username: "ltilwani03",
-    profilePicture:
-      "https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg",
-  },
-  {
-    id: 9,
-    name: "lavina tilwani",
-    username: "ltilwani03",
-    profilePicture:
-      "https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg",
-  },
-];
-
-const posts = [
-  {
-    id: 1,
-    name: "chirag tilwani",
-    username: "chiragTilwani",
-    postImg: { video },
-    likes: 1234,
-  },
-  {
-    id: 2,
-    name: "chirag tilwani",
-    username: "chiragTilwani",
-    desc: "this is second dummy post",
-    likes: 560,
-  },
-  {
-    id: 3,
-    name: "chirag tilwani",
-    username: "chiragTilwani",
-    desc: "this is third dummy post",
-    postImg:
-      "https://images.pexels.com/photos/1004014/pexels-photo-1004014.jpeg?cs=srgb&dl=pexels-min-an-1004014.jpg&fm=jpg",
-    likes: 700,
-  },
-  {
-    id: 4,
-    name: "chirag tilwani",
-    username: "chiragTilwani",
-    desc: "this is fourth dummy post",
-    postImg:
-      "https://images.pexels.com/photos/1004014/pexels-photo-1004014.jpeg?cs=srgb&dl=pexels-min-an-1004014.jpg&fm=jpg",
-    likes: 12,
-  },
-  {
-    id: 5,
-    name: "chirag tilwani",
-    username: "chiragTilwani",
-    desc: "this is fourth dummy post",
-    postImg:
-      "https://images.pexels.com/photos/1004014/pexels-photo-1004014.jpeg?cs=srgb&dl=pexels-min-an-1004014.jpg&fm=jpg",
-    likes: 12,
-  },
-];
 
 const Profile = () => {
   const classes = useStyles();
   const [coverClick, setCoverClick] = useState(false);
   const [profileClick, setProfileClick] = useState(false);
+  const [user, setUser] = useState(null);
+  const [userPosts, setUserPosts] = useState(null);
+
+  const { uname } = useParams();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/users?username=${uname}`
+      );
+      setUser(res.data);
+    };
+    if (uname) {
+      fetchUser();
+    }
+  }, [uname]);
+
+  useEffect(() => {
+    const fetchUserPost = async () => {
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/posts/user/${user._id}`
+      );
+      setUserPosts(res.data);
+    };
+    if (user) {
+      fetchUserPost();
+    }
+  }, [user]);
 
   function handleCoverClick() {
     setCoverClick((prevState) => !prevState);
@@ -337,110 +249,118 @@ const Profile = () => {
     setProfileClick((prevState) => !prevState);
   }
   return (
-    <div className={classes.outterContainer}>
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={profileClick}
-        onClick={handleProfileClick}
-      >
-        <div
-          className={classes.profileOverlay}
-          style={{
-            background:`url(${dummyUser.profilePicture})`,
-            backgroundSize: "auto",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-          }}
-        ></div>
-      </Backdrop>
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={coverClick}
-        onClick={handleCoverClick}
-      >
-        <div
-          className={classes.profileOverlay}
-          style={{
-            background:`url(${dummyUser.coverPicture})`,
-            backgroundSize: "auto",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-          }}
-        ></div>
-      </Backdrop>
-      <Navbar />
-      <div className={classes.container}>
-        <div className={classes.left}>
-          <h2 className={classes.h2}>Followers</h2>
-          <UsersList users={dummyUsers} />
-          <h2 className={classes.h2}>Followings</h2>
-          <UsersList users={dummyUsers} />
-        </div>
-        <div className={classes.right}>
-          <div className={classes.infoContainer}>
-            {/* cover pic */}
-            <div
-              className={classes.coverPic}
-              style={{
-                background: `url(${dummyUser.coverPicture})`,
-                backgroundSize: "100% 100%",
-                backgroundPosition: "center",
-              }}
-              onClick={handleCoverClick}
-            ></div>
-            {/* profile pic */}
-            <div
-              className={classes.profilePic}
-              style={{
-                background: `url(${dummyUser.profilePicture})`,
-                backgroundSize: "100% 100%",
-                backgroundPosition: "center",
-              }}
-              onClick={handleProfileClick}
-            ></div>
-            {/* details */}
-            <div className={classes.details}>
-              <span className={classes.name}>{dummyUser.name}</span>
-              <span className={classes.username}>@{dummyUser.username}</span>
-              <p className={classes.p}>
-                {dummyUser.bio}Lorem ipsum dolor sit amet consectetur
-                adipisicing elit. Cumque quibusdam aut aperiam numquam sint odit
-                sapiente ex iusto nihil molestiae! Eius, non optio!
-              </p>
-              <div className={classes.followers_following_counters}>
-                <div className={classes.innerDiv}>
-                  <span className={classes.upperSpan}>Followers</span>
-                  <span className={classes.lowerSpan}>
-                    {dummyUser.followers}
-                  </span>
-                </div>
-                <div className={classes.centerLine} />
-                <div className={classes.innerDiv}>
-                  <span className={classes.upperSpan}>Followings</span>
-                  <span className={classes.lowerSpan}>
-                    {dummyUser.followings}
-                  </span>
+    <>
+      {user ? (
+        <div className={classes.outterContainer}>
+          {/* {console.log(user)} */}
+          <Backdrop
+            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={profileClick}
+            onClick={handleProfileClick}
+          >
+            <img
+              className={classes.profileCoverOverlay}
+              src={
+                user.profilePicture
+                  ? `${user.profilePicture.url}`
+                  : `${noAvatar}`
+              }
+              alt=""
+            />
+          </Backdrop>
+          <Backdrop
+            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={coverClick}
+            onClick={handleCoverClick}
+          >
+            <img
+              className={classes.profileCoverOverlay}
+              src={
+                user.coverPicture ? `${user.coverPicture.url}` : `${noCover}`
+              }
+              alt=""
+            />
+          </Backdrop>
+
+          <Navbar />
+          <div className={classes.container}>
+            <div className={classes.left}>
+              <h2 className={classes.h2}>Followers</h2>
+              <UsersList users={user.followers} />
+              <h2 className={classes.h2}>Followings</h2>
+              <UsersList users={user.followings} />
+            </div>
+            <div className={classes.right}>
+              <div className={classes.infoContainer}>
+                {/* cover pic */}
+                <img
+                  className={classes.coverPic}
+                  src={user.coverPicture ? user.coverPicture.url : noCover}
+                  alt=""
+                  onClick={handleCoverClick}
+                ></img>
+                {/* profile pic */}
+                <img
+                  className={classes.profilePic}
+                  src={user.profilePic ? user.profilePic.url : noAvatar}
+                  alt=""
+                  onClick={handleProfileClick}
+                ></img>
+                {/* details */}
+                <div className={classes.details}>
+                  <span className={classes.name}>{user.name}</span>
+                  <span className={classes.username}>@{user.username}</span>
+                  <p className={classes.p}>
+                    {user.bio}Lorem ipsum dolor sit amet consectetur adipisicing
+                    elit. Cumque quibusdam aut aperiam numquam sint odit
+                    sapiente ex iusto nihil molestiae! Eius, non optio!
+                  </p>
+                  <div className={classes.followers_following_counters}>
+                    <div className={classes.innerDiv}>
+                      <span className={classes.upperSpan}>Followers</span>
+                      <span className={classes.lowerSpan}>
+                        {user.followers.length}
+                      </span>
+                    </div>
+                    <div className={classes.centerLine} />
+                    <div className={classes.innerDiv}>
+                      <span className={classes.upperSpan}>Followings</span>
+                      <span className={classes.lowerSpan}>
+                        {user.followings.length}
+                      </span>
+                    </div>
+                  </div>
+                  {/* edit profile btn / follow btn if profile of other people */}
+                  <div className={classes.btnContainer}>
+                    <Link
+                      to={`/update/user/${user._id}`}
+                      className={classes.btn}
+                    >
+                      Edit Profile
+                    </Link>
+                    {/*here in 'to' attribute instead of  1 userId must come */}
+                    {/* we weill make text dynamic b/w Edit profile/Follow/Following if current_userId!=uid from params */}
+                  </div>
                 </div>
               </div>
-              {/* edit profile btn / follow btn if profile of other people */}
-              <div className={classes.btnContainer}>
-                <Link to='/update/user/1' className={classes.btn}>Edit Profile</Link>{/*here in 'to' attribute instead of  1 userId must come */}
-                {/* we weill make text dynamic b/w Edit profile/Follow/Following if current_userId!=uid from params */}
+              {/* post uploader */}
+              <UploadPost
+                profile={
+                  user.profilePicture ? user.profilePicture.url : noAvatar
+                }
+              />
+              {/* posts by user */}
+              <div className={classes.postContainer}>
+                {userPosts?userPosts.map((post) => (
+                  <Post key={post.id} {...post} />
+                )):null}
               </div>
             </div>
           </div>
-          {/* post uploader */}
-          <UploadPost profile={dummyUser.profilePicture} />
-          {/* posts by user */}
-          <div className={classes.postContainer}>
-            {posts.map((post) => (
-              <Post key={post.id} {...post} />
-            ))}
-          </div>
+          <BottomNavbar />
         </div>
-      </div>
-      <BottomNavbar/>
-    </div>
+      ) : null}
+    </>
   );
 };
 

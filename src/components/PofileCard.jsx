@@ -1,7 +1,11 @@
 import { makeStyles } from "@mui/styles";
-import {Link} from 'react-router-dom'
-import {useState} from 'react'
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
+
+import noCover from "../assests/noCover.png";
+import noAvatar from "../assests/noAvatar.png";
+import axios from "axios";
 
 const useStyles = makeStyles({
   container: {
@@ -13,30 +17,35 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
+    boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
   },
-  coverImg: {
+  coverImgContainer: {
     width: "100%",
     height: "40%",
     borderRadius: "1rem 1rem 0rem 0rem",
-    background:
-      "url(https://images.pexels.com/photos/1323206/pexels-photo-1323206.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)",
-    backgroundSize: "100% 100%",
-    backgroundPosition: "center",
-    cursor:'pointer'
+    cursor: "pointer",
+    boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+    overflow: "hidden"
   },
-  profileImg: {
+  coverImg: {
+    width: "100%",
+    height: "100%",
+    objectFit: "fill",
+  },
+  profileImgContainer: {
     width: "5rem",
     height: "5rem",
     borderRadius: "50%",
     border: ".2rem solid var(--purple-1)",
     transform: "translateY(-50%)",
-    background:
-      "url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTazRa-UljlJ57z2tqmSNSz5X_C5RkD1S-Nfj46b_ZO&s)",
-    backgroundSize: "100% 100%",
-    backgroundPosition: "center",
     boxShadow: "0rem 0rem .5rem .05rem var(--purple-2)",
-    cursor:'pointer'
+    cursor: "pointer",
+    overflow: "hidden"
+  },
+  profileImg: {
+    width: "100%",
+    height: "100%",
+    objectFit: "fill",
   },
   name: {
     marginTop: "-1.5rem",
@@ -47,6 +56,11 @@ const useStyles = makeStyles({
     padding: ".5rem",
     marginBottom: "1rem",
     textTransform: "capitalize",
+    width: "90%",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    textAlign:'center',
   },
   line: {
     width: "90%",
@@ -71,13 +85,14 @@ const useStyles = makeStyles({
     width: ".1rem",
     backgroundColor: "var(--purple-3)",
   },
-  profileOverlay:{
-    width:'50%',
-    height:'80vh',
-  }
+  profileCoverOverlay: {
+    width: "auto",
+    height: "auto",
+    objectFit: "fill",
+  },
 });
 
-const PofileCard = () => {
+const PofileCard = (props) => {
   const classes = useStyles();
   const [coverClick, setCoverClick] = useState(false);
   const [profileClick, setProfileClick] = useState(false);
@@ -88,62 +103,87 @@ const PofileCard = () => {
   function handleProfileClick() {
     setProfileClick((prevState) => !prevState);
   }
+  // console.log(props);
   return (
     <>
-          <Backdrop
+      <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={profileClick}
         onClick={handleProfileClick}
       >
-        <div
-          className={classes.profileOverlay}
-          style={{
-            background:`url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTazRa-UljlJ57z2tqmSNSz5X_C5RkD1S-Nfj46b_ZO&s)`,
-            backgroundSize: "auto",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-          }}
-        ></div>
+        <img
+          className={classes.profileCoverOverlay}
+          src={
+            props.currentUser.profilePicture ? `${props.currentUser.profilePicture.url}` : `${noAvatar}`
+          }
+          alt=""
+        />
       </Backdrop>
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={coverClick}
         onClick={handleCoverClick}
       >
-        <div
-          className={classes.profileOverlay}
-          style={{
-            background:`url(https://images.pexels.com/photos/1323206/pexels-photo-1323206.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)`,
-            backgroundSize: "auto",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-          }}
-        ></div>
+        <img
+          className={classes.profileCoverOverlay}
+          src={props.currentUser.coverPicture ? `${props.currentUser.coverPicture.url}` : `${noCover}`}
+          alt=""
+        />
       </Backdrop>
 
-    <div className={classes.container}>
-      <div className={classes.coverImg} onClick={handleCoverClick}></div>
-      <div className={classes.profileImg} onClick={handleProfileClick}></div>
-      <div className={classes.name}><Link to={`/profile/1`} style={{textDecoration:'none',color:'black'}}>Chirag Tilwani</Link></div>
-      <div className={classes.line}></div>
-      <div className={classes.stats}>
-        <div className={classes.innerStats}>
-          <span style={{ fontWeight: "bold", fontSize: ".9rem" }}>1234</span>
-          <span style={{ fontSize: ".8rem" }}>Followers</span>
+      <div className={classes.container}>
+        <div className={classes.coverImgContainer} onClick={handleCoverClick}>
+          <img
+            className={classes.coverImg}
+            src={
+              props.currentUser.coverPicture
+                ? `${props.currentUser.coverPicture.url}`
+                : `${noCover}`
+            }
+            alt=""
+          />
         </div>
-        <div className={classes.centerLine}></div>
-        <div className={classes.innerStats}>
-          <span style={{ fontWeight: "bold", fontSize: ".9rem" }}>1234</span>
-          <span style={{ fontSize: ".8rem" }}>Followings</span>
+        <div
+          className={classes.profileImgContainer}
+          onClick={handleProfileClick}
+        >
+          <img
+            className={classes.profileImg}
+            src={
+              props.currentUser.profilePicture
+                ? `${props.currentUser.profilePicture.url}`
+                : `${noAvatar}`
+            }
+            alt=""
+          />
         </div>
-        <div className={classes.centerLine}></div>
-        <div className={classes.innerStats}>
-          <span style={{ fontWeight: "bold", fontSize: ".9rem" }}>1234</span>
-          <span style={{ fontSize: ".8rem" }}>Posts</span>
+        <div className={classes.name}>
+          <Link
+            to={`/profile/${props.currentUser.username}`}
+            style={{ textDecoration: "none", color: "black",textTransform:'capitalize' }}
+          >
+            {props.currentUser.name}
+          </Link>
         </div>
+        <div className={classes.line}></div>
+        <div className={classes.stats}>
+          <div className={classes.innerStats}>
+            <span style={{fontWeight: "bold", fontSize: ".9rem"  }}>Followers</span>
+            <span style={{ fontSize: ".8rem" }}>{props.currentUser.followers.length}</span>
+          </div>
+          <div className={classes.centerLine}></div>
+          <div className={classes.innerStats}>
+            <span style={{ fontWeight: "bold", fontSize: ".9rem" }}>Followings</span>
+            <span style={{ fontSize: ".8rem" }}>{props.currentUser.followings.length}</span>
+          </div>
+          <div className={classes.centerLine}></div>
+          <div className={classes.innerStats}>
+            <span style={{ fontWeight: "bold", fontSize: ".9rem" }}>Posts</span>
+            <span style={{ fontSize: ".8rem" }}>{props.currentUserPost.length}</span>
+          </div>
+        </div>
+        <div className={classes.line}></div>
       </div>
-      <div className={classes.line}></div>
-    </div>
     </>
   );
 };

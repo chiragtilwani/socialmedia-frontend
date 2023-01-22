@@ -1,7 +1,8 @@
 import { makeStyles } from "@mui/styles";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 
-import Sizes from '../Sizes'
+import Sizes from "../Sizes";
 
 const useStyles = makeStyles({
   container: {
@@ -11,17 +12,17 @@ const useStyles = makeStyles({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "var(--purple-2)",
-    flexDirection: "column"
+    flexDirection: "column",
   },
   card: {
     width: "50%",
     height: "70vh",
     display: "flex",
     flexDirection: "row",
-    [Sizes.down("md")]:{
-      width:'100vw',
-      height:'100vh',
-    }
+    [Sizes.down("md")]: {
+      width: "100vw",
+      height: "100vh",
+    },
   },
   right: {
     width: "50%",
@@ -34,12 +35,12 @@ const useStyles = makeStyles({
     backgroundPosition: "center",
     backgroundSize: "100% 100%",
     borderRadius: "0rem 2rem 0rem 0rem",
-    [Sizes.down("md")]:{
-      borderRadius:'0rem'
+    [Sizes.down("md")]: {
+      borderRadius: "0rem",
     },
-    [Sizes.down('sm')]:{
-      display:'none',
-    }
+    [Sizes.down("sm")]: {
+      display: "none",
+    },
   },
   left: {
     width: "50%",
@@ -49,17 +50,17 @@ const useStyles = makeStyles({
     padding: "2rem",
     backgroundColor: "white",
     borderRadius: "0rem 0rem 0rem 2rem",
-    [Sizes.down("md")]:{
-      borderRadius:'0rem'
+    [Sizes.down("md")]: {
+      borderRadius: "0rem",
     },
-    [Sizes.down('sm')]:{
+    [Sizes.down("sm")]: {
       width: "100%",
       height: "100%",
-      borderRadius:'0rem',
+      borderRadius: "0rem",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-    }
+    },
   },
   h1: {
     fontSize: "4rem",
@@ -94,9 +95,9 @@ const useStyles = makeStyles({
     display: "flex",
     justifyContent: "center",
     flexDirection: "column",
-    [Sizes.down('sm')]:{
+    [Sizes.down("sm")]: {
       width: "100%",
-    }
+    },
   },
   input: {
     margin: "1rem 0rem",
@@ -120,17 +121,17 @@ const useStyles = makeStyles({
     borderRadius: ".2rem",
     fontWeight: "bold",
   },
-  linkContainer:{
-    [Sizes.down('sm')]:{
+  linkContainer: {
+    [Sizes.down("sm")]: {
       marginTop: "3rem",
-    }
+    },
   },
   loginLink: {
     fontWeight: "300",
     letterSpacing: ".05rem",
-    [Sizes.up('sm')]:{
-      display:'none'
-    }
+    [Sizes.up("sm")]: {
+      display: "none",
+    },
   },
   homePageLink: {
     marginTop: "1rem",
@@ -141,21 +142,40 @@ const useStyles = makeStyles({
 
 const Register = () => {
   const classes = useStyles();
+
+  const email = useRef();
+  const password = useRef();
+  const username = useRef();
+
+  function handleSubmit(evt) {
+    evt.preventDefault();
+  }
   return (
     <div className={classes.container}>
       <div className={classes.card}>
         <div className={classes.left}>
           <h1 className={classes.h2}>Register</h1>
-          <form className={classes.form}>
+          <form className={classes.form} onSubmit={handleSubmit}>
             <input
               type="text"
               placeholder="Username"
+              required
+              ref={username}
               className={classes.input}
             />
-            <input type="email" placeholder="Email" className={classes.input} />
+
+            <input
+              type="email"
+              required
+              placeholder="Email"
+              ref={email}
+              className={classes.input}
+            />
             <input
               type="password"
               placeholder="Password"
+              required
+              ref={password}
               className={classes.input}
             />
             <button type="submit" className={classes.btn}>
@@ -183,7 +203,7 @@ const Register = () => {
             Welcome to <span className={classes.span}>CONNECT</span>.
           </p>
           <p className={classes.p}>
-          Stay connected with friends and the world around you on{" "}
+            Stay connected with friends and the world around you on{" "}
             <span className={classes.span}>CONNECT</span>.
           </p>
           <p className={classes.p} style={{ marginTop: "1.5rem" }}>

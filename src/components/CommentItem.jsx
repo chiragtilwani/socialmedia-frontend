@@ -2,13 +2,14 @@ import { makeStyles } from "@mui/styles";
 import { Link } from "react-router-dom";
 import { AiFillDislike } from "react-icons/ai";
 import { AiFillLike } from "react-icons/ai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import ru from "javascript-time-ago/locale/ru.json";
 import ReactTimeAgo from "react-time-ago";
 
 import Sizes from "../Sizes";
+import axios from "axios";
 
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(ru);
@@ -113,6 +114,17 @@ const CommentItem = (props) => {
   const classes = useStyles();
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
+  const [creator, setCreator] = useState({})
+
+  useEffect(()=>{
+    const fetchCreator=async()=>{
+      let res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/users?userId=${props.creatorId}`
+      );
+      setCreator(res.data);
+    }
+    fetchCreator()
+  },[props.creatorId])
 
   function handleLikeClick() {
     setLiked((prevState) => !prevState);
@@ -127,15 +139,15 @@ const CommentItem = (props) => {
       <div className={classes.name_text}>
         <div className={classes.name_username}>
           <div>
-            <Link to={`/profile/${props.username}`} className={classes.name}>{props.name}</Link>
+            <Link to={`/profile/${creator.username}`} className={classes.name}>{creator.name}</Link>
             <ReactTimeAgo
-              date="31 jan 2004"
+              date={props.createdAt}
               locale="en-US"
               className={classes.xMinAgo}
             />
           </div>
-          <Link to={`/profile/${props.username}`} className={classes.username}>
-            <i>@{props.username}</i>
+          <Link to={`/profile/${creator.username}`} className={classes.username}>
+            <i>@{creator.username}</i>
           </Link>
         </div>
         <div className={classes.descContainer}>
@@ -160,7 +172,7 @@ const CommentItem = (props) => {
           />
         </div>
         <span style={{ fontSize: ".9rem" }}>
-          <strong>{props.likes}</strong> likes
+          <strong>{props.likes.length===0?null:props.likes.length}</strong> {props.likes.length===0?null:'likes'}
         </span>
       </div>
     </div>

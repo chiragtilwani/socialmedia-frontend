@@ -1,4 +1,6 @@
 import { makeStyles } from "@mui/styles";
+import {useContext, useEffect,useState} from 'react'
+import axios from 'axios'
 
 import Sizes from "../Sizes";
 import Navbar from "../components/navbar/Navbar";
@@ -8,6 +10,7 @@ import UsersList from "../components/UsersList";
 import UploadPost from "../components/UploadPost";
 import Post from "../components/Post";
 import video from '../video.mp4'
+import { AuthContext } from "../context/AuthContext";
 
 const useStyles = makeStyles({
   outterContainer: {
@@ -23,7 +26,7 @@ const useStyles = makeStyles({
     display: "grid",
     gridTemplateColumns: "2fr 4fr 2fr",
     height: "100vh",
-    columnGap: "2rem",
+    columnGap: ".5rem",
     width: "100%",
     overflow: "scroll",
     [Sizes.down("md")]: {
@@ -58,11 +61,13 @@ const useStyles = makeStyles({
     },
   },
   left: {
+    paddingBottom:'4rem',
     [Sizes.down("md")]: {
       display: "none",
     },
   },
   right: {
+    paddingBottom:'4rem',
     [Sizes.down("md")]: {
       display: "none",
     },
@@ -78,146 +83,52 @@ const useStyles = makeStyles({
     marginBottom: "2rem"
   }
 });
-
-const Home = () => {
+const Home = (props) => {
   const classes = useStyles();
+  const [posts,setPosts]=useState([])
+  const contextData=useContext(AuthContext)
 
-  const users = [
-    {
-      id: 1,
-      name: "rahul tilwani",
-      username: "rtilwani03",
-      profilePicture:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTazRa-UljlJ57z2tqmSNSz5X_C5RkD1S-Nfj46b_ZO&s",
-    },
-    {
-      id: 2,
-      name: "sid tilwani",
-      username: "rtilwani03",
-      profilePicture:
-        "https://media.istockphoto.com/id/1321610286/photo/smiling-hispanic-mature-man-front-and-profile-mugshots.jpg?s=612x612&w=is&k=20&c=cZcMC5MoaEKVJ92hX8JoHkiGuWZA2jbaTzbyAlv3t9Q=",
-    },
-    {
-      id: 3,
-      name: "lavina tilwani",
-      username: "ltilwani03",
-      profilePicture:
-        "https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg",
-    },
-    {
-      id: 4,
-      name: "lavina tilwani",
-      username: "ltilwani03",
-      profilePicture:
-        "https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg",
-    },
-    {
-      id: 5,
-      name: "lavina tilwani",
-      username: "ltilwani03",
-      profilePicture:
-        "https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg",
-    },
-    {
-      id: 6,
-      name: "lavina tilwani",
-      username: "ltilwani03",
-      profilePicture:
-        "https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg",
-    },
-    {
-      id: 7,
-      name: "lavina tilwani",
-      username: "ltilwani03",
-      profilePicture:
-        "https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg",
-    },
-    {
-      id: 8,
-      name: "lavina tilwani",
-      username: "ltilwani03",
-      profilePicture:
-        "https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg",
-    },
-    {
-      id: 9,
-      name: "lavina tilwani",
-      username: "ltilwani03",
-      profilePicture:
-        "https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg",
-    },
-  ];
+  useEffect(()=>{
+    const getPost =async()=>{
+      const res=await axios.get(`${process.env.REACT_APP_BASE_URL}/posts/timeline/${props._id}`)
+      setPosts(res.data)
+    }
+    getPost()
+  },[props._id])
 
-  const posts = [
-    {
-      id: 1,
-      name: "chirag tilwani",
-      username: "chiragTilwani",
-      postImg: {video},
-      likes: 1234,
-    },
-    {
-      id: 2,
-      name: "chirag tilwani",
-      username: "chiragTilwani",
-      desc: "this is second dummy post",
-      likes: 560,
-    },
-    {
-      id: 3,
-      name: "chirag tilwani",
-      username: "chiragTilwani",
-      desc: "this is third dummy post",
-      postImg: "https://images.pexels.com/photos/1004014/pexels-photo-1004014.jpeg?cs=srgb&dl=pexels-min-an-1004014.jpg&fm=jpg",
-      likes: 700,
-    },
-    {
-      id: 4,
-      name: "chirag tilwani",
-      username: "chiragTilwani",
-      desc: "this is fourth dummy post",
-      postImg: "https://images.pexels.com/photos/1004014/pexels-photo-1004014.jpeg?cs=srgb&dl=pexels-min-an-1004014.jpg&fm=jpg",
-      likes: 12,
-    },
-    {
-      id: 5,
-      name: "chirag tilwani",
-      username: "chiragTilwani",
-      desc: "this is fourth dummy post",
-      postImg: "https://images.pexels.com/photos/1004014/pexels-photo-1004014.jpeg?cs=srgb&dl=pexels-min-an-1004014.jpg&fm=jpg",
-      likes: 12,
-    },
-  ];
-
+  let friendSuggestions=props.followers.filter(id=>!props.followings.includes(id))
+  
+console.log(contextData)
+console.log(props)
   return (
     <>
       <div className={classes.outterContainer}>
         <Navbar />
         <div className={classes.container}>
           <div className={`${classes.left} ${classes.childContainer}`}>
-            <PofileCard />
-            <h2 className={classes.h2}>who is following you</h2>
-            <UsersList users={users} />
-            {/*here we will send list of users who are following currentUser instead of users with propname user*/}
+            <PofileCard currentUser={props} currentUserPost={posts.filter(post=>post.creatorId===props._id)}/>
+              <h2 className={classes.h2} style={{ marginTop: "1rem" }}>
+                Suggestions for you
+              </h2>
+              <UsersList users={friendSuggestions} currentUser={props}/>
+              {/*here we will send list of users whom you are following instead of users with propname user*/}
           </div>
           <div className={`${classes.center} ${classes.childContainer}`}>
             <UploadPost profile="https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg"/>
             <div className={classes.postContainer}>
               {posts.map((post) => (
-                <Post key={post.id} {...post} />
-              ))}
+                <Post key={post._id} {...post} />
+                ))}
             </div>
           </div>
           <div className={`${classes.right} ${classes.childContainer}`}>
+                <h2 className={classes.h2}>who is following you</h2>
+                <UsersList users={props.followers} currentUser={props}/>
+                {/*here we will send list of users who are following currentUser instead of users with propname user*/}
             <h2 className={classes.h2} style={{ marginTop: "1rem" }}>
               Whom you follow
             </h2>
-            <UsersList users={users} />
-            {/*here we will send list of users whom you are following instead of users with propname user*/}
-            <h2 className={classes.h2} style={{ marginTop: "1rem" }}>
-              Suggestions for you
-            </h2>
-            <UsersList users={users} />
+            <UsersList users={props.followings} currentUser={props}/>
             {/*here we will send list of users whom you are following instead of users with propname user*/}
           </div>
         </div>

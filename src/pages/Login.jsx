@@ -1,6 +1,14 @@
 import { makeStyles } from "@mui/styles";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useContext, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import CircularProgress from "@mui/material/CircularProgress";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import * as React from "react";
+import Stack from "@mui/material/Stack";
 
+import { AuthContext } from "../context/AuthContext";
 import Sizes from "../Sizes";
 
 const useStyles = makeStyles({
@@ -119,6 +127,7 @@ const useStyles = makeStyles({
     border: "none",
     borderRadius: ".2rem",
     fontWeight: "bold",
+    // cursor: "pointer",
   },
   linkContainer: {
     [Sizes.down("sm")]: {
@@ -139,10 +148,68 @@ const useStyles = makeStyles({
   },
 });
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 const Login = () => {
   const classes = useStyles();
+  const { user, dispatch } = useContext(AuthContext);
+  const [open, setOpen] = React.useState(false);
+  const [err, setErr] = React.useState();
+  const [isFetching, setIsFetching] = React.useState(false);
+  const username_email = useRef();
+  const password = useRef();
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  async function handleSubmit(evt) {
+    evt.preventDefault();
+    setIsFetching(true);
+    try {
+      const res = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/users/login`,
+        {
+          username_email: username_email.current.value,
+          password: password.current.value,
+        }
+      );
+      dispatch({ type: "LOGIN", user: res.data });
+      window.localStorage.setItem("user", JSON.stringify(res.data));
+      navigate(-1);
+    } catch (err) {
+      setErr(err.response.data.message); //for setting error
+      setOpen(true);
+    }
+    setIsFetching(false);
+  }
+
+  console.log(user);
+
   return (
     <div className={classes.container}>
+      <Stack spacing={2} sx={{ width: "100%" }}>
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+          <Alert
+            onClose={handleClose}
+            severity="warning"
+            sx={{ width: "100%" }}
+          >
+            {err}
+          </Alert>
+        </Snackbar>
+      </Stack>
       <div className={classes.card}>
         <div className={classes.left}>
           <h1 className={classes.h1}>Hello World.</h1>
@@ -156,25 +223,42 @@ const Login = () => {
           <p className={classes.p} style={{ marginTop: "1.5rem" }}>
             Don't have an account ?
           </p>
-          <Link to="/register" className={classes.link}>
-            Register
+          <Link to="/register" className={classes.link} disabled={isFetching}>
+            {isFetching ? (
+              <CircularProgress style={{ color: "white", width: "2rem" }} />
+            ) : (
+              "Register"
+            )}
           </Link>
         </div>
         <div className={classes.right}>
           <h1 className={classes.h2}>Login</h1>
-          <form className={classes.form}>
+          <form className={classes.form} onSubmit={handleSubmit}>
             <input
               type="text"
               placeholder="Username or Email"
+              ref={username_email}
+              required
               className={classes.input}
             />
             <input
               type="password"
               placeholder="Password"
+              ref={password}
+              required
               className={classes.input}
             />
-            <button type="submit" className={classes.btn}>
-              Login
+            <button
+              type="submit"
+              className={classes.btn}
+              disabled={isFetching}
+              style={{ cursor: isFetching ? "not-allowed" : "pointer" }}
+            >
+              {isFetching ? (
+                <CircularProgress style={{ color: "white", width: "2rem" }} />
+              ) : (
+                "Login"
+              )}
             </button>
           </form>
           <div className={classes.linkContainer}>
@@ -184,7 +268,7 @@ const Login = () => {
                 Register
               </Link>
             </p>
-            <Link to="/" style={{ fontWeight: "900"}}>
+            <Link to="/" style={{ fontWeight: "900" }}>
               Forgot Password
             </Link>
             <p className={classes.homePageLink}>

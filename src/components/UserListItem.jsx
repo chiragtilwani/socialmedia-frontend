@@ -1,36 +1,48 @@
 import { makeStyles } from "@mui/styles";
-import {useState} from 'react'
+import { useEffect, useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
+import noAvatar from "../assests/noAvatar.png";
 
 import Sizes from "../Sizes";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const useStyles = makeStyles({
   container: {
     display: "flex",
-    justifyContent: "space-around",
+    justifyContent: "space-evenly",
     alignItems: "center",
     backgroundColor: "white",
     border: ".1rem solid",
     borderLeft: 0,
     borderRight: 0,
-    padding: ".2rem",
     cursor: "pointer",
     transitionDuration: ".2s",
-    textDecoration:'none',
-    color:'black'
+    textDecoration: "none",
+    color: "black",
+    width: "100%",
+    height:'4rem'
   },
-  profile: {
-    width: "4rem",
-    height: "4rem",
+  profileImgContainer: {
+    width: "3rem",
+    height: "3rem",
     borderRadius: "50%",
     border: ".2rem solid var(--purple-1)",
+    overflow: "hidden",
+    marginLeft:'.2rem'
+  },
+  profileImg: {
+    width: "100%",
+    height: "100%",
+    objectFit: "fill",
   },
   name_username: {
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
     justifyContent: "center",
+    width:'50%',
+    margin:'0rem .2rem',
     [Sizes.down("lg")]: {
       fontSize: ".8rem",
     },
@@ -39,13 +51,23 @@ const useStyles = makeStyles({
     marginBottom: ".1rem",
     fontWeight: "bold",
     textTransform: "capitalize",
-    color:'black',
+    color: "black",
+    width: "100%",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    textDecoration: "none",
   },
   username: {
     color: "var(--purple-2)",
     fontWeight: "bold",
     transitionDuration: ".2s",
     cursor: "pointer",
+    width: "100%",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    textDecoration: "none",
   },
   btn: {
     padding: ".5rem",
@@ -59,54 +81,100 @@ const useStyles = makeStyles({
       cursor: "pointer",
     },
   },
-  profileOverlay:{
-    width:'50%',
-    height:'80vh',
-  }
+  profileOverlay: {
+    width: "50%",
+    height: "80vh",
+  },
 });
 
 const UserListItem = (props) => {
   const classes = useStyles();
   const [profileClick, setProfileClick] = useState(false);
+  const [user, setUser] = useState({});
+
+  const fetchUser = async () => {
+    const res = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}/users?userId=${props.userId}`
+    );
+    setUser(res.data);
+  };
+
+  useEffect(() => {
+    const getUser = async () => {
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/users?userId=${props.userId}`
+      );
+      setUser(res.data);
+    };
+    getUser();
+  }, [props.userId]);
 
   function handleProfileClick() {
     setProfileClick((prevState) => !prevState);
   }
 
+  console.log(props);
+  async function handleFollowClick(e) {
+    e.preventDefault();
+    await axios.patch(
+      `${process.env.REACT_APP_BASE_URL}/users/${props.userId}/follow`,
+      { userId: props.currentUser._id }
+    );
+    fetchUser();
+  }
+  async function handleUnfollowClick(e) {
+    e.preventDefault();
+    await axios.patch(
+      `${process.env.REACT_APP_BASE_URL}/users/${props.userId}/unfollow`,
+      { userId: props.currentUser._id }
+    );
+    fetchUser();
+  }
+
   return (
-    <Link to="/profile/1" className={classes.container}>
+    <div className={classes.container}>
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={profileClick}
         onClick={handleProfileClick}
       >
-        <div
+        <img
           className={classes.profileOverlay}
-          style={{
-            background:`url(${props.userInfo.profilePicture})`,
-            backgroundSize: "auto",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-          }}
-        ></div>
+          src={
+            user.profilePicture ? `${user.profilePicture.url}` : `${noAvatar}`
+          }
+          alt=""
+        />
       </Backdrop>
-      <div
-        className={classes.profile}
-        style={{
-          background: `url(${props.userInfo.profilePicture})`,
-          backgroundSize: "100% 100%",
-          backgroundPosition: "center",
-        }}
-        onClick={handleProfileClick}
-      ></div>
-      <div className={classes.name_username}>
-        <span className={classes.name}>{props.userInfo.name}</span>
-        <span className={classes.username}>{props.userInfo.username}</span>
+      <div className={classes.profileImgContainer} onClick={handleProfileClick}>
+        <img
+          className={classes.profileImg}
+          src={
+            user.profilePicture ? `${user.profilePicture.url}` : `${noAvatar}`
+          }
+          alt=""
+        />
       </div>
-      <button className={classes.btn}>Follow</button>
+      <div className={classes.name_username}>
+        <Link to={`/profile/${user.username}`} className={classes.name}>
+          {user.name}
+        </Link>
+        <Link to={`/profile/${user.username}`} className={classes.username}>
+          {user.username}
+        </Link>
+      </div>
+      {props.currentUser.followings.includes(props.userId) ? (
+        <button className={classes.btn} onClick={handleUnfollowClick}>
+          Unfollow
+        </button>
+      ) : (
+        <button className={classes.btn} onClick={handleFollowClick}>
+          Follow
+        </button>
+      )}
       {/*later we will dynamically change this button's text to follow/following based on if current user's following list have this user or not*/}
       {/* if it is following then on clicking this button we will alert user with msg 'if you change your mind,you'll have to request to follow username_of_user_we_are_unfollowing again. */}
-    </Link>
+    </div>
   );
 };
 
