@@ -151,6 +151,7 @@ const Post = (props) => {
   const [showComments, setShowComments] = useState(false);
   const [creator, setCreator] = useState({});
   const [comments, setComments] = useState([]);
+  const [nLikes,setNlikes]=useState(props.likes.length)
   useEffect(() => {
     const fetchCreatorAndComment = async () => {
       let res = await axios.get(
@@ -166,37 +167,42 @@ const Post = (props) => {
     fetchCreatorAndComment();
   }, [props.creatorId,props._id]);
   
-  function handleLikeClick() {
+  async function handleLikeClick() {
     setLiked((prevProp) => !prevProp);
+    await axios.patch(`${process.env.REACT_APP_BASE_URL}/posts/${props._id}/likedislike`,{userId:props.currentUser._id})
+    setNlikes(props.likes.lengthnLikes)
   }
   function handleCommentClick() {
     setShowComments((prevProp) => !prevProp);
   }
 
-  function handleDoubleClick() {
+  async function handleDoubleClick() {
     setLiked((prevProp) => !prevProp);
+    await axios.patch(`${process.env.REACT_APP_BASE_URL}/posts/${props._id}/likedislike`,{userId:props.currentUser._id})
+    setNlikes(props.likes.lengthnLikes)
   }
 
-  let content;
-  if (typeof props.postImg === "object") {
-    content = (
-      <div className={classes.postImg}>
-        <video src={props.postImg.video} controls width="100%" height="100%" />
-      </div>
-    );
-  } else {
-    content = (
-      <div
-        className={classes.postImg}
-        style={{
-          display: !props.postImg ? "none" : "block",
-          background: props.postImg ? `url(${props.postImg.url})` : "null",
-          backgroundSize: "100% 100%",
-          backgroundPosition: "center",
-        }}
-      ></div>
-    );
-  }
+  console.log(props)
+  // let content;
+  // if (typeof props.postImg === "object") {
+  //   content = (
+  //     <div className={classes.postImg}>
+  //       <video src={props.postImg.video} controls width="100%" height="100%" />
+  //     </div>
+  //   );
+  // } else {
+  //   content = (
+  //     <div
+  //       className={classes.postImg}
+  //       style={{
+  //         display: !props.postImg ? "none" : "block",
+  //         background: props.postImg ? `url(${props.postImg.url})` : "null",
+  //         backgroundSize: "100% 100%",
+  //         backgroundPosition: "center",
+  //       }}
+  //     ></div>
+  //   );
+  // }
   return (
     <div className={classes.container} onDoubleClick={handleDoubleClick}>
       <div className={classes.header}>
@@ -241,7 +247,16 @@ const Post = (props) => {
         </div>
         </div>
       </div>
-      {content}
+      {/* {content} */}
+      <div
+        className={classes.postImg}
+        style={{
+          display: !props.post ? "none" : "block",
+          background: props.post ? `url(${props.post.url})` : "null",
+          backgroundSize: "100% 100%",
+          backgroundPosition: "center",
+        }}
+      ></div>
       <p
         className={classes.desc}
         style={{
@@ -255,7 +270,7 @@ const Post = (props) => {
           <BsFillHeartFill
             className={classes.icon}
             title="LIKE"
-            style={{ color: liked ? "tomato" : "" }}
+            style={{ color: props.likes.includes(props._id) ? "tomato" : "" }}
             onClick={handleLikeClick}
           />
           {/*will make tile dynamic like/unlike*/}
@@ -269,11 +284,11 @@ const Post = (props) => {
         </div>
         <div className={classes.like_comment_count}>
           <strong>
-            {props.likes.length === 0 ? null : props.likes.length}
+            {nLikes === 0 ? null : nLikes}
           </strong>
-          {props.likes.length === 0 ? null : " likes and"}{" "}
+          {nLikes === 0 ? null : " like(s)"}{" "}{comments.length === 0 ? null : "and "}
           <strong>{comments.length === 0 ? null : comments.length}</strong>{" "}
-          {comments.length===0 ?null : "comments" }
+          {comments.length===0 ?null : "comment(s)" }
         </div>
       </div>
       {showComments ? <Hdivider /> : null}

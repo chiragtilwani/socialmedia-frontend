@@ -114,10 +114,10 @@ console.log(props)
               {/*here we will send list of users whom you are following instead of users with propname user*/}
           </div>
           <div className={`${classes.center} ${classes.childContainer}`}>
-            <UploadPost profile="https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg"/>
+            <UploadPost profile="https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg" currentUser={props}/>
             <div className={classes.postContainer}>
               {posts.map((post) => (
-                <Post key={post._id} {...post} />
+                <Post key={post._id} {...post} currentUser={props}/>
                 ))}
             </div>
           </div>

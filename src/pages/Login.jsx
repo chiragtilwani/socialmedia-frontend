@@ -127,7 +127,6 @@ const useStyles = makeStyles({
     border: "none",
     borderRadius: ".2rem",
     fontWeight: "bold",
-    // cursor: "pointer",
   },
   linkContainer: {
     [Sizes.down("sm")]: {

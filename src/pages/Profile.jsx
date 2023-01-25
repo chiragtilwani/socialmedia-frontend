@@ -209,7 +209,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Profile = () => {
+const Profile = (props) => {
   const classes = useStyles();
   const [coverClick, setCoverClick] = useState(false);
   const [profileClick, setProfileClick] = useState(false);
@@ -248,6 +248,7 @@ const Profile = () => {
   function handleProfileClick() {
     setProfileClick((prevState) => !prevState);
   }
+  console.log(props)
   return (
     <>
       {user ? (
@@ -286,9 +287,9 @@ const Profile = () => {
           <div className={classes.container}>
             <div className={classes.left}>
               <h2 className={classes.h2}>Followers</h2>
-              <UsersList users={user.followers} />
+              <UsersList users={user.followers} currentUser={props}/>
               <h2 className={classes.h2}>Followings</h2>
-              <UsersList users={user.followings} />
+              <UsersList users={user.followings} currentUser={props}/>
             </div>
             <div className={classes.right}>
               <div className={classes.infoContainer}>
@@ -336,7 +337,7 @@ const Profile = () => {
                       to={`/update/user/${user._id}`}
                       className={classes.btn}
                     >
-                      Edit Profile
+                      {uname===props.username?'Edit Profile':props.followings.includes(user._id)?'Unfollow':'Follow'}
                     </Link>
                     {/*here in 'to' attribute instead of  1 userId must come */}
                     {/* we weill make text dynamic b/w Edit profile/Follow/Following if current_userId!=uid from params */}

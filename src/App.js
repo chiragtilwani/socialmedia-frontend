@@ -25,7 +25,7 @@ function App() {
         <Route path="/" element={currentUser && <Home {...currentUser}/>}/>
         <Route path='/login' element={<Login/>} />
         <Route path='/register' element={<Register/>} />
-        <Route path='/profile/:uname' element={<Profile/>} />
+        <Route path='/profile/:uname' element={currentUser && <Profile {...currentUser}/>} />
         <Route path='/update/post/:pid' element={<Update postUpdate={true} />} />
         <Route path='/update/user/:uid' element={<Update postUpdate={false} />} />
       </Routes>

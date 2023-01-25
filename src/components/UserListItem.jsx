@@ -92,12 +92,6 @@ const UserListItem = (props) => {
   const [profileClick, setProfileClick] = useState(false);
   const [user, setUser] = useState({});
 
-  const fetchUser = async () => {
-    const res = await axios.get(
-      `${process.env.REACT_APP_BASE_URL}/users?userId=${props.userId}`
-    );
-    setUser(res.data);
-  };
 
   useEffect(() => {
     const getUser = async () => {
@@ -120,7 +114,6 @@ const UserListItem = (props) => {
       `${process.env.REACT_APP_BASE_URL}/users/${props.userId}/follow`,
       { userId: props.currentUser._id }
     );
-    fetchUser();
   }
   async function handleUnfollowClick(e) {
     e.preventDefault();
@@ -128,7 +121,6 @@ const UserListItem = (props) => {
       `${process.env.REACT_APP_BASE_URL}/users/${props.userId}/unfollow`,
       { userId: props.currentUser._id }
     );
-    fetchUser();
   }
 
   return (
@@ -164,11 +156,11 @@ const UserListItem = (props) => {
         </Link>
       </div>
       {props.currentUser.followings.includes(props.userId) ? (
-        <button className={classes.btn} onClick={handleUnfollowClick}>
+        props.userId===props.currentUser._id?null:<button className={classes.btn} onClick={handleUnfollowClick}>
           Unfollow
         </button>
       ) : (
-        <button className={classes.btn} onClick={handleFollowClick}>
+        props.userId===props.currentUser._id?null:<button className={classes.btn} onClick={handleFollowClick}>
           Follow
         </button>
       )}
