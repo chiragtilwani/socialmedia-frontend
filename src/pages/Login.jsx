@@ -194,7 +194,7 @@ const Login = () => {
     setIsFetching(false);
   }
 
-  console.log(user);
+  // console.log(user);
 
   return (
     <div className={classes.container}>

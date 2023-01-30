@@ -25,12 +25,12 @@ const useStyles = makeStyles({
     width: "100%",
     borderRadius: ".5rem",
     backgroundColor: "white",
-    margin: "2rem 0rem",
+    marginBottom: "2rem",
     padding: ".5rem 0rem",
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
     "&:hover": {
       "& $iconContainer": {
-        display: "flex",
+        transform: "scale(1)",
       },
     },
   },
@@ -108,10 +108,12 @@ const useStyles = makeStyles({
   },
   iconContainer: {
     width: "4rem",
-    display: "none",
+    display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     fontSize: "1.5rem",
+    transform: "scale(0)",
+    transitionDuration:'.2s'
   },
   edit_delete_icon: {
     cursor: "pointer",
@@ -146,7 +148,7 @@ const useStyles = makeStyles({
 });
 const Post = (props) => {
   const classes = useStyles();
-
+// console.log(props)
   const [liked, setLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [creator, setCreator] = useState({});
@@ -182,7 +184,7 @@ const Post = (props) => {
     setNlikes(props.likes.lengthnLikes)
   }
 
-  console.log(props)
+  // console.log(props)
   // let content;
   // if (typeof props.postImg === "object") {
   //   content = (
@@ -203,6 +205,7 @@ const Post = (props) => {
   //     ></div>
   //   );
   // }
+  // console.log(props)
   return (
     <div className={classes.container} onDoubleClick={handleDoubleClick}>
       <div className={classes.header}>
@@ -251,7 +254,7 @@ const Post = (props) => {
       <div
         className={classes.postImg}
         style={{
-          display: !props.post ? "none" : "block",
+          display: !props.post.url ? "none" : "block",
           background: props.post ? `url(${props.post.url})` : "null",
           backgroundSize: "100% 100%",
           backgroundPosition: "center",

@@ -3,16 +3,18 @@ import { useEffect, useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
+import { BsList } from "react-icons/bs";
+import { BsGrid3X3 } from "react-icons/bs";
 
 import Navbar from "../components/navbar/Navbar";
 import UploadPost from "../components/UploadPost";
 import UsersList from "../components/UsersList";
 import Post from "../components/Post";
-import video from "../video.mp4";
 import Sizes from "../Sizes";
 import BottomNavbar from "../components/navbar/BottomNavbar";
 import noAvatar from "../assests/noAvatar.png";
 import noCover from "../assests/noCover.png";
+import PostWithUrl from "../components/PostWithUrl";
 
 const useStyles = makeStyles({
   outterContainer: {
@@ -75,9 +77,9 @@ const useStyles = makeStyles({
     [Sizes.down("md")]: {
       display: "none",
     },
-    [Sizes.up('xl')]:{
+    [Sizes.up("xl")]: {
       padding: "8rem 0rem 3rem 0rem",
-    }
+    },
   },
   right: {
     display: "flex",
@@ -207,6 +209,26 @@ const useStyles = makeStyles({
     width: "100%",
     height: "100%",
   },
+  postTypeSelector: {
+    backgroundColor: "white",
+    display: "flex",
+    width: "7rem",
+    height: "3rem",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    marginBottom: ".5rem",
+    borderRadius: ".5rem",
+    boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+  },
+  postTypeIcons: {
+    color: "var(--purple-1)",
+    fontSize: "1.5rem",
+    cursor: "pointer",
+    transitionDuration: ".2s",
+    "&:hover": {
+      transform: "scale(.8)",
+    },
+  },
 });
 
 const Profile = (props) => {
@@ -215,6 +237,7 @@ const Profile = (props) => {
   const [profileClick, setProfileClick] = useState(false);
   const [user, setUser] = useState(null);
   const [userPosts, setUserPosts] = useState(null);
+  const [showPostWithUrl, setShowPostWithUrl] = useState(true);
 
   const { uname } = useParams();
 
@@ -248,12 +271,21 @@ const Profile = (props) => {
   function handleProfileClick() {
     setProfileClick((prevState) => !prevState);
   }
-  console.log(props)
+  // console.log(props);
+  // if (userPosts) {
+  //   const postsWithUrl = userPosts.filter((post) => post.post.url);
+  // }
+  console.log(props);
+  function handleGridClick() {
+    setShowPostWithUrl(true);
+  }
+  function handleListClick() {
+    setShowPostWithUrl(false);
+  }
   return (
     <>
       {user ? (
         <div className={classes.outterContainer}>
-          {/* {console.log(user)} */}
           <Backdrop
             sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
             open={profileClick}
@@ -287,9 +319,9 @@ const Profile = (props) => {
           <div className={classes.container}>
             <div className={classes.left}>
               <h2 className={classes.h2}>Followers</h2>
-              <UsersList users={user.followers} currentUser={props}/>
+              <UsersList users={user.followers} currentUser={props} />
               <h2 className={classes.h2}>Followings</h2>
-              <UsersList users={user.followings} currentUser={props}/>
+              <UsersList users={user.followings} currentUser={props} />
             </div>
             <div className={classes.right}>
               <div className={classes.infoContainer}>
@@ -337,7 +369,11 @@ const Profile = (props) => {
                       to={`/update/user/${user._id}`}
                       className={classes.btn}
                     >
-                      {uname===props.username?'Edit Profile':props.followings.includes(user._id)?'Unfollow':'Follow'}
+                      {uname === props.username
+                        ? "Edit Profile"
+                        : props.followings.includes(user._id)
+                        ? "Unfollow"
+                        : "Follow"}
                     </Link>
                     {/*here in 'to' attribute instead of  1 userId must come */}
                     {/* we weill make text dynamic b/w Edit profile/Follow/Following if current_userId!=uid from params */}
@@ -349,12 +385,29 @@ const Profile = (props) => {
                 profile={
                   user.profilePicture ? user.profilePicture.url : noAvatar
                 }
+                currentUser={user}
               />
               {/* posts by user */}
               <div className={classes.postContainer}>
-                {userPosts?userPosts.map((post) => (
-                  <Post key={post.id} {...post} />
-                )):null}
+                <div className={classes.postTypeSelector}>
+                  <BsGrid3X3
+                    className={classes.postTypeIcons}
+                    onClick={handleGridClick}
+                  />
+                  <BsList
+                    className={classes.postTypeIcons}
+                    onClick={handleListClick}
+                  />
+                </div>
+                {userPosts ? (
+                  <PostWithUrl
+                    posts={userPosts.filter((post) => post.post.url)}
+                    show={showPostWithUrl}
+                  />
+                ) : null}
+                {userPosts && !showPostWithUrl
+                  ? userPosts.map((post) => <Post key={post._id} {...post} />)
+                  : null}
               </div>
             </div>
           </div>

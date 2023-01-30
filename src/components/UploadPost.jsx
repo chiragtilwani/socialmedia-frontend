@@ -118,7 +118,7 @@ const UploadPost = (props) => {
   
   function handlePreviewImgChange(evt) {
     const fileName = evt.target.files[0].name;
-    console.log(fileName);
+    // console.log(fileName);
     let idxDot = fileName.lastIndexOf(".") + 1;
     let extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
     if (extFile === "jpg" || extFile === "jpeg" || extFile === "png") {
@@ -161,7 +161,7 @@ const UploadPost = (props) => {
     }
     setPreviewImg(null)
   }
-  console.log(props)
+  // console.log(props)
   return (
     <div className={classes.container}>
       <Stack spacing={2} sx={{ width: "100%" }}>
@@ -223,7 +223,7 @@ const UploadPost = (props) => {
           <Vdivider />
           <MdVideoCall className={classes.videoUploader} title="VIDEO" />
           <Vdivider />
-          <button className={classes.btn} type="submit">POST</button>
+          <button className={classes.btn} type="submit" disabled={!whatsHappening.current.value && !previewImg?true :false}>POST</button>
         </div>
         <Hdivider />
       </form>

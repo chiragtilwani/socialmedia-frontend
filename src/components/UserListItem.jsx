@@ -107,7 +107,7 @@ const UserListItem = (props) => {
     setProfileClick((prevState) => !prevState);
   }
 
-  console.log(props);
+  // console.log(props);
   async function handleFollowClick(e) {
     e.preventDefault();
     await axios.patch(

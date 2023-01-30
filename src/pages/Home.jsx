@@ -98,8 +98,8 @@ const Home = (props) => {
 
   let friendSuggestions=props.followers.filter(id=>!props.followings.includes(id))
   
-console.log(contextData)
-console.log(props)
+// console.log(contextData)
+// console.log(props)
   return (
     <>
       <div className={classes.outterContainer}>
