@@ -148,7 +148,6 @@ const useStyles = makeStyles({
 });
 const Post = (props) => {
   const classes = useStyles();
-// console.log(props)
   const [liked, setLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [creator, setCreator] = useState({});
@@ -183,29 +182,6 @@ const Post = (props) => {
     await axios.patch(`${process.env.REACT_APP_BASE_URL}/posts/${props._id}/likedislike`,{userId:props.currentUser._id})
     setNlikes(props.likes.lengthnLikes)
   }
-
-  // console.log(props)
-  // let content;
-  // if (typeof props.postImg === "object") {
-  //   content = (
-  //     <div className={classes.postImg}>
-  //       <video src={props.postImg.video} controls width="100%" height="100%" />
-  //     </div>
-  //   );
-  // } else {
-  //   content = (
-  //     <div
-  //       className={classes.postImg}
-  //       style={{
-  //         display: !props.postImg ? "none" : "block",
-  //         background: props.postImg ? `url(${props.postImg.url})` : "null",
-  //         backgroundSize: "100% 100%",
-  //         backgroundPosition: "center",
-  //       }}
-  //     ></div>
-  //   );
-  // }
-  // console.log(props)
   return (
     <div className={classes.container} onDoubleClick={handleDoubleClick}>
       <div className={classes.header}>

@@ -98,12 +98,10 @@ const Home = (props) => {
 
   let friendSuggestions=props.followers.filter(id=>!props.followings.includes(id))
   
-// console.log(contextData)
-// console.log(props)
   return (
     <>
       <div className={classes.outterContainer}>
-        <Navbar />
+        <Navbar currentUser={props}/>
         <div className={classes.container}>
           <div className={`${classes.left} ${classes.childContainer}`}>
             <PofileCard currentUser={props} currentUserPost={posts.filter(post=>post.creatorId===props._id)}/>

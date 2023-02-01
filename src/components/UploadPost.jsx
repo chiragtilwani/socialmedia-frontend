@@ -118,7 +118,6 @@ const UploadPost = (props) => {
   
   function handlePreviewImgChange(evt) {
     const fileName = evt.target.files[0].name;
-    // console.log(fileName);
     let idxDot = fileName.lastIndexOf(".") + 1;
     let extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
     if (extFile === "jpg" || extFile === "jpeg" || extFile === "png") {
@@ -161,7 +160,6 @@ const UploadPost = (props) => {
     }
     setPreviewImg(null)
   }
-  // console.log(props)
   return (
     <div className={classes.container}>
       <Stack spacing={2} sx={{ width: "100%" }}>

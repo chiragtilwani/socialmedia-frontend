@@ -30,16 +30,15 @@ const useStyles = makeStyles({
   },
 });
 
-const UserMenu = () => {
+const UserMenu = (props) => {
   const classes = useStyles();
 
 function handleLogoutClick(){
   window.localStorage.removeItem("user")
 }
-
   return (
     <div className={classes.container}>
-      <Link to={`/profile/1`} className={classes.item}>{/*here instead of 1 we will use currentUser's id*/}
+      <Link to={`/profile/${props.currentUsername}`} className={classes.item}>{/*here instead of 1 we will use currentUser's id*/}
         Profile
       </Link>
       <Link to="/register" className={classes.item}>

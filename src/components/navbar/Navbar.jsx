@@ -141,7 +141,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Navbar = () => {
+const Navbar = (props) => {
   const classes = useStyles();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -205,7 +205,7 @@ const Navbar = () => {
             className={classes.userMenu}
             style={{ display: isOpen ? "block" : "none" }}
           >
-            <UserMenu />
+            <UserMenu currentUsername={props.currentUser?props.currentUser.username:null}/>
           </div>
         </div>
       </div>

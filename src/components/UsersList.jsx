@@ -30,7 +30,6 @@ const useStyles = makeStyles({
 
 const UsersList = (props) => {
   const classes = useStyles();
-// console.log(props.currentUser)
   return (
     <div className={classes.container}>
       {props.users.map((user) => (

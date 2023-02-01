@@ -259,6 +259,7 @@ const Profile = (props) => {
         `${process.env.REACT_APP_BASE_URL}/posts/user/${user._id}`
       );
       setUserPosts(res.data);
+      setShowPostWithUrl(res.data.filter((post) => post.post.url).length===0?false:true)
     };
     if (user) {
       fetchUserPost();
@@ -271,16 +272,25 @@ const Profile = (props) => {
   function handleProfileClick() {
     setProfileClick((prevState) => !prevState);
   }
-  // console.log(props);
-  // if (userPosts) {
-  //   const postsWithUrl = userPosts.filter((post) => post.post.url);
-  // }
-  console.log(props);
   function handleGridClick() {
     setShowPostWithUrl(true);
   }
   function handleListClick() {
     setShowPostWithUrl(false);
+  }
+
+  async function handleFollowUnfollow() {
+    if (props.followings.includes(user._id)) {
+      await axios.patch(
+        `${process.env.REACT_APP_BASE_URL}/users/${user._id}/unfollow`,
+        { userId: props._id }
+      );
+    } else {
+      await axios.patch(
+        `${process.env.REACT_APP_BASE_URL}/users/${user._id}/follow`,
+        { userId: props._id }
+      );
+    }
   }
   return (
     <>
@@ -366,8 +376,15 @@ const Profile = (props) => {
                   {/* edit profile btn / follow btn if profile of other people */}
                   <div className={classes.btnContainer}>
                     <Link
-                      to={`/update/user/${user._id}`}
+                      to={
+                        uname === props.username
+                          ? `/update/user/${user._id}`
+                          : null
+                      }
                       className={classes.btn}
+                      onClick={
+                        uname === props.username ? null : handleFollowUnfollow
+                      }
                     >
                       {uname === props.username
                         ? "Edit Profile"
@@ -388,11 +405,11 @@ const Profile = (props) => {
                 currentUser={user}
               />
               {/* posts by user */}
-              <div className={classes.postContainer}>
-                <div className={classes.postTypeSelector}>
+              {userPosts?<div className={classes.postContainer}>
+                <div className={classes.postTypeSelector} style={{marginBottom :userPosts.filter((post) => post.post.url).length===0?'2rem':null}}>
                   <BsGrid3X3
                     className={classes.postTypeIcons}
-                    onClick={handleGridClick}
+                    onClick={userPosts.filter((post) => post.post.url).length===0?null:handleGridClick}
                   />
                   <BsList
                     className={classes.postTypeIcons}
@@ -400,15 +417,17 @@ const Profile = (props) => {
                   />
                 </div>
                 {userPosts ? (
-                  <PostWithUrl
-                    posts={userPosts.filter((post) => post.post.url)}
-                    show={showPostWithUrl}
-                  />
+                  userPosts.filter((post) => post.post.url).length ? (
+                    <PostWithUrl
+                      posts={userPosts.filter((post) => post.post.url)}
+                      show={showPostWithUrl}
+                    />
+                  ) : null
                 ) : null}
                 {userPosts && !showPostWithUrl
                   ? userPosts.map((post) => <Post key={post._id} {...post} />)
                   : null}
-              </div>
+              </div>:null}
             </div>
           </div>
           <BottomNavbar />
