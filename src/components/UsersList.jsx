@@ -11,7 +11,7 @@ const useStyles = makeStyles({
     overflowX: "hidden",
     backgroundColor: "white",
     borderRadius: ".6rem",
-    boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
+    boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
     "&::-webkit-scrollbar": {
       width: ".25rem",
     },
@@ -33,7 +33,13 @@ const UsersList = (props) => {
   return (
     <div className={classes.container}>
       {props.users.map((user) => (
-        <UserListItem key={user._id} userId={user} currentUser={props.currentUser}/>
+        <UserListItem
+          key={user._id}
+          userId={user}
+          currentUser={props.currentUser}
+          setuser={props.setuser}
+          setfriendSuggestion={props.setfriendSuggestion}
+        />
       ))}
     </div>
   );

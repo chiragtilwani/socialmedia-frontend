@@ -1,6 +1,6 @@
 import { makeStyles } from "@mui/styles";
-import {useContext, useEffect,useState} from 'react'
-import axios from 'axios'
+import { useContext, useEffect, useState } from "react";
+import axios from "axios";
 
 import Sizes from "../Sizes";
 import Navbar from "../components/navbar/Navbar";
@@ -9,7 +9,7 @@ import PofileCard from "../components/PofileCard";
 import UsersList from "../components/UsersList";
 import UploadPost from "../components/UploadPost";
 import Post from "../components/Post";
-import video from '../video.mp4'
+import video from "../video.mp4";
 import { AuthContext } from "../context/AuthContext";
 
 const useStyles = makeStyles({
@@ -61,13 +61,13 @@ const useStyles = makeStyles({
     },
   },
   left: {
-    paddingBottom:'4rem',
+    paddingBottom: "4rem",
     [Sizes.down("md")]: {
       display: "none",
     },
   },
   right: {
-    paddingBottom:'4rem',
+    paddingBottom: "4rem",
     [Sizes.down("md")]: {
       display: "none",
     },
@@ -78,55 +78,106 @@ const useStyles = makeStyles({
     fontWeight: "bold",
     color: "var(--purple-1)",
   },
-  postContainer:{
-    width:'90%',
-    marginBottom: "2rem"
-  }
+  postContainer: {
+    width: "90%",
+    marginBottom: "2rem",
+  },
 });
 const Home = (props) => {
   const classes = useStyles();
-  const [posts,setPosts]=useState([])
-  const contextData=useContext(AuthContext)
+  const [posts, setPosts] = useState([]);
+  const [user, setUser] = useState(props);
+  const [friendSuggestions, setFriendSuggestion] = useState(user.followers.filter(
+    (id) => !props.followings.includes(id)
+  ));
+  const contextData = useContext(AuthContext);
 
-  useEffect(()=>{
-    const getPost =async()=>{
-      const res=await axios.get(`${process.env.REACT_APP_BASE_URL}/posts/timeline/${props._id}`)
-      setPosts(res.data)
-    }
-    getPost()
-  },[props._id])
+  useEffect(() => {
+    const getPost = async () => {
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/posts/timeline/${user._id}`
+      );
+      setPosts(res.data);
+    };
+    getPost();
+  }, [user._id]);
 
-  let friendSuggestions=props.followers.filter(id=>!props.followings.includes(id))
-  
+  function setPostsArray(posts) {
+    setPosts(posts);
+  }
+
+  function setuser(followers) {
+    setUser(followers);
+  }
+
+  function setfriendSuggestion(friendSuggestions) {
+    setFriendSuggestion(friendSuggestions);
+  }
+
+  // let friendSuggestions = user.followers.filter(
+  //   (id) => !props.followings.includes(id)
+  // );
+
   return (
     <>
       <div className={classes.outterContainer}>
-        <Navbar currentUser={props}/>
+        <Navbar currentUser={user} />
         <div className={classes.container}>
           <div className={`${classes.left} ${classes.childContainer}`}>
-            <PofileCard currentUser={props} currentUserPost={posts.filter(post=>post.creatorId===props._id)}/>
-              <h2 className={classes.h2} style={{ marginTop: "1rem" }}>
-                Suggestions for you
-              </h2>
-              <UsersList users={friendSuggestions} currentUser={props}/>
-              {/*here we will send list of users whom you are following instead of users with propname user*/}
+            <PofileCard
+              currentUser={user}
+              currentUserPost={posts.filter(
+                (post) => post.creatorId === user._id
+              )}
+            />
+            <h2 className={classes.h2} style={{ marginTop: "1rem" }}>
+              Suggestions for you
+            </h2>
+            <UsersList
+              users={friendSuggestions}
+              currentUser={user}
+              setuser={setuser}
+              setfriendSuggestion={setfriendSuggestion}
+            />
+            {/*here we will send list of users whom you are following instead of users with propname user*/}
           </div>
           <div className={`${classes.center} ${classes.childContainer}`}>
-            <UploadPost profile="https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg" currentUser={props}/>
+            <UploadPost
+              profile="https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg"
+              currentUser={user}
+              setPostsArray={setPostsArray}
+            />
             <div className={classes.postContainer}>
-              {posts.map((post) => (
-                <Post key={post._id} {...post} currentUser={props}/>
+              {posts
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .map((post) => (
+                  <Post
+                    key={post._id}
+                    {...post}
+                    currentUser={user}
+                    setPostsArray={setPostsArray}
+                  />
                 ))}
             </div>
           </div>
           <div className={`${classes.right} ${classes.childContainer}`}>
-                <h2 className={classes.h2}>who is following you</h2>
-                <UsersList users={props.followers} currentUser={props}/>
-                {/*here we will send list of users who are following currentUser instead of users with propname user*/}
+            <h2 className={classes.h2}>who is following you</h2>
+            <UsersList
+              users={user.followers}
+              currentUser={user}
+              setuser={setuser}
+              setfriendSuggestion={setfriendSuggestion}
+            />
+            {/*here we will send list of users who are following currentUser instead of users with propname user*/}
             <h2 className={classes.h2} style={{ marginTop: "1rem" }}>
               Whom you follow
             </h2>
-            <UsersList users={props.followings} currentUser={props}/>
+            <UsersList
+              users={user.followings}
+              currentUser={user}
+              setuser={setuser}
+              setfriendSuggestion={setfriendSuggestion}
+            />
             {/*here we will send list of users whom you are following instead of users with propname user*/}
           </div>
         </div>

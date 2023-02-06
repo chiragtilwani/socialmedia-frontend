@@ -113,7 +113,7 @@ const PostWithUrl = (props) => {
                 <p className={classes.desc}>{backdropPost.desc}</p>
               ) : null}
               <ReactTimeAgo
-                date={backdropPost.updatedAt}
+                date={backdropPost.createdAt}
                 locale="en-US"
                 className={classes.xMinAgo}
               />
@@ -132,7 +132,7 @@ const PostWithUrl = (props) => {
         }}
       >
         <div className={classes.innerContainer}>
-          {props.posts.map((post) => (
+          {props.posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((post) => (
             <PostsWithUrlItem
               {...post}
               handleSetBackdropPost={handleSetBackdropPost}

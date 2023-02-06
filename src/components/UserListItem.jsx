@@ -21,7 +21,7 @@ const useStyles = makeStyles({
     textDecoration: "none",
     color: "black",
     width: "100%",
-    height:'4rem'
+    height: "4rem",
   },
   profileImgContainer: {
     width: "3rem",
@@ -29,7 +29,7 @@ const useStyles = makeStyles({
     borderRadius: "50%",
     border: ".2rem solid var(--purple-1)",
     overflow: "hidden",
-    marginLeft:'.2rem'
+    marginLeft: ".2rem",
   },
   profileImg: {
     width: "100%",
@@ -41,8 +41,8 @@ const useStyles = makeStyles({
     flexDirection: "column",
     alignItems: "flex-start",
     justifyContent: "center",
-    width:'50%',
-    margin:'0rem .2rem',
+    width: "50%",
+    margin: "0rem .2rem",
     [Sizes.down("lg")]: {
       fontSize: ".8rem",
     },
@@ -92,7 +92,6 @@ const UserListItem = (props) => {
   const [profileClick, setProfileClick] = useState(false);
   const [user, setUser] = useState({});
 
-
   useEffect(() => {
     const getUser = async () => {
       const res = await axios.get(
@@ -113,6 +112,15 @@ const UserListItem = (props) => {
       `${process.env.REACT_APP_BASE_URL}/users/${props.userId}/follow`,
       { userId: props.currentUser._id }
     );
+    const res = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}/users?userId=${props.currentUser._id}`
+    );
+    props.setuser(res.data);
+    if (props.setfriendSuggestion) {
+      props.setfriendSuggestion(
+        res.data.followers.filter((id) => !res.data.followings.includes(id))
+      );
+    }
   }
   async function handleUnfollowClick(e) {
     e.preventDefault();
@@ -120,6 +128,15 @@ const UserListItem = (props) => {
       `${process.env.REACT_APP_BASE_URL}/users/${props.userId}/unfollow`,
       { userId: props.currentUser._id }
     );
+    const res = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}/users?userId=${props.currentUser._id}`
+    );
+    props.setuser(res.data);
+    if (props.setfriendSuggestion) {
+      props.setfriendSuggestion(
+        res.data.followers.filter((id) => !res.data.followings.includes(id))
+      );
+    }
   }
 
   return (
@@ -155,11 +172,13 @@ const UserListItem = (props) => {
         </Link>
       </div>
       {props.currentUser.followings.includes(props.userId) ? (
-        props.userId===props.currentUser._id?null:<button className={classes.btn} onClick={handleUnfollowClick}>
-          Unfollow
-        </button>
-      ) : (
-        props.userId===props.currentUser._id?null:<button className={classes.btn} onClick={handleFollowClick}>
+        props.userId === props.currentUser._id ? null : (
+          <button className={classes.btn} onClick={handleUnfollowClick}>
+            Unfollow
+          </button>
+        )
+      ) : props.userId === props.currentUser._id ? null : (
+        <button className={classes.btn} onClick={handleFollowClick}>
           Follow
         </button>
       )}

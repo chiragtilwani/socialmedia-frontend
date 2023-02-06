@@ -236,6 +236,7 @@ const Profile = (props) => {
   const [coverClick, setCoverClick] = useState(false);
   const [profileClick, setProfileClick] = useState(false);
   const [user, setUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(props);
   const [userPosts, setUserPosts] = useState(null);
   const [showPostWithUrl, setShowPostWithUrl] = useState(true);
 
@@ -259,7 +260,9 @@ const Profile = (props) => {
         `${process.env.REACT_APP_BASE_URL}/posts/user/${user._id}`
       );
       setUserPosts(res.data);
-      setShowPostWithUrl(res.data.filter((post) => post.post.url).length===0?false:true)
+      setShowPostWithUrl(
+        res.data.filter((post) => post.post.url).length === 0 ? false : true
+      );
     };
     if (user) {
       fetchUserPost();
@@ -291,6 +294,15 @@ const Profile = (props) => {
         { userId: props._id }
       );
     }
+  }
+
+  async function setuser(user) {
+    setCurrentUser(user);
+    //also updating followers/followings list of user who's profile we are checking
+    const res = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}/users?username=${uname}`
+    );
+    setUser(res.data);
   }
   return (
     <>
@@ -329,9 +341,17 @@ const Profile = (props) => {
           <div className={classes.container}>
             <div className={classes.left}>
               <h2 className={classes.h2}>Followers</h2>
-              <UsersList users={user.followers} currentUser={props} />
+              <UsersList
+                users={user.followers}
+                currentUser={currentUser}
+                setuser={setuser}
+              />
               <h2 className={classes.h2}>Followings</h2>
-              <UsersList users={user.followings} currentUser={props} />
+              <UsersList
+                users={user.followings}
+                currentUser={currentUser}
+                setuser={setuser}
+              />
             </div>
             <div className={classes.right}>
               <div className={classes.infoContainer}>
@@ -405,29 +425,48 @@ const Profile = (props) => {
                 currentUser={user}
               />
               {/* posts by user */}
-              {userPosts?<div className={classes.postContainer}>
-                <div className={classes.postTypeSelector} style={{marginBottom :userPosts.filter((post) => post.post.url).length===0?'2rem':null}}>
-                  <BsGrid3X3
-                    className={classes.postTypeIcons}
-                    onClick={userPosts.filter((post) => post.post.url).length===0?null:handleGridClick}
-                  />
-                  <BsList
-                    className={classes.postTypeIcons}
-                    onClick={handleListClick}
-                  />
-                </div>
-                {userPosts ? (
-                  userPosts.filter((post) => post.post.url).length ? (
-                    <PostWithUrl
-                      posts={userPosts.filter((post) => post.post.url)}
-                      show={showPostWithUrl}
+              {userPosts ? (
+                <div className={classes.postContainer}>
+                  <div
+                    className={classes.postTypeSelector}
+                    style={{
+                      marginBottom:
+                        userPosts.filter((post) => post.post.url).length === 0
+                          ? "2rem"
+                          : null,
+                    }}
+                  >
+                    <BsGrid3X3
+                      className={classes.postTypeIcons}
+                      onClick={
+                        userPosts.filter((post) => post.post.url).length === 0
+                          ? null
+                          : handleGridClick
+                      }
                     />
-                  ) : null
-                ) : null}
-                {userPosts && !showPostWithUrl
-                  ? userPosts.map((post) => <Post key={post._id} {...post} />)
-                  : null}
-              </div>:null}
+                    <BsList
+                      className={classes.postTypeIcons}
+                      onClick={handleListClick}
+                    />
+                  </div>
+                  {userPosts ? (
+                    userPosts.filter((post) => post.post.url).length ? (
+                      <PostWithUrl
+                        posts={userPosts.filter((post) => post.post.url)}
+                        show={showPostWithUrl}
+                      />
+                    ) : null
+                  ) : null}
+                  {userPosts && !showPostWithUrl
+                    ? userPosts
+                        .sort(
+                          (a, b) =>
+                            new Date(b.createdAt) - new Date(a.createdAt)
+                        )
+                        .map((post) => <Post key={post._id} {...post} />)
+                    : null}
+                </div>
+              ) : null}
             </div>
           </div>
           <BottomNavbar />

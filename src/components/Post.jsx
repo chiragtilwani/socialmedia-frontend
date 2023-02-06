@@ -5,7 +5,7 @@ import { IoIosShare } from "react-icons/io";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { useState, useEffect  } from "react";
+import { useState, useEffect } from "react";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import ru from "javascript-time-ago/locale/ru.json";
@@ -13,7 +13,7 @@ import ReactTimeAgo from "react-time-ago";
 import axios from "axios";
 
 import Comment from "./Comment";
-import noAvatar from '../assests/noAvatar.png'
+import noAvatar from "../assests/noAvatar.png";
 import Sizes from "../Sizes";
 import Hdivider from "./Hdivider";
 
@@ -113,7 +113,7 @@ const useStyles = makeStyles({
     justifyContent: "space-between",
     fontSize: "1.5rem",
     transform: "scale(0)",
-    transitionDuration:'.2s'
+    transitionDuration: ".2s",
   },
   edit_delete_icon: {
     cursor: "pointer",
@@ -138,7 +138,7 @@ const useStyles = makeStyles({
     boxShadow: "0rem 0rem .5rem .05rem var(--purple-2)",
     cursor: "pointer",
     overflow: "hidden",
-    marginRight:'1rem'
+    marginRight: "1rem",
   },
   profileImg: {
     width: "100%",
@@ -152,7 +152,7 @@ const Post = (props) => {
   const [showComments, setShowComments] = useState(false);
   const [creator, setCreator] = useState({});
   const [comments, setComments] = useState([]);
-  const [nLikes,setNlikes]=useState(props.likes.length)
+  const [nLikes, setNlikes] = useState(props.likes.length);
   useEffect(() => {
     const fetchCreatorAndComment = async () => {
       let res = await axios.get(
@@ -166,12 +166,15 @@ const Post = (props) => {
       setComments(res.data);
     };
     fetchCreatorAndComment();
-  }, [props.creatorId,props._id]);
-  
+  }, [props.creatorId, props._id]);
+
   async function handleLikeClick() {
     setLiked((prevProp) => !prevProp);
-    await axios.patch(`${process.env.REACT_APP_BASE_URL}/posts/${props._id}/likedislike`,{userId:props.currentUser._id})
-    setNlikes(props.likes.lengthnLikes)
+    await axios.patch(
+      `${process.env.REACT_APP_BASE_URL}/posts/${props._id}/likedislike`,
+      { userId: props.currentUser._id }
+    );
+    setNlikes(props.likes.lengthnLikes);
   }
   function handleCommentClick() {
     setShowComments((prevProp) => !prevProp);
@@ -179,15 +182,31 @@ const Post = (props) => {
 
   async function handleDoubleClick() {
     setLiked((prevProp) => !prevProp);
-    await axios.patch(`${process.env.REACT_APP_BASE_URL}/posts/${props._id}/likedislike`,{userId:props.currentUser._id})
-    setNlikes(props.likes.lengthnLikes)
+    await axios.patch(
+      `${process.env.REACT_APP_BASE_URL}/posts/${props._id}/likedislike`,
+      { userId: props.currentUser._id }
+    );
+    setNlikes(props.likes.lengthnLikes);
+  }
+
+  async function handleDeleteClick() {
+    try {
+      await axios.delete(
+        `${process.env.REACT_APP_BASE_URL}/posts/${props._id}`,
+        { data: { userId: props.currentUser._id } }
+      );
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
+      );
+      props.setPostsArray(res.data);
+    } catch (e) {
+      console.log(e);
+    }
   }
   return (
     <div className={classes.container} onDoubleClick={handleDoubleClick}>
       <div className={classes.header}>
-        <div
-          className={classes.profileImgContainer}
-        >
+        <div className={classes.profileImgContainer}>
           <img
             className={classes.profileImg}
             src={
@@ -198,32 +217,46 @@ const Post = (props) => {
             alt=""
           />
         </div>
-        <div style={{display: 'flex', alignItems: 'center',justifyContent: 'space-between',width:'90%'}}>
-        <div className={classes.name_username}>
-          <div>
-            <Link to={`/profile/${creator.username}`} className={classes.name}>
-              {creator.name}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "90%",
+          }}
+        >
+          <div className={classes.name_username}>
+            <div>
+              <Link
+                to={`/profile/${creator.username}`}
+                className={classes.name}
+              >
+                {creator.name}
+              </Link>
+              <ReactTimeAgo
+                date={props.createdAt}
+                locale="en-US"
+                className={classes.xMinAgo}
+              />
+            </div>
+            <Link
+              to={`/profile/${creator.username}`}
+              className={classes.username}
+            >
+              <i>@{creator.username}</i>
             </Link>
-            <ReactTimeAgo
-              date={props.createdAt}
-              locale="en-US"
-              className={classes.xMinAgo}
+          </div>
+          <div className={classes.iconContainer}>
+            <Link to="/update/post/1" className={classes.link}>
+              <FaEdit className={classes.edit_delete_icon} title="Edit" />
+            </Link>
+            {/*here instead of 1 in 'to' attribute post id must come*/}
+            <MdDelete
+              className={classes.edit_delete_icon}
+              title="Delete"
+              onClick={handleDeleteClick}
             />
           </div>
-          <Link
-            to={`/profile/${creator.username}`}
-            className={classes.username}
-          >
-            <i>@{creator.username}</i>
-          </Link>
-        </div>
-        <div className={classes.iconContainer}>
-          <Link to="/update/post/1" className={classes.link}>
-            <FaEdit className={classes.edit_delete_icon} title="Edit" />
-          </Link>
-          {/*here instead of 1 in 'to' attribute post id must come*/}
-          <MdDelete className={classes.edit_delete_icon} title="Delete" />
-        </div>
         </div>
       </div>
       {/* {content} */}
@@ -262,16 +295,15 @@ const Post = (props) => {
           <IoIosShare className={classes.icon} title="SHARE" />
         </div>
         <div className={classes.like_comment_count}>
-          <strong>
-            {nLikes === 0 ? null : nLikes}
-          </strong>
-          {nLikes === 0 ? null : " like(s)"}{" "}{comments.length === 0 ? null : "and "}
+          <strong>{nLikes === 0 ? null : nLikes}</strong>
+          {nLikes === 0 ? null : " like(s)"}{" "}
+          {comments.length === 0 ? null : "and "}
           <strong>{comments.length === 0 ? null : comments.length}</strong>{" "}
-          {comments.length===0 ?null : "comment(s)" }
+          {comments.length === 0 ? null : "comment(s)"}
         </div>
       </div>
       {showComments ? <Hdivider /> : null}
-      <Comment showComments={showComments} comments={comments}/>
+      <Comment showComments={showComments} comments={comments} />
     </div>
   );
 };
