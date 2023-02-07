@@ -34,7 +34,7 @@ const UsersList = (props) => {
     <div className={classes.container}>
       {props.users.map((user) => (
         <UserListItem
-          key={user._id}
+          key={user}
           userId={user}
           currentUser={props.currentUser}
           setuser={props.setuser}

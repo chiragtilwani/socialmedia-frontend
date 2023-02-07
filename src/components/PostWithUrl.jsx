@@ -7,8 +7,15 @@ import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import ru from "javascript-time-ago/locale/ru.json";
 import ReactTimeAgo from "react-time-ago";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 import PostsWithUrlItem from "./PostsWithUrlItem";
+import axios from "axios";
 
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(ru);
@@ -80,6 +87,8 @@ const PostWithUrl = (props) => {
   const classes = useStyles();
   const [backdropPost, setBackdropPost] = useState(null);
   const [open, setOpen] = useState(false);
+  const [postsWithUrl, setPostsWithUrl] = useState(props.posts);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -90,8 +99,55 @@ const PostWithUrl = (props) => {
     setOpen(openBackdrop)
   }
 
+  async function handlePostDelete(evt){
+    evt.stopPropagation();
+    try {
+      await axios.delete(
+        `${process.env.REACT_APP_BASE_URL}/posts/${backdropPost._id}`,
+        { data: { userId: props.currentUser._id } }
+      );
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
+      );
+      setPostsWithUrl(res.data.filter((post) => post.post.url));
+      setOpen(false)
+      setDialogOpen(false)
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
   return (
     <>
+    <Dialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Delete Post?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            You are going to delete this post permanently.<br/>Are you sure ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>No</Button>
+          <Button onClick={handlePostDelete} autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={open}
@@ -100,7 +156,7 @@ const PostWithUrl = (props) => {
         <div className={classes.overlayPost}>
           <div className={classes.delete_edit}>
             <FaEdit />
-            <MdDelete />
+            <MdDelete onClick={handleDialogOpen}/>
           </div>
           {backdropPost ? (
             <>
@@ -132,8 +188,9 @@ const PostWithUrl = (props) => {
         }}
       >
         <div className={classes.innerContainer}>
-          {props.posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((post) => (
+          {postsWithUrl.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((post) => (
             <PostsWithUrlItem
+            key={post._id}
               {...post}
               handleSetBackdropPost={handleSetBackdropPost}
             />

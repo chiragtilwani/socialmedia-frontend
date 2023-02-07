@@ -11,6 +11,12 @@ import en from "javascript-time-ago/locale/en.json";
 import ru from "javascript-time-ago/locale/ru.json";
 import ReactTimeAgo from "react-time-ago";
 import axios from "axios";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 import Comment from "./Comment";
 import noAvatar from "../assests/noAvatar.png";
@@ -153,6 +159,7 @@ const Post = (props) => {
   const [creator, setCreator] = useState({});
   const [comments, setComments] = useState([]);
   const [nLikes, setNlikes] = useState(props.likes.length);
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     const fetchCreatorAndComment = async () => {
       let res = await axios.get(
@@ -203,108 +210,141 @@ const Post = (props) => {
       console.log(e);
     }
   }
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
-    <div className={classes.container} onDoubleClick={handleDoubleClick}>
-      <div className={classes.header}>
-        <div className={classes.profileImgContainer}>
-          <img
-            className={classes.profileImg}
-            src={
-              props.profilePicture
-                ? `${props.profilePicture.url}`
-                : `${noAvatar}`
-            }
-            alt=""
-          />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            width: "90%",
-          }}
-        >
-          <div className={classes.name_username}>
-            <div>
-              <Link
-                to={`/profile/${creator.username}`}
-                className={classes.name}
-              >
-                {creator.name}
-              </Link>
-              <ReactTimeAgo
-                date={props.createdAt}
-                locale="en-US"
-                className={classes.xMinAgo}
-              />
-            </div>
-            <Link
-              to={`/profile/${creator.username}`}
-              className={classes.username}
-            >
-              <i>@{creator.username}</i>
-            </Link>
-          </div>
-          <div className={classes.iconContainer}>
-            <Link to="/update/post/1" className={classes.link}>
-              <FaEdit className={classes.edit_delete_icon} title="Edit" />
-            </Link>
-            {/*here instead of 1 in 'to' attribute post id must come*/}
-            <MdDelete
-              className={classes.edit_delete_icon}
-              title="Delete"
-              onClick={handleDeleteClick}
+    <>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Delete Post?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            You are going to delete this post permanently.<br/>Are you sure ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>No</Button>
+          <Button onClick={handleDeleteClick} autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <div className={classes.container} onDoubleClick={handleDoubleClick}>
+        <div className={classes.header}>
+          <div className={classes.profileImgContainer}>
+            <img
+              className={classes.profileImg}
+              src={
+                props.profilePicture
+                  ? `${props.profilePicture.url}`
+                  : `${noAvatar}`
+              }
+              alt=""
             />
           </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "90%",
+            }}
+          >
+            <div className={classes.name_username}>
+              <div>
+                <Link
+                  to={`/profile/${creator.username}`}
+                  className={classes.name}
+                >
+                  {creator.name}
+                </Link>
+                <ReactTimeAgo
+                  date={props.createdAt}
+                  locale="en-US"
+                  className={classes.xMinAgo}
+                />
+              </div>
+              <Link
+                to={`/profile/${creator.username}`}
+                className={classes.username}
+              >
+                <i>@{creator.username}</i>
+              </Link>
+            </div>
+            <div className={classes.iconContainer}>
+              <Link to="/update/post/1" className={classes.link}>
+                <FaEdit className={classes.edit_delete_icon} title="Edit" />
+              </Link>
+              {/*here instead of 1 in 'to' attribute post id must come*/}
+              <MdDelete
+                className={classes.edit_delete_icon}
+                title="Delete"
+                onClick={handleClickOpen}
+              />
+            </div>
+          </div>
         </div>
+        {/* {content} */}
+        <div
+          className={classes.postImg}
+          style={{
+            display: !props.post.url ? "none" : "block",
+            background: props.post ? `url(${props.post.url})` : "null",
+            backgroundSize: "100% 100%",
+            backgroundPosition: "center",
+          }}
+        ></div>
+        <p
+          className={classes.desc}
+          style={{
+            display: !props.desc ? "none" : "block",
+          }}
+        >
+          {props.desc}
+        </p>
+        <div className={classes.btnContainer}>
+          <div className={classes.btn}>
+            <BsFillHeartFill
+              className={classes.icon}
+              title="LIKE"
+              style={{ color: props.likes.includes(props._id) ? "tomato" : "" }}
+              onClick={handleLikeClick}
+            />
+            {/*will make tile dynamic like/unlike*/}
+            <FaCommentAlt
+              className={classes.icon}
+              title="COMMENT"
+              style={{ color: showComments ? "#efce7b" : "" }}
+              onClick={handleCommentClick}
+            />
+            <IoIosShare className={classes.icon} title="SHARE" />
+          </div>
+          <div className={classes.like_comment_count}>
+            <strong>{nLikes === 0 ? null : nLikes}</strong>
+            {nLikes === 0 ? null : " like(s)"}{" "}
+            {comments.length === 0 ? null : "and "}
+            <strong>
+              {comments.length === 0 ? null : comments.length}
+            </strong>{" "}
+            {comments.length === 0 ? null : "comment(s)"}
+          </div>
+        </div>
+        {showComments ? <Hdivider /> : null}
+        <Comment showComments={showComments} comments={comments} />
       </div>
-      {/* {content} */}
-      <div
-        className={classes.postImg}
-        style={{
-          display: !props.post.url ? "none" : "block",
-          background: props.post ? `url(${props.post.url})` : "null",
-          backgroundSize: "100% 100%",
-          backgroundPosition: "center",
-        }}
-      ></div>
-      <p
-        className={classes.desc}
-        style={{
-          display: !props.desc ? "none" : "block",
-        }}
-      >
-        {props.desc}
-      </p>
-      <div className={classes.btnContainer}>
-        <div className={classes.btn}>
-          <BsFillHeartFill
-            className={classes.icon}
-            title="LIKE"
-            style={{ color: props.likes.includes(props._id) ? "tomato" : "" }}
-            onClick={handleLikeClick}
-          />
-          {/*will make tile dynamic like/unlike*/}
-          <FaCommentAlt
-            className={classes.icon}
-            title="COMMENT"
-            style={{ color: showComments ? "#efce7b" : "" }}
-            onClick={handleCommentClick}
-          />
-          <IoIosShare className={classes.icon} title="SHARE" />
-        </div>
-        <div className={classes.like_comment_count}>
-          <strong>{nLikes === 0 ? null : nLikes}</strong>
-          {nLikes === 0 ? null : " like(s)"}{" "}
-          {comments.length === 0 ? null : "and "}
-          <strong>{comments.length === 0 ? null : comments.length}</strong>{" "}
-          {comments.length === 0 ? null : "comment(s)"}
-        </div>
-      </div>
-      {showComments ? <Hdivider /> : null}
-      <Comment showComments={showComments} comments={comments} />
-    </div>
+    </>
   );
 };
 

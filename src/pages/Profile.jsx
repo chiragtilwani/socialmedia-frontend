@@ -272,7 +272,7 @@ const Profile = (props) => {
   function handleCoverClick() {
     setCoverClick((prevState) => !prevState);
   }
-  function handleProfileClick() {
+  function handleProfileClick(evt) {
     setProfileClick((prevState) => !prevState);
   }
   function handleGridClick() {
@@ -283,16 +283,32 @@ const Profile = (props) => {
   }
 
   async function handleFollowUnfollow() {
-    if (props.followings.includes(user._id)) {
+    if (currentUser.followings.includes(user._id)) {
       await axios.patch(
         `${process.env.REACT_APP_BASE_URL}/users/${user._id}/unfollow`,
         { userId: props._id }
       );
+      const res1 = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/users?username=${props.username}`
+      );
+      setCurrentUser(res1.data);
+      const res2 = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/users?username=${uname}`
+      );
+      setUser(res2.data);
     } else {
       await axios.patch(
         `${process.env.REACT_APP_BASE_URL}/users/${user._id}/follow`,
         { userId: props._id }
       );
+      const res1 = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/users?username=${props.username}`
+      );
+      setCurrentUser(res1.data);
+      const res2 = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/users?username=${uname}`
+      );
+      setUser(res2.data);
     }
   }
 
@@ -408,7 +424,7 @@ const Profile = (props) => {
                     >
                       {uname === props.username
                         ? "Edit Profile"
-                        : props.followings.includes(user._id)
+                        : currentUser.followings.includes(user._id)
                         ? "Unfollow"
                         : "Follow"}
                     </Link>
@@ -454,6 +470,8 @@ const Profile = (props) => {
                       <PostWithUrl
                         posts={userPosts.filter((post) => post.post.url)}
                         show={showPostWithUrl}
+                        currentUser={currentUser}
+                        setUserPosts={setUserPosts}
                       />
                     ) : null
                   ) : null}
