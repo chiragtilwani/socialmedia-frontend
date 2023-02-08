@@ -39,6 +39,7 @@ const UsersList = (props) => {
           currentUser={props.currentUser}
           setuser={props.setuser}
           setfriendSuggestion={props.setfriendSuggestion}
+          setPosts={props.setPosts}
         />
       ))}
     </div>

@@ -1,15 +1,24 @@
 import { makeStyles } from "@mui/styles";
 import { Link } from "react-router-dom";
-import { AiFillDislike } from "react-icons/ai";
 import { AiFillLike } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import ru from "javascript-time-ago/locale/ru.json";
 import ReactTimeAgo from "react-time-ago";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import axios from "axios";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
+import * as React from "react";
 
 import Sizes from "../Sizes";
-import axios from "axios";
 
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(ru);
@@ -48,8 +57,8 @@ const useStyles = makeStyles({
     transitionDuration: ".2s",
     cursor: "pointer",
     textDecoration: "none",
-    display:'inline-block',
-    width:'fit-content',
+    display: "inline-block",
+    width: "fit-content",
     "&:hover": {
       color: "black",
     },
@@ -95,15 +104,15 @@ const useStyles = makeStyles({
       fontSize: ".7rem",
     },
   },
-  edit_delete_container:{
-    width:'5rem',
-    display:'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    [Sizes.down('sm')]:{
+  edit_delete_container: {
+    width: "5rem",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    [Sizes.down("sm")]: {
       margin: ".2rem 1.3rem",
-      fontSize:'.8rem'
-    }
+      fontSize: ".8rem",
+    },
   },
   edit_delete: {
     color: "var(--purple-2)",
@@ -114,68 +123,164 @@ const CommentItem = (props) => {
   const classes = useStyles();
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
-  const [creator, setCreator] = useState({})
+  const [creator, setCreator] = useState({});
+  const [currentComment, setCurrentComment] = useState(props);
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState();
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
 
-  useEffect(()=>{
-    const fetchCreator=async()=>{
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSnackbarOpen(false);
+  };
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  useEffect(() => {
+    const fetchCreator = async () => {
       let res = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/users?userId=${props.creatorId}`
       );
       setCreator(res.data);
-    }
-    fetchCreator()
-  },[props.creatorId])
+    };
+    fetchCreator();
+  }, [props.creatorId]);
 
-  function handleLikeClick() {
+  async function handleLikeClick() {
     setLiked((prevState) => !prevState);
     setDisliked(false);
+    await axios.patch(
+      `${process.env.REACT_APP_BASE_URL}/comments/${props._id}/likedislike`,
+      {
+        userId: props.currentUserId,
+      }
+    );
+    const res = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}/comments/${props.postId}`
+    );
+    props.setComments(res.data);
   }
-  function handleDislikeClick() {
-    setDisliked((prevState) => !prevState);
-    setLiked(false);
+
+  async function deleteComment() {
+    try{
+      await axios.delete(
+        `${process.env.REACT_APP_BASE_URL}/comments/${props._id}`,
+        { data: { userId: props.currentUserId } }
+      );
+    }catch(e){
+      setError(e.response.data.message)
+      setSnackbarOpen(true)
+    }
+    try {
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/comments/${props.postId}`
+      );
+      props.setComments(res.data);
+      props.postComponentSetComments(res.data);
+    } catch (e) {
+      props.setComments(null);
+      props.postComponentSetComments(null);
+    }
+    setOpen(false);
   }
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
-    <div className={classes.container}>
-      <div className={classes.name_text}>
-        <div className={classes.name_username}>
+    <>
+    <Stack spacing={2} sx={{ width: "100%" }}>
+        <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+          <Alert
+            onClose={handleSnackbarClose}
+            severity="warning"
+            sx={{ width: "100%" }}
+          >
+            {error}
+          </Alert>
+        </Snackbar>
+      </Stack>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Delete Comment?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            You are going to delete this comment.
+            <br />
+            Are you sure ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>No</Button>
+          <Button onClick={deleteComment} autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <div className={classes.container}>
+        <div className={classes.name_text}>
+          <div className={classes.name_username}>
+            <div>
+              <Link
+                to={`/profile/${creator.username}`}
+                className={classes.name}
+              >
+                {creator.name}
+              </Link>
+              <ReactTimeAgo
+                date={props.createdAt}
+                locale="en-US"
+                className={classes.xMinAgo}
+              />
+            </div>
+            <Link
+              to={`/profile/${creator.username}`}
+              className={classes.username}
+            >
+              <i>@{creator.username}</i>
+            </Link>
+          </div>
+          <div className={classes.descContainer}>
+            <p className={classes.desc}>{props.text}</p>
+            <div className={classes.edit_delete_container} style={{display:props.creatorId===props.currentUserId?'flex':'none'}}>
+              <Link className={classes.edit_delete}>Edit</Link>
+              <Link className={classes.edit_delete} onClick={handleClickOpen}>
+                Delete
+              </Link>
+            </div>
+          </div>
+        </div>
+        <div className={classes.btns}>
           <div>
-            <Link to={`/profile/${creator.username}`} className={classes.name}>{creator.name}</Link>
-            <ReactTimeAgo
-              date={props.createdAt}
-              locale="en-US"
-              className={classes.xMinAgo}
+            <AiFillLike
+              className={classes.icons}
+              style={{ color: liked ? "var(--purple-1)" : "" }}
+              onClick={handleLikeClick}
             />
           </div>
-          <Link to={`/profile/${creator.username}`} className={classes.username}>
-            <i>@{creator.username}</i>
-          </Link>
-        </div>
-        <div className={classes.descContainer}>
-          <p className={classes.desc}>{props.text}</p>
-          <div className={classes.edit_delete_container}>
-            <Link className={classes.edit_delete}>Edit</Link>
-            <Link className={classes.edit_delete}>Delete</Link>
-          </div>
+          <span style={{ fontSize: ".9rem" }}>
+            <strong>
+              {props.likes.length === 0 ? null : props.likes.length}
+            </strong>{" "}
+            {props.likes.length === 0 ? null : "likes"}
+          </span>
         </div>
       </div>
-      <div className={classes.btns}>
-        <div>
-          <AiFillLike
-            className={classes.icons}
-            style={{ color: liked ? "var(--purple-1)" : "" }}
-            onClick={handleLikeClick}
-          />
-          <AiFillDislike
-            className={classes.icons}
-            style={{ color: disliked ? "var(--purple-1)" : "" }}
-            onClick={handleDislikeClick}
-          />
-        </div>
-        <span style={{ fontSize: ".9rem" }}>
-          <strong>{props.likes.length===0?null:props.likes.length}</strong> {props.likes.length===0?null:'likes'}
-        </span>
-      </div>
-    </div>
+    </>
   );
 };
 

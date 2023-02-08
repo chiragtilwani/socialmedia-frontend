@@ -138,6 +138,7 @@ const Home = (props) => {
               currentUser={user}
               setuser={setuser}
               setfriendSuggestion={setfriendSuggestion}
+              setPosts={setPosts}
             />
             {/*here we will send list of users whom you are following instead of users with propname user*/}
           </div>

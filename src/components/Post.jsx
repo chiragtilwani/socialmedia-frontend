@@ -22,6 +22,7 @@ import Comment from "./Comment";
 import noAvatar from "../assests/noAvatar.png";
 import Sizes from "../Sizes";
 import Hdivider from "./Hdivider";
+import Loading from "./Loading";
 
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(ru);
@@ -93,8 +94,8 @@ const useStyles = makeStyles({
     cursor: "pointer",
     transitionDuration: ".2s",
     padding: ".2rem",
-    "&:hover": {
-      transform: "scale(.8)",
+    "&:active": {
+      transform: "scale(.5)",
     },
     [Sizes.down("md")]: {
       fontSize: "1.5rem",
@@ -160,42 +161,39 @@ const Post = (props) => {
   const [comments, setComments] = useState([]);
   const [nLikes, setNlikes] = useState(props.likes.length);
   const [open, setOpen] = useState(false);
+  const [currentPost, setCurrentPost] = useState(props);
+  // console.log(props)
   useEffect(() => {
     const fetchCreatorAndComment = async () => {
       let res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/users?userId=${props.creatorId}`
+        `${process.env.REACT_APP_BASE_URL}/users?userId=${currentPost.creatorId}`
       );
       setCreator(res.data);
 
       res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/comments/${props._id}`
+        `${process.env.REACT_APP_BASE_URL}/comments/${currentPost._id}`
       );
       setComments(res.data);
     };
     fetchCreatorAndComment();
-  }, [props.creatorId, props._id]);
+  }, [currentPost.creatorId, currentPost._id]);
 
   async function handleLikeClick() {
     setLiked((prevProp) => !prevProp);
     await axios.patch(
-      `${process.env.REACT_APP_BASE_URL}/posts/${props._id}/likedislike`,
+      `${process.env.REACT_APP_BASE_URL}/posts/${currentPost._id}/likedislike`,
       { userId: props.currentUser._id }
     );
-    setNlikes(props.likes.lengthnLikes);
+    const res = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}/posts/${currentPost._id}`
+    );
+    setCurrentPost(res.data);
   }
   function handleCommentClick() {
     setShowComments((prevProp) => !prevProp);
   }
 
-  async function handleDoubleClick() {
-    setLiked((prevProp) => !prevProp);
-    await axios.patch(
-      `${process.env.REACT_APP_BASE_URL}/posts/${props._id}/likedislike`,
-      { userId: props.currentUser._id }
-    );
-    setNlikes(props.likes.lengthnLikes);
-  }
-
+  console.log(props.currentUser._id+' '+creator._id)
   async function handleDeleteClick() {
     try {
       await axios.delete(
@@ -226,12 +224,12 @@ const Post = (props) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {"Delete Post?"}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">{"Delete Post?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            You are going to delete this post permanently.<br/>Are you sure ?
+            You are going to delete this post permanently.
+            <br />
+            Are you sure ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -241,7 +239,7 @@ const Post = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <div className={classes.container} onDoubleClick={handleDoubleClick}>
+      <div className={classes.container} onDoubleClick={handleLikeClick}>
         <div className={classes.header}>
           <div className={classes.profileImgContainer}>
             <img
@@ -283,7 +281,7 @@ const Post = (props) => {
                 <i>@{creator.username}</i>
               </Link>
             </div>
-            <div className={classes.iconContainer}>
+            <div className={classes.iconContainer} style={{display:creator._id===props.currentUser._id?'flex':'none'}}>
               <Link to="/update/post/1" className={classes.link}>
                 <FaEdit className={classes.edit_delete_icon} title="Edit" />
               </Link>
@@ -319,7 +317,11 @@ const Post = (props) => {
             <BsFillHeartFill
               className={classes.icon}
               title="LIKE"
-              style={{ color: props.likes.includes(props._id) ? "tomato" : "" }}
+              style={{
+                color: currentPost.likes.includes(props.currentUser._id)
+                  ? "tomato"
+                  : "",
+              }}
               onClick={handleLikeClick}
             />
             {/*will make tile dynamic like/unlike*/}
@@ -332,17 +334,25 @@ const Post = (props) => {
             <IoIosShare className={classes.icon} title="SHARE" />
           </div>
           <div className={classes.like_comment_count}>
-            <strong>{nLikes === 0 ? null : nLikes}</strong>
-            {nLikes === 0 ? null : " like(s)"}{" "}
-            {comments.length === 0 ? null : "and "}
             <strong>
-              {comments.length === 0 ? null : comments.length}
+              {currentPost.likes.length ? currentPost.likes.length : null}
+            </strong>
+            {currentPost.likes.length ? " like(s)" : null}{" "}
+            {currentPost.likes.length && (comments && comments.length) > 0 ? "and " : null}
+            <strong>
+              {comments && comments.length > 0 ? comments.length : null}
             </strong>{" "}
-            {comments.length === 0 ? null : "comment(s)"}
+            {comments && comments.length > 0 ? "comment(s)" : null}
           </div>
         </div>
         {showComments ? <Hdivider /> : null}
-        <Comment showComments={showComments} comments={comments} />
+        <Comment
+          showComments={showComments}
+          comments={comments}
+          currentUserId={props.currentUser._id}
+          postId={currentPost._id}
+          postComponentSetComments={setComments}
+        />
       </div>
     </>
   );

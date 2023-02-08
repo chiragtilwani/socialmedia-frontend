@@ -1,6 +1,10 @@
 import { makeStyles } from "@mui/styles";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
+import * as React from "react";
 
 import CommentItem from "./CommentItem";
 
@@ -12,7 +16,7 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
-    maxHeight:'20rem',
+    maxHeight: "20rem",
     "&::-webkit-scrollbar": {
       width: ".25rem",
     },
@@ -45,7 +49,7 @@ const useStyles = makeStyles({
   },
   btn: {
     padding: ".5rem",
-    height:'3rem',
+    height: "3rem",
     cursor: "pointer",
     backgroundColor: "var(--purple-1)",
     color: "white",
@@ -62,24 +66,117 @@ const useStyles = makeStyles({
 const Comment = (props) => {
   const classes = useStyles();
 
-  const comments = props.comments
+  const [comments, setComments] = useState();
+  const [error, setError] = useState();
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  useEffect(() => {
+    async function fetchComments() {
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/comments/${props.postId}`
+      );
+      setComments(res.data);
+    }
+    fetchComments();
+  }, [props.postId]);
+  console.log(props);
+  const text = useRef("");
+  async function handleSubmit(evt) {
+    evt.preventDefault();
+    try {
+      await axios.post(`${process.env.REACT_APP_BASE_URL}/comments/`, {
+        text: text.current.value,
+        userId: props.currentUserId,
+        postId: props.postId,
+      });
+    } catch (err) {
+      setError(err.response.data.message);
+      setOpen(true);
+    }
+    try {
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/comments/${props.postId}`
+      );
+      setComments(res.data);
+      props.postComponentSetComments(res.data);
+      text.current.value = "";
+    } catch (err) {
+      setError(err.response.data.message);
+      setOpen(true);
+    }
+  }
   return (
-    <div
-      className={classes.container}
-      style={{ height: props.showComments ? "fit-content" : "0rem"}}
-    >
-      <form className={classes.form}>
-        <input
-          type="textfield"
-          className={classes.textfield}
-          placeholder="Drop a comment ..."
-        />
-        <button className={classes.btn}>Comment</button>
-      </form>
-      {comments.map((comment) => (
-        <CommentItem key={comment._id} {...comment} />
-      ))}
-    </div> 
+    <>
+      <Stack spacing={2} sx={{ width: "100%" }}>
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+          <Alert
+            onClose={handleClose}
+            severity="warning"
+            sx={{ width: "100%" }}
+          >
+            {error}
+          </Alert>
+        </Snackbar>
+      </Stack>
+      {comments ? (
+        <div
+          className={classes.container}
+          style={{ height: props.showComments ? "fit-content" : "0rem" }}
+        >
+          <form className={classes.form} onSubmit={handleSubmit}>
+            <input
+              type="textfield"
+              className={classes.textfield}
+              placeholder="Drop a comment ..."
+              ref={text}
+            />
+            <button className={classes.btn} type="submit">
+              Comment
+            </button>
+          </form>
+          {comments
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .map((comment) => (
+              <CommentItem
+                key={comment._id}
+                {...comment}
+                currentUserId={props.currentUserId}
+                setComments={setComments}
+                postComponentSetComments={props.postComponentSetComments}
+              />
+            ))}
+        </div>
+      ) : (
+        <div
+          className={classes.container}
+          style={{ height: props.showComments ? "fit-content" : "0rem" }}
+        >
+          <form className={classes.form} onSubmit={handleSubmit}>
+            <input
+              type="textfield"
+              className={classes.textfield}
+              placeholder="Drop a comment ..."
+              ref={text}
+            />
+            <button className={classes.btn} type="submit">
+              Comment
+            </button>
+          </form>
+        </div>
+      )}
+    </>
   );
 };
 

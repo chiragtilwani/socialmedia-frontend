@@ -481,7 +481,7 @@ const Profile = (props) => {
                           (a, b) =>
                             new Date(b.createdAt) - new Date(a.createdAt)
                         )
-                        .map((post) => <Post key={post._id} {...post} />)
+                        .map((post) => <Post key={post._id} {...post} currentUser={currentUser}/>)
                     : null}
                 </div>
               ) : null}
