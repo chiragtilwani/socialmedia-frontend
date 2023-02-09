@@ -268,7 +268,7 @@ const CommentItem = (props) => {
           <div>
             <AiFillLike
               className={classes.icons}
-              style={{ color: liked ? "var(--purple-1)" : "" }}
+              style={{ color: props.likes.includes(props.currentUserId) ? "var(--purple-1)" : "" }}
               onClick={handleLikeClick}
             />
           </div>

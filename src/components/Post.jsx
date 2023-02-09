@@ -5,7 +5,7 @@ import { IoIosShare } from "react-icons/io";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import ru from "javascript-time-ago/locale/ru.json";
@@ -152,6 +152,15 @@ const useStyles = makeStyles({
     height: "100%",
     objectFit: "fill",
   },
+  changedCaption: {
+    outline: "none",
+    borderColor: "var(--purple-2)",
+    marginTop: ".7rem",
+    width: "100%",
+    height: "2rem",
+    borderRadius: ".5rem",
+    padding: ".5rem",
+  },
 });
 const Post = (props) => {
   const classes = useStyles();
@@ -162,6 +171,9 @@ const Post = (props) => {
   const [nLikes, setNlikes] = useState(props.likes.length);
   const [open, setOpen] = useState(false);
   const [currentPost, setCurrentPost] = useState(props);
+  const [sharePost, setSharePost] = useState(false);
+  const [changedCaption, setChangedCaption] = useState(props.desc);
+
   // console.log(props)
   useEffect(() => {
     const fetchCreatorAndComment = async () => {
@@ -193,7 +205,7 @@ const Post = (props) => {
     setShowComments((prevProp) => !prevProp);
   }
 
-  console.log(props.currentUser._id+' '+creator._id)
+  console.log(props.currentUser._id + " " + creator._id);
   async function handleDeleteClick() {
     try {
       await axios.delete(
@@ -216,8 +228,32 @@ const Post = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
+  function handleShareClick() {
+    setSharePost(true);
+  }
+
+  function handleSharePostClose() {
+    setSharePost(false);
+  }
+  function handleChangeCaption(evt) {
+    setChangedCaption(evt.target.value);
+  }
+  async function handlePost() {
+    await axios.post(`${process.env.REACT_APP_BASE_URL}/posts/`, {
+      creatorId: props.currentUser._id,
+      desc: changedCaption,
+      post: props.post.url,
+    });
+    const res = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
+    );
+    props.setPostsArray(res.data);
+    setSharePost(false)
+  }
+  console.log(changedCaption);
   return (
     <>
+      {/* diaglog box for delete post */}
       <Dialog
         open={open}
         onClose={handleClose}
@@ -239,7 +275,34 @@ const Post = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <div className={classes.container} onDoubleClick={handleLikeClick}>
+      {/* dialog box for sharing same post */}
+      <Dialog
+        open={sharePost}
+        onClose={handleSharePostClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Share Same Post?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Sharing same post, you can change the caption from here.
+          </DialogContentText>
+          <input
+            type="text"
+            className={classes.changedCaption}
+            placeholder="Enter caption..."
+            value={changedCaption ? changedCaption : ""}
+            onChange={handleChangeCaption}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleSharePostClose}>Cancel</Button>
+          <Button onClick={handlePost} autoFocus>
+            Post
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <div className={classes.container}>
         <div className={classes.header}>
           <div className={classes.profileImgContainer}>
             <img
@@ -281,7 +344,13 @@ const Post = (props) => {
                 <i>@{creator.username}</i>
               </Link>
             </div>
-            <div className={classes.iconContainer} style={{display:creator._id===props.currentUser._id?'flex':'none'}}>
+            <div
+              className={classes.iconContainer}
+              style={{
+                display:
+                  creator._id === props.currentUser._id ? "flex" : "none",
+              }}
+            >
               <Link to="/update/post/1" className={classes.link}>
                 <FaEdit className={classes.edit_delete_icon} title="Edit" />
               </Link>
@@ -303,6 +372,7 @@ const Post = (props) => {
             backgroundSize: "100% 100%",
             backgroundPosition: "center",
           }}
+          onDoubleClick={handleLikeClick}
         ></div>
         <p
           className={classes.desc}
@@ -331,14 +401,20 @@ const Post = (props) => {
               style={{ color: showComments ? "#efce7b" : "" }}
               onClick={handleCommentClick}
             />
-            <IoIosShare className={classes.icon} title="SHARE" />
+            <IoIosShare
+              className={classes.icon}
+              title="SHARE"
+              onClick={handleShareClick}
+            />
           </div>
           <div className={classes.like_comment_count}>
             <strong>
               {currentPost.likes.length ? currentPost.likes.length : null}
             </strong>
             {currentPost.likes.length ? " like(s)" : null}{" "}
-            {currentPost.likes.length && (comments && comments.length) > 0 ? "and " : null}
+            {currentPost.likes.length && (comments && comments.length) > 0
+              ? "and "
+              : null}
             <strong>
               {comments && comments.length > 0 ? comments.length : null}
             </strong>{" "}
