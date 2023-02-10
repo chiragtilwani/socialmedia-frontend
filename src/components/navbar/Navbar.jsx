@@ -152,6 +152,10 @@ const Navbar = (props) => {
     setIsOpen(true);
   }
 
+  function handleNotificationIconClick(){
+    props.OpenSideBar()
+  }
+
   return (
     <div className={classes.container} onClick={isOpen?handleClick:null}>
       <div className={classes.innerContainer}>
@@ -174,7 +178,7 @@ const Navbar = (props) => {
         <div className={classes.right}>
           <div style={{ marginRight: "1rem" }}>
             <Link to="/" className={classes.iconLink}>
-              <Badge badgeContent={4} color="primary" variant="dot">
+              <Badge badgeContent={0} color="primary" variant="dot">
                 <AiTwotoneHome />
               </Badge>
             </Link>
@@ -184,8 +188,8 @@ const Navbar = (props) => {
               </Badge>
             </Link>
             <Link to="/" className={classes.iconLink}>
-              <Badge badgeContent={4} color="primary" variant="dot">
-                <IoMdNotifications />
+              <Badge badgeContent={props.n_notifications} color="primary">
+                <IoMdNotifications onClick={handleNotificationIconClick}/>
               </Badge>
             </Link>
             <Link to="/" className={classes.iconLink}>

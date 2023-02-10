@@ -11,6 +11,7 @@ import UploadPost from "../components/UploadPost";
 import Post from "../components/Post";
 import video from "../video.mp4";
 import { AuthContext } from "../context/AuthContext";
+import NotificationBar from "../components/NotificationBar";
 
 const useStyles = makeStyles({
   outterContainer: {
@@ -87,10 +88,12 @@ const Home = (props) => {
   const classes = useStyles();
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(props);
-  const [friendSuggestions, setFriendSuggestion] = useState(user.followers.filter(
-    (id) => !props.followings.includes(id)
-  ));
+  const [friendSuggestions, setFriendSuggestion] = useState(
+    user.followers.filter((id) => !props.followings.includes(id))
+  );
+  const [openSideBar, setOpenSideBar] = useState(false);
   const contextData = useContext(AuthContext);
+  const [n_notifications, setN_notifications] = useState(0);
 
   useEffect(() => {
     const getPost = async () => {
@@ -114,14 +117,31 @@ const Home = (props) => {
     setFriendSuggestion(friendSuggestions);
   }
 
-  // let friendSuggestions = user.followers.filter(
-  //   (id) => !props.followings.includes(id)
-  // );
+  function OpenSideBar() {
+    setOpenSideBar(true);
+  }
+  function CloseSideBar() {
+    setOpenSideBar(false);
+  }
+
+  function handleNotificationCount(count) {
+    setN_notifications(count);
+  }
 
   return (
     <>
       <div className={classes.outterContainer}>
-        <Navbar currentUser={user} />
+        <NotificationBar
+          openSideBar={openSideBar}
+          CloseSideBar={CloseSideBar}
+          currentUser={user}
+          handleNotificationCount={handleNotificationCount}
+        />
+        <Navbar
+          currentUser={user}
+          OpenSideBar={OpenSideBar}
+          n_notifications={n_notifications}
+        />
         <div className={classes.container}>
           <div className={`${classes.left} ${classes.childContainer}`}>
             <PofileCard
