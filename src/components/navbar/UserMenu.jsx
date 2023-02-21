@@ -1,5 +1,7 @@
 import { makeStyles } from "@mui/styles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector,useDispatch } from "react-redux";
+import {reset,logout}from '../../features/auth/authSlice'
 
 const useStyles = makeStyles({
   container: {
@@ -32,24 +34,41 @@ const useStyles = makeStyles({
 
 const UserMenu = (props) => {
   const classes = useStyles();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-function handleLogoutClick(){
-  window.localStorage.removeItem("user")
-}
+  const user = useSelector((state) => state.auth);
+
+  function handleLogoutClick() {
+    navigate("/login");
+    dispatch(logout());
+    dispatch(reset())
+  }
   return (
     <div className={classes.container}>
-      <Link to={`/profile/${props.currentUsername}`} className={classes.item}>{/*here instead of 1 we will use currentUser's id*/}
-        Profile
-      </Link>
-      <Link to="/register" className={classes.item}>
-        Register
-      </Link>
-      <Link to="/login" className={classes.item}>
-        Login
-      </Link>
-      <Link to="" onClick={handleLogoutClick} className={classes.item}>
-        Logout
-      </Link>
+      {user ? (
+        <>
+          <Link
+            to={`/profile/${props.currentUsername}`}
+            className={classes.item}
+          >
+            {/*here instead of 1 we will use currentUser's id*/}
+            Profile
+          </Link>
+          <Link to="" onClick={handleLogoutClick} className={classes.item}>
+            Logout
+          </Link>
+        </>
+      ) : (
+        <>
+          <Link to="/register" className={classes.item}>
+            Register
+          </Link>
+          <Link to="/login" className={classes.item}>
+            Login
+          </Link>
+        </>
+      )}
     </div>
   );
 };

@@ -1,8 +1,10 @@
 import { makeStyles } from "@mui/styles";
-import { useRef } from "react";
-import { Link } from "react-router-dom";
-
+import { useRef, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux"; //useSelector is for state and useDispatch is for reducer functions
+import { register, reset } from "../features/auth/authSlice";
 import Sizes from "../Sizes";
+import Loading from "../components/Loading";
 
 const useStyles = makeStyles({
   container: {
@@ -100,7 +102,7 @@ const useStyles = makeStyles({
     },
   },
   input: {
-    margin: "1rem 0rem",
+    margin: ".5rem 0rem",
     borderWidth: "0rem",
     outline: "none",
     height: "2.5rem",
@@ -142,13 +144,43 @@ const useStyles = makeStyles({
 
 const Register = () => {
   const classes = useStyles();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [error, setError] = useState();
 
   const email = useRef();
   const password = useRef();
   const username = useRef();
+  const name = useRef();
+
+  const { user, isLoading, isError, message, isSuccess } = useSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (isError) {
+      setError(message);
+    }
+    if (isSuccess || user) {
+      navigate("/");
+    }
+    dispatch(reset());
+  }, [user, isError, message, isSuccess, navigate, dispatch]);
 
   function handleSubmit(evt) {
     evt.preventDefault();
+    const userData = {
+      name: name.current.value,
+      email: email.current.value,
+      password: password.current.value,
+      username: username.current.value,
+    };
+    console.log(userData);
+    dispatch(register(userData)); //sending user to register function in reducer
+  }
+  if (isLoading) {
+    return <Loading />;
   }
   return (
     <div className={classes.container}>
@@ -156,6 +188,13 @@ const Register = () => {
         <div className={classes.left}>
           <h1 className={classes.h2}>Register</h1>
           <form className={classes.form} onSubmit={handleSubmit}>
+            <input
+              type="text"
+              placeholder="Name"
+              required
+              ref={name}
+              className={classes.input}
+            />
             <input
               type="text"
               placeholder="Username"

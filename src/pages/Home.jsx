@@ -9,8 +9,7 @@ import PofileCard from "../components/PofileCard";
 import UsersList from "../components/UsersList";
 import UploadPost from "../components/UploadPost";
 import Post from "../components/Post";
-import video from "../video.mp4";
-import { AuthContext } from "../context/AuthContext";
+// import { AuthContext } from "../context/AuthContext";
 import NotificationBar from "../components/NotificationBar";
 
 const useStyles = makeStyles({
@@ -88,11 +87,18 @@ const Home = (props) => {
   const classes = useStyles();
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(props);
+  const [allUsers, setAllUsers] = useState();
   const [friendSuggestions, setFriendSuggestion] = useState(
-    user.followers.filter((id) => !props.followings.includes(id))
+    allUsers &&
+      allUsers
+        .filter(
+          (user) =>
+            !props.followings.includes(user._id) && user._id !== props._id
+        )
+        .map((user) => user._id)
   );
   const [openSideBar, setOpenSideBar] = useState(false);
-  const contextData = useContext(AuthContext);
+  // const contextData = useContext(AuthContext);
   const [n_notifications, setN_notifications] = useState(0);
 
   useEffect(() => {
@@ -104,6 +110,17 @@ const Home = (props) => {
     };
     getPost();
   }, [user._id]);
+
+  useEffect(() => {
+    async function fetchAllUsers() {
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/users/allUsers`
+      );
+      setAllUsers(res.data);
+    }
+    fetchAllUsers();
+  }, []);
+
 
   function setPostsArray(posts) {
     setPosts(posts);
@@ -131,17 +148,6 @@ const Home = (props) => {
   return (
     <>
       <div className={classes.outterContainer}>
-        <NotificationBar
-          openSideBar={openSideBar}
-          CloseSideBar={CloseSideBar}
-          currentUser={user}
-          handleNotificationCount={handleNotificationCount}
-        />
-        <Navbar
-          currentUser={user}
-          OpenSideBar={OpenSideBar}
-          n_notifications={n_notifications}
-        />
         <div className={classes.container}>
           <div className={`${classes.left} ${classes.childContainer}`}>
             <PofileCard
@@ -154,7 +160,16 @@ const Home = (props) => {
               Suggestions for you
             </h2>
             <UsersList
-              users={friendSuggestions}
+              users={
+                allUsers &&
+                allUsers
+                  .filter(
+                    (user) =>
+                      !props.followings.includes(user._id) &&
+                      user._id !== props._id
+                  )
+                  .map((user) => user._id)
+              }
               currentUser={user}
               setuser={setuser}
               setfriendSuggestion={setfriendSuggestion}
@@ -188,6 +203,7 @@ const Home = (props) => {
               currentUser={user}
               setuser={setuser}
               setfriendSuggestion={setfriendSuggestion}
+              setPosts={setPosts}
             />
             {/*here we will send list of users who are following currentUser instead of users with propname user*/}
             <h2 className={classes.h2} style={{ marginTop: "1rem" }}>
@@ -198,6 +214,7 @@ const Home = (props) => {
               currentUser={user}
               setuser={setuser}
               setfriendSuggestion={setfriendSuggestion}
+              setPosts={setPosts}
             />
             {/*here we will send list of users whom you are following instead of users with propname user*/}
           </div>

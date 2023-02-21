@@ -19,7 +19,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 import Comment from "./Comment";
-import noAvatar from "../assests/noAvatar.png";
+import noAvatar from "../assets/noAvatar.png";
 import Sizes from "../Sizes";
 import Hdivider from "./Hdivider";
 import Loading from "./Loading";
@@ -44,7 +44,6 @@ const useStyles = makeStyles({
   header: {
     display: "flex",
     alignItems: "center",
-    // justifyContent: "space-between",
     margin: ".5rem 1rem",
   },
   name_username: {
@@ -72,7 +71,7 @@ const useStyles = makeStyles({
   },
   postImg: {
     width: "95%",
-    height: "15rem",
+    height: "25rem",
     margin: "1rem auto",
     borderRadius: ".6rem",
   },
@@ -196,10 +195,11 @@ const Post = (props) => {
       `${process.env.REACT_APP_BASE_URL}/posts/${currentPost._id}/likedislike`,
       { userId: props.currentUser._id }
     );
-    const res = await axios.get(
+    let res = await axios.get(
       `${process.env.REACT_APP_BASE_URL}/posts/${currentPost._id}`
     );
     setCurrentPost(res.data);
+    //  res = await axios.get(`${process.env.REACT_APP_BASE_URL}/users?userId=${currentPost.creatorId}`)
   }
   function handleCommentClick() {
     setShowComments((prevProp) => !prevProp);
@@ -248,7 +248,7 @@ const Post = (props) => {
       `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
     );
     props.setPostsArray(res.data);
-    setSharePost(false)
+    setSharePost(false);
   }
   console.log(changedCaption);
   return (
@@ -305,15 +305,17 @@ const Post = (props) => {
       <div className={classes.container}>
         <div className={classes.header}>
           <div className={classes.profileImgContainer}>
-            <img
-              className={classes.profileImg}
-              src={
-                props.profilePicture
-                  ? `${props.profilePicture.url}`
-                  : `${noAvatar}`
-              }
-              alt=""
-            />
+            <Link to={`/profile/${creator.username}`} className={classes.name}>
+              <img
+                className={classes.profileImg}
+                src={
+                  props.profilePicture
+                    ? `${props.profilePicture.url}`
+                    : `${noAvatar}`
+                }
+                alt=""
+              />
+            </Link>
           </div>
           <div
             style={{

@@ -11,6 +11,9 @@ import { useState } from "react";
 
 import UserMenu from "./UserMenu";
 import Sizes from "../../Sizes";
+import { useEffect } from "react";
+import axios from "axios";
+import noAvatar from "../../assets/noAvatar.png";
 
 const useStyles = makeStyles({
   container: {
@@ -23,7 +26,8 @@ const useStyles = makeStyles({
     position: "fixed",
     top: 0,
     zIndex: "2",
-    boxShadow: 'rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset'
+    boxShadow:
+      "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
   },
   innerContainer: {
     width: "100%",
@@ -56,15 +60,20 @@ const useStyles = makeStyles({
     },
   },
   center: {
+    position: "relative",
+  },
+  searchBar: {
     backgroundColor: "white",
     height: "2.5rem",
     display: "flex",
     alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
     padding: "1rem",
     borderRadius: "1.2rem",
     cursor: "pointer",
   },
-  searchbar: {
+  searchbarInput: {
     outline: "none",
     border: "none",
     width: "15rem",
@@ -88,6 +97,60 @@ const useStyles = makeStyles({
   },
   searchIcon: {
     backgroundColor: "white",
+  },
+  searchResult: {
+    backgroundColor: "white",
+    marginTop: ".5rem",
+    maxHeight: "20rem",
+    overflowY: "scroll",
+    position: "absolute",
+    width: "100%",
+    borderRadius: ".2rem",
+    boxShadow:
+      "rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset",
+    "&::-webkit-scrollbar": {
+      width: ".25rem",
+    },
+    "&::-webkit-scrollbar-track": {
+      backgroundColor: "var(--purple-3)",
+    },
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "var(--purple-2)",
+      borderRadius: "20rem",
+      "&:hover": {
+        backgroundColor: "var(--purple-1)",
+      },
+    },
+  },
+  searchResultItem: {
+    padding: ".5rem",
+    borderBottom: ".1rem solid var(--purple-2)",
+    display: "flex",
+    alignItems: "center",
+  },
+  searchResultItemLink: {
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: "column",
+  },
+  searchLink: {
+    textDecoration: "none",
+    color: "black",
+  },
+  searchName: {
+    fontWeight: "bold",
+    textTransform:'capitalize'
+  },
+  searchUserName: {
+    fontSize: ".8rem",
+    color: "var(--purple-2)",
+  },
+  searchUserImg: {
+    width: "3rem",
+    height: "3rem",
+    borderRadius: "50%",
+    border: ".2rem solid var(--purple-1)",
+    marginRight:'.5rem'
   },
   right: {
     display: "flex",
@@ -144,7 +207,19 @@ const useStyles = makeStyles({
 const Navbar = (props) => {
   const classes = useStyles();
   const [isOpen, setIsOpen] = useState(false);
+  const [searchWord, setSearchWord] = useState();
+  const [allUsers, setAllUsers] = useState();
+  const [searchResult, setSearchResult] = useState();
 
+  useEffect(() => {
+    async function fetchAllUsers() {
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/users/allUsers`
+      );
+      setAllUsers(res.data);
+    }
+    fetchAllUsers();
+  }, []);
   function handleClick() {
     setIsOpen(!isOpen);
   }
@@ -152,12 +227,30 @@ const Navbar = (props) => {
     setIsOpen(true);
   }
 
-  function handleNotificationIconClick(){
-    props.OpenSideBar()
+  function handleNotificationIconClick() {
+    props.OpenSideBar();
+  }
+
+  function handleSearchChange(evt) {
+    setSearchWord(evt.target.value);
+    setSearchResult(
+      allUsers.filter(
+        (user) =>
+          user.username.includes(evt.target.value) || user.name.includes(evt.target.value)
+      )
+    );
+    if(evt.target.value===''){
+      setSearchResult(null)
+    }
+  }
+  
+  function handleSearchUserClick(evt) {
+    setSearchWord('')
+    setSearchResult(null)
   }
 
   return (
-    <div className={classes.container} onClick={isOpen?handleClick:null}>
+    <div className={classes.container} onClick={isOpen ? handleClick : null}>
       <div className={classes.innerContainer}>
         <div className={classes.left}>
           <Link to="/" className={classes.logo}>
@@ -168,12 +261,47 @@ const Navbar = (props) => {
           </Link>
         </div>
         <div className={classes.center}>
-          <RiSearchFill className={classes.searchIcon} />
-          <input
-            type="search"
-            placeholder="Search for friend, place or thing"
-            className={classes.searchbar}
-          />
+          <div className={classes.searchBar}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <RiSearchFill className={classes.searchIcon} />
+              <input
+                type="search"
+                placeholder="Search..."
+                className={classes.searchbarInput}
+                value={searchWord}
+                onChange={handleSearchChange}
+              />
+            </div>
+          </div>
+          <div className={classes.searchResult}>
+            {searchResult
+              ? searchResult.map((user) => (
+                  <div className={classes.searchResultItem}>
+                    <img
+                      src={user.post ? user.post.url : noAvatar}
+                      className={classes.searchUserImg}
+                      alt=""
+                    />
+                    <div className={classes.searchResultItemLink}>
+                      <Link
+                        to={`/profile/${user.username}`}
+                        className={`${classes.searchLink} ${classes.searchName}`}
+                        onClick={handleSearchUserClick}
+                      >
+                        {user.name}
+                      </Link>
+                      <Link
+                        to={`/profile/${user.username}`}
+                        className={`${classes.searchLink} ${classes.searchUserName}`}
+                        onClick={handleSearchUserClick}
+                      >
+                        <i>@{user.username}</i>
+                      </Link>
+                    </div>
+                  </div>
+                ))
+              : null}
+          </div>
         </div>
         <div className={classes.right}>
           <div style={{ marginRight: "1rem" }}>
@@ -189,7 +317,7 @@ const Navbar = (props) => {
             </Link>
             <Link to="/" className={classes.iconLink}>
               <Badge badgeContent={props.n_notifications} color="primary">
-                <IoMdNotifications onClick={handleNotificationIconClick}/>
+                <IoMdNotifications onClick={handleNotificationIconClick} />
               </Badge>
             </Link>
             <Link to="/" className={classes.iconLink}>
@@ -209,7 +337,11 @@ const Navbar = (props) => {
             className={classes.userMenu}
             style={{ display: isOpen ? "block" : "none" }}
           >
-            <UserMenu currentUsername={props.currentUser?props.currentUser.username:null}/>
+            <UserMenu
+              currentUsername={
+                props.currentUser ? props.currentUser.username : null
+              }
+            />
           </div>
         </div>
       </div>

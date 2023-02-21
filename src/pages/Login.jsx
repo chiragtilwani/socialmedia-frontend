@@ -1,14 +1,15 @@
 import { makeStyles } from "@mui/styles";
 import axios from "axios";
-import { useContext, useRef } from "react";
+import { useRef,useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import * as React from "react";
 import Stack from "@mui/material/Stack";
+import { useSelector, useDispatch } from "react-redux";
+import { login, reset } from "../features/auth/authSlice";
 
-import { AuthContext } from "../context/AuthContext";
 import Sizes from "../Sizes";
 
 const useStyles = makeStyles({
@@ -153,13 +154,27 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 const Login = () => {
   const classes = useStyles();
-  const { user, dispatch } = useContext(AuthContext);
+  // const { user, dispatch } = useContext(AuthContext);
   const [open, setOpen] = React.useState(false);
   const [err, setErr] = React.useState();
   const [isFetching, setIsFetching] = React.useState(false);
   const username_email = useRef();
   const password = useRef();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user, isLoading, isError, message, isSuccess } = useSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (isError) {
+      setErr(message);
+    }
+    if (isSuccess || user) {
+      navigate("/");
+    }
+    dispatch(reset());
+  }, [user, isError, message, isSuccess, navigate, dispatch]);
 
   const handleClick = () => {
     setOpen(true);
@@ -175,23 +190,36 @@ const Login = () => {
 
   async function handleSubmit(evt) {
     evt.preventDefault();
-    setIsFetching(true);
-    try {
-      const res = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/users/login`,
-        {
-          username_email: username_email.current.value,
-          password: password.current.value,
-        }
-      );
-      dispatch({ type: "LOGIN", user: res.data });
-      window.localStorage.setItem("user", JSON.stringify(res.data));
-      navigate(-1);
-    } catch (err) {
-      setErr(err.response.data.message); //for setting error
-      setOpen(true);
-    }
-    setIsFetching(false);
+    const userData = {
+      username_email: username_email.current.value,
+      password: password.current.value,
+    };
+    console.log(userData);
+    dispatch(login(userData));
+    // dispatch(reset());
+    // if (isError) {
+    //   setErr(message);
+    //   setOpen(true);
+    // } else {
+    //   window.location.pathname = "/";
+    // }
+    // setIsFetching(true);
+    // try {
+    //   const res = await axios.post(
+    //     `${process.env.REACT_APP_BASE_URL}/users/login`,
+    //     {
+    //       username_email: username_email.current.value,
+    //       password: password.current.value,
+    //     }
+    //   );
+    //   dispatch({ type: "LOGIN", user: res.data });
+    //   window.localStorage.setItem("user", JSON.stringify(res.data));
+    //   navigate(-1);
+    // } catch (err) {
+    //   setErr(err.response.data.message); //for setting error
+    //   setOpen(true);
+    // }
+    // setIsFetching(false);
   }
 
   return (

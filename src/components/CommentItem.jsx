@@ -161,7 +161,7 @@ const CommentItem = (props) => {
         userId: props.currentUserId,
       }
     );
-    const res = await axios.get(
+    let res = await axios.get(
       `${process.env.REACT_APP_BASE_URL}/comments/${props.postId}`
     );
     props.setComments(res.data);

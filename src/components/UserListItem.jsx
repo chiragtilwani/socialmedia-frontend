@@ -1,7 +1,7 @@
 import { makeStyles } from "@mui/styles";
 import { useEffect, useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
-import noAvatar from "../assests/noAvatar.png";
+import noAvatar from "../assets/noAvatar.png";
 
 import Sizes from "../Sizes";
 import { Link } from "react-router-dom";
@@ -101,6 +101,7 @@ const UserListItem = (props) => {
     };
     getUser();
   }, [props.userId]);
+  console.log(user);
 
   function handleProfileClick() {
     setProfileClick((prevState) => !prevState);
@@ -112,7 +113,11 @@ const UserListItem = (props) => {
       `${process.env.REACT_APP_BASE_URL}/users/${props.userId}/follow`,
       { userId: props.currentUser._id }
     );
-    const res = await axios.get(
+    let res = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
+    );
+    props.setPosts(res.data);
+    res = await axios.get(
       `${process.env.REACT_APP_BASE_URL}/users?userId=${props.currentUser._id}`
     );
     props.setuser(res.data);
@@ -128,7 +133,11 @@ const UserListItem = (props) => {
       `${process.env.REACT_APP_BASE_URL}/users/${props.userId}/unfollow`,
       { userId: props.currentUser._id }
     );
-    const res = await axios.get(
+    let res = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
+    );
+    props.setPosts(res.data);
+    res = await axios.get(
       `${process.env.REACT_APP_BASE_URL}/users?userId=${props.currentUser._id}`
     );
     props.setuser(res.data);
@@ -141,6 +150,7 @@ const UserListItem = (props) => {
 
   return (
     <div className={classes.container}>
+      {console.log(props)}
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={profileClick}
@@ -149,7 +159,9 @@ const UserListItem = (props) => {
         <img
           className={classes.profileOverlay}
           src={
-            user.profilePicture ? `${user.profilePicture.url}` : `${noAvatar}`
+            user.profilePicture && user.profilePicture.url
+              ? `${user.profilePicture.url}`
+              : `${noAvatar}`
           }
           alt=""
         />
@@ -158,7 +170,9 @@ const UserListItem = (props) => {
         <img
           className={classes.profileImg}
           src={
-            user.profilePicture ? `${user.profilePicture.url}` : `${noAvatar}`
+            user.profilePicture && user.profilePicture.url
+              ? `${user.profilePicture.url}`
+              : `${noAvatar}`
           }
           alt=""
         />

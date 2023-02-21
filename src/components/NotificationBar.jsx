@@ -64,6 +64,9 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    // wordBreak:'break-word',
+    // backgroundColor:'red',
+   padding:'0 .5rem',
     textDecoration:'none',
     color:'black'
   },
@@ -90,6 +93,8 @@ function NotificationBar(props) {
         `${process.env.REACT_APP_BASE_URL}/users/clearNotifications`,
         { userId: props.currentUser._id }
       );
+      const res = await axios.get(`${process.env.REACT_APP_BASE_URL}/users?userId=${props.currentUser._id}`)
+      setNotifications(res.data.notifications)
     } catch (e) {
       console.log(e);
     }

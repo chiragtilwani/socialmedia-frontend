@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
 
-import noCover from "../assests/noCover.png";
-import noAvatar from "../assests/noAvatar.png";
+import noCover from "../assets/noCover.png";
+import noAvatar from "../assets/noAvatar.png";
 import axios from "axios";
 
 const useStyles = makeStyles({
@@ -103,6 +103,7 @@ const PofileCard = (props) => {
   function handleProfileClick() {
     setProfileClick((prevState) => !prevState);
   }
+  console.log(props.currentUser)
   return (
     <>
       <Backdrop
@@ -113,7 +114,7 @@ const PofileCard = (props) => {
         <img
           className={classes.profileCoverOverlay}
           src={
-            props.currentUser.profilePicture ? `${props.currentUser.profilePicture.url}` : `${noAvatar}`
+            props.currentUser.profilePicture.url ? `${props.currentUser.profilePicture.url}` : `${noAvatar}`
           }
           alt=""
         />
@@ -125,7 +126,7 @@ const PofileCard = (props) => {
       >
         <img
           className={classes.profileCoverOverlay}
-          src={props.currentUser.coverPicture ? `${props.currentUser.coverPicture.url}` : `${noCover}`}
+          src={props.currentUser.coverPicture.url ? `${props.currentUser.coverPicture.url}` : `${noCover}`}
           alt=""
         />
       </Backdrop>
@@ -135,7 +136,7 @@ const PofileCard = (props) => {
           <img
             className={classes.coverImg}
             src={
-              props.currentUser.coverPicture
+              props.currentUser.coverPicture.url
                 ? `${props.currentUser.coverPicture.url}`
                 : `${noCover}`
             }
@@ -149,7 +150,7 @@ const PofileCard = (props) => {
           <img
             className={classes.profileImg}
             src={
-              props.currentUser.profilePicture
+              props.currentUser.profilePicture.url
                 ? `${props.currentUser.profilePicture.url}`
                 : `${noAvatar}`
             }
@@ -168,12 +169,12 @@ const PofileCard = (props) => {
         <div className={classes.stats}>
           <div className={classes.innerStats}>
             <span style={{fontWeight: "bold", fontSize: ".9rem"  }}>Followers</span>
-            <span style={{ fontSize: ".8rem" }}>{props.currentUser.followers.length}</span>
+            <span style={{ fontSize: ".8rem" }}>{props.currentUser.followers?props.currentUser.followers.length:0}</span>
           </div>
           <div className={classes.centerLine}></div>
           <div className={classes.innerStats}>
             <span style={{ fontWeight: "bold", fontSize: ".9rem" }}>Followings</span>
-            <span style={{ fontSize: ".8rem" }}>{props.currentUser.followings.length}</span>
+            <span style={{ fontSize: ".8rem" }}>{props.currentUser.followings?props.currentUser.followings.length:0}</span>
           </div>
           <div className={classes.centerLine}></div>
           <div className={classes.innerStats}>

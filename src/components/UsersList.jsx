@@ -30,9 +30,10 @@ const useStyles = makeStyles({
 
 const UsersList = (props) => {
   const classes = useStyles();
+  console.log(props.users&&props.users)
   return (
     <div className={classes.container}>
-      {props.users.map((user) => (
+      {props.users?props.users.map((user) => (
         <UserListItem
           key={user}
           userId={user}
@@ -41,7 +42,7 @@ const UsersList = (props) => {
           setfriendSuggestion={props.setfriendSuggestion}
           setPosts={props.setPosts}
         />
-      ))}
+      )):null}
     </div>
   );
 };

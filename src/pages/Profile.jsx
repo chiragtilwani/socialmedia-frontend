@@ -12,9 +12,10 @@ import UsersList from "../components/UsersList";
 import Post from "../components/Post";
 import Sizes from "../Sizes";
 import BottomNavbar from "../components/navbar/BottomNavbar";
-import noAvatar from "../assests/noAvatar.png";
-import noCover from "../assests/noCover.png";
+import noAvatar from "../assets/noAvatar.png";
+import noCover from "../assets/noCover.png";
 import PostWithUrl from "../components/PostWithUrl";
+import NotificationBar from "../components/NotificationBar";
 
 const useStyles = makeStyles({
   outterContainer: {
@@ -239,6 +240,8 @@ const Profile = (props) => {
   const [currentUser, setCurrentUser] = useState(props);
   const [userPosts, setUserPosts] = useState(null);
   const [showPostWithUrl, setShowPostWithUrl] = useState(true);
+  const [openSideBar, setOpenSideBar] = useState(false);
+  const [n_notifications, setN_notifications] = useState(0);
 
   const { uname } = useParams();
 
@@ -320,6 +323,17 @@ const Profile = (props) => {
     );
     setUser(res.data);
   }
+
+  function OpenSideBar() {
+    setOpenSideBar(true);
+  }
+  function CloseSideBar() {
+    setOpenSideBar(false);
+  }
+
+  function handleNotificationCount(count) {
+    setN_notifications(count);
+  }
   return (
     <>
       {user ? (
@@ -353,7 +367,17 @@ const Profile = (props) => {
             />
           </Backdrop>
 
-          <Navbar />
+          {/* <NotificationBar
+            openSideBar={openSideBar}
+            CloseSideBar={CloseSideBar}
+            currentUser={user}
+            handleNotificationCount={handleNotificationCount}
+          />
+          <Navbar
+            currentUser={user}
+            OpenSideBar={OpenSideBar}
+            n_notifications={n_notifications}
+          /> */}
           <div className={classes.container}>
             <div className={classes.left}>
               <h2 className={classes.h2}>Followers</h2>
@@ -481,7 +505,13 @@ const Profile = (props) => {
                           (a, b) =>
                             new Date(b.createdAt) - new Date(a.createdAt)
                         )
-                        .map((post) => <Post key={post._id} {...post} currentUser={currentUser}/>)
+                        .map((post) => (
+                          <Post
+                            key={post._id}
+                            {...post}
+                            currentUser={currentUser}
+                          />
+                        ))
                     : null}
                 </div>
               ) : null}
