@@ -346,7 +346,7 @@ const Profile = (props) => {
             <img
               className={classes.profileCoverOverlay}
               src={
-                user.profilePicture
+                user.profilePicture.url
                   ? `${user.profilePicture.url}`
                   : `${noAvatar}`
               }
@@ -361,7 +361,7 @@ const Profile = (props) => {
             <img
               className={classes.profileCoverOverlay}
               src={
-                user.coverPicture ? `${user.coverPicture.url}` : `${noCover}`
+                user.coverPicture.url ? `${user.coverPicture.url}` : `${noCover}`
               }
               alt=""
             />
@@ -398,14 +398,14 @@ const Profile = (props) => {
                 {/* cover pic */}
                 <img
                   className={classes.coverPic}
-                  src={user.coverPicture ? user.coverPicture.url : noCover}
+                  src={user.coverPicture.url ? user.coverPicture.url : noCover}
                   alt=""
                   onClick={handleCoverClick}
                 ></img>
                 {/* profile pic */}
                 <img
                   className={classes.profilePic}
-                  src={user.profilePic ? user.profilePic.url : noAvatar}
+                  src={user.profilePicture.url ? user.profilePicture.url : noAvatar}
                   alt=""
                   onClick={handleProfileClick}
                 ></img>

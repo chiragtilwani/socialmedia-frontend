@@ -1,5 +1,10 @@
 import { makeStyles } from "@mui/styles";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import Loading from "../components/Loading";
 
 import Sizes from "../Sizes";
 
@@ -29,13 +34,15 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     backgroundColor: "white",
-    borderRadius:'.5rem',
+    borderRadius: ".5rem",
+    boxShadow:
+      "rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset",
     [Sizes.down("md")]: {
-        width: "100vw",
+      width: "100vw",
     },
-},
-cover: {
-      borderRadius:'.5rem .5rem 0rem 0rem',
+  },
+  cover: {
+    borderRadius: ".5rem .5rem 0rem 0rem",
     width: "100%",
     height: "15rem",
     display: "flex",
@@ -62,10 +69,10 @@ cover: {
     padding: "0.5rem",
     outline: "none",
   },
-  btnContainer:{
+  btnContainer: {
     display: "flex",
     alignItems: "center",
-    marginBottom:'1rem'
+    marginBottom: "1rem",
   },
   btn: {
     width: "7rem",
@@ -81,16 +88,71 @@ cover: {
     alignItems: "center",
     justifyContent: "center",
     textDecoration: "none",
-    marginLeft:'1.5rem',
+    marginLeft: "1.5rem",
     "&:hover": {
       opacity: 0.8,
+    },
+  },
+  postImgContainer: {
+    width: "100%",
+    height: "15rem",
+    position: "relative",
+    "&:hover": {
+      "& $postImgBackdrop": {
+        display: "flex",
+      },
+    },
+  },
+  postImg: {
+    width: "100%",
+    height: "15rem",
+    objectFit: "fill",
+    borderRadius: ".5rem .5rem 0 0",
+  },
+  postImgBackdrop: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    top: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    display: "none",
+    borderRadius: ".5rem .5rem 0 0",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  updateBtn: {
+    "&:hover": {
+      color: "var(--purple-1)",
+      backgroundColor: "white",
+      transitionDuration: ".2s",
+      opacity: 1,
     },
   },
 });
 
 const Update = (props) => {
   const classes = useStyles();
-  const navigate=useNavigate()
+  const navigate = useNavigate();
+
+  const [post, setPost] = useState();
+  const [url,setUrl] = useState();
+  const [desc,setDesc] = useState();
+  const [loading,setLoading] = useState(false);
+  const {user}=useSelector(state=>state.auth);
+
+  const { pid } = useParams();
+  useEffect(() => {
+    const fetchPost = async () => {
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/posts/${pid}`
+      );
+      setPost(res.data);
+      setDesc(res.data.desc)
+    };
+    if (pid) {
+      fetchPost();
+    }
+  }, [pid]);
 
   const dummyUser = {
     id: 1,
@@ -115,40 +177,69 @@ const Update = (props) => {
     likes: 700,
   };
 
-  function handleBack(){
-    navigate(-1)
+  function handleBack() {
+    navigate(-1);
+  }
+  function changePostImg(evt){
+    setLoading(true)
+    const fileName = evt.target.files[0].name
+    let idxDot = fileName.lastIndexOf(".") + 1;
+    let extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+    if (extFile === "jpg" || extFile === "jpeg" || extFile === "png") {
+      //TO DO
+      const file = evt.target.files[0]
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        setUrl(reader.result)
+      }
+      setLoading(false)
+    } else {
+      alert("Only jpg/jpeg and png files are allowed!");
+    }
+  }
+  async function handleUpdate(evt) {
+    setLoading(true)
+    await axios.patch(`${process.env.REACT_APP_BASE_URL}/posts/${post._id}`,{userId:user._id,url:url,desc:desc})
+    setLoading(false)
+    navigate(-1);
+  }
+  function changeDescription(evt){
+    setDesc(evt.target.value)
   }
   return (
     <div className={classes.outterContainer}>
       <div className={classes.container}>
         <div className={classes.card}>
-          <div
-            className={classes.cover}
-            style={{
-              background: props.postUpdate
-                ? `url(${dummyPost.postImg})`
-                : `url(${dummyUser.coverPicture})`,
-              backgroundSize: "100% 100%",
-              backgroundPosition: "center",
-            }}
-          >
-            {props.postUpdate ? null : (
-              <div
-                className={classes.profile}
-                style={{
-                  background: `url(${dummyUser.profilePicture})`,
-                  backgroundSize: "100% 100%",
-                  backgroundPosition: "center",
-                }}
-              ></div>
-            )}
-          </div>
-          {props.postUpdate ? (
-            <input
+          {props.postUpdate && post ? (
+            <div className={classes.postImgContainer} style={{display:post&&post.post.url?'block':'none'}}>
+              {loading?<Loading/>:<img src={url?url: post.post.url} className={classes.postImg} alt="" />}
+              <div className={classes.postImgBackdrop}>
+                <label htmlFor="updatePostImg">
+                  <span className={`${classes.btn} ${classes.updateBtn}`}>
+                    Edit
+                  </span>
+                </label>
+                <input
+                  type="file"
+                  id="updatePostImg"
+                  accept="image/png, image/jpg, image/jpeg"
+                  style={{ display: "none" }}
+                  value={""}
+                  onChange={changePostImg}
+                />
+              </div>
+            </div>
+          ) : (
+            <>{/*cover pic and profile pic*/}</>
+          )}
+          {props.postUpdate && post ? (
+            desc && <input
               type="text"
               className={`${classes.input}`}
-              value={dummyPost.desc}
+              value={desc}
               placeholder="description"
+              onChange={changeDescription}
             />
           ) : (
             <div className={classes.inputContainer}>
@@ -178,9 +269,13 @@ const Update = (props) => {
               </div>
             </div>
           )}
-          <div className={classes.btnContainer}>
-            <button className={classes.btn} onClick={handleBack}>Back</button>
-            <button className={classes.btn}>Update</button>
+          <div className={classes.btnContainer} style={{marginTop:'.5rem'}}>
+            <button className={classes.btn} onClick={handleBack}>
+              Back
+            </button>
+            <button className={classes.btn} onClick={handleUpdate}>
+              Update
+            </button>
           </div>
         </div>
       </div>

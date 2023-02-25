@@ -91,7 +91,6 @@ const Comment = (props) => {
     }
     fetchComments();
   }, [props.postId]);
-  console.log(props);
   const text = useRef("");
   async function handleSubmit(evt) {
     evt.preventDefault();

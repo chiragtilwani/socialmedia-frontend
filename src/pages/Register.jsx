@@ -176,7 +176,6 @@ const Register = () => {
       password: password.current.value,
       username: username.current.value,
     };
-    console.log(userData);
     dispatch(register(userData)); //sending user to register function in reducer
   }
   if (isLoading) {

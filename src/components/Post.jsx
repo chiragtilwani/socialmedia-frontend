@@ -173,7 +173,6 @@ const Post = (props) => {
   const [sharePost, setSharePost] = useState(false);
   const [changedCaption, setChangedCaption] = useState(props.desc);
 
-  // console.log(props)
   useEffect(() => {
     const fetchCreatorAndComment = async () => {
       let res = await axios.get(
@@ -205,7 +204,6 @@ const Post = (props) => {
     setShowComments((prevProp) => !prevProp);
   }
 
-  console.log(props.currentUser._id + " " + creator._id);
   async function handleDeleteClick() {
     try {
       await axios.delete(
@@ -250,7 +248,6 @@ const Post = (props) => {
     props.setPostsArray(res.data);
     setSharePost(false);
   }
-  console.log(changedCaption);
   return (
     <>
       {/* diaglog box for delete post */}
@@ -353,7 +350,7 @@ const Post = (props) => {
                   creator._id === props.currentUser._id ? "flex" : "none",
               }}
             >
-              <Link to="/update/post/1" className={classes.link}>
+              <Link to={`/update/post/${props._id}`} className={classes.link}>
                 <FaEdit className={classes.edit_delete_icon} title="Edit" />
               </Link>
               {/*here instead of 1 in 'to' attribute post id must come*/}

@@ -168,6 +168,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isError) {
+      setOpen(true)
       setErr(message);
     }
     if (isSuccess || user) {
@@ -194,7 +195,6 @@ const Login = () => {
       username_email: username_email.current.value,
       password: password.current.value,
     };
-    console.log(userData);
     dispatch(login(userData));
     // dispatch(reset());
     // if (isError) {

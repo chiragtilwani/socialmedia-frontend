@@ -41,7 +41,6 @@ function App() {
 
   return (
     <div className="App">
-      {console.log(currentUser)}
       {window.location.pathname === '/register' || window.location.pathname === '/login' ? null : user&&<><NotificationBar
         openSideBar={openSideBar}
         CloseSideBar={CloseSideBar}
@@ -59,7 +58,7 @@ function App() {
         <Route path='/register' element={<Register />} />
         <Route path='/profile/:uname' element={currentUser && <Profile {...currentUser} />} />
         <Route path='/update/post/:pid' element={<Update postUpdate={true} />} />
-        <Route path='/update/user/:uid' element={<Update postUpdate={false} />} />
+        <Route path='/update/user/:uid' element={currentUser&& <Update postUpdate={false} {...currentUser} />} />
       </Routes>
     </div>
   );

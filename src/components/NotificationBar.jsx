@@ -83,6 +83,7 @@ function NotificationBar(props) {
       setNotifications(res.data.notifications);
       props.handleNotificationCount(res.data.notifications.length);
     }
+    
     fetchNotifications();
   }, [props]);
 

@@ -103,7 +103,6 @@ const PofileCard = (props) => {
   function handleProfileClick() {
     setProfileClick((prevState) => !prevState);
   }
-  console.log(props.currentUser)
   return (
     <>
       <Backdrop

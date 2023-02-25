@@ -11,6 +11,7 @@ import axios from "axios";
 
 import Vdivider from "./Vdivider";
 import Hdivider from "./Hdivider";
+import noAvatar from '../assets/noAvatar.png'
 
 const useStyles = makeStyles({
   container: {
@@ -148,7 +149,6 @@ const UploadPost = (props) => {
     const file = evt.target.files[0];
     setPreviewVideo(URL.createObjectURL(file));
   }
-  console.log(previewVideo);
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -164,7 +164,6 @@ const UploadPost = (props) => {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log("Submit");
     // if (previewImg) {
       try {
         await axios.post(`${process.env.REACT_APP_BASE_URL}/posts/`, {
@@ -210,7 +209,8 @@ const UploadPost = (props) => {
           <div
             className={classes.profile}
             style={{
-              background: `url(${props.profile})`,
+              // background: `url(${props.currentUser.profilePicture.url})`,
+              background:props.currentUser.profilePicture.url?`url(${props.currentUser.profilePicture.url})`:`url(${noAvatar})`,
               backgroundSize: "100% 100%",
               backgroundPosition: "center",
             }}

@@ -18,7 +18,6 @@ export const register = createAsyncThunk('auth/register', async (user, thunkAPI)
         localStorage.setItem('user', JSON.stringify(res.data))//now res.data will also contain token
         return res.data
     } catch (err) {
-        console.log(err.response.data.message)
         const message = (err.response && err.response.data && err.response.data.message) || err.message || err.toString();//bcz error can be in any of them
         return thunkAPI.rejectWithValue(message)//this will send error message as payload
     }
@@ -30,7 +29,6 @@ export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {/
         localStorage.setItem('user', JSON.stringify(res.data))//now res.data will also contain token
         return res.data
     } catch (err) {
-        console.log(err.response.data.message)
         const message = (err.response && err.response.data && err.response.data.message) || err.message || err.toString();//bcz error can be in any of them
         return thunkAPI.rejectWithValue(message)//this will send error message as payload
     }

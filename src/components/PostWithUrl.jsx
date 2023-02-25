@@ -16,6 +16,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 import PostsWithUrlItem from "./PostsWithUrlItem";
 import axios from "axios";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(ru);
@@ -85,6 +86,7 @@ const useStyles = makeStyles({
 
 const PostWithUrl = (props) => {
   const classes = useStyles();
+  const navigate=useNavigate()
   const [backdropPost, setBackdropPost] = useState(null);
   const [open, setOpen] = useState(false);
   const [postsWithUrl, setPostsWithUrl] = useState(props.posts);
@@ -125,6 +127,10 @@ const PostWithUrl = (props) => {
     setDialogOpen(false);
   };
 
+  function handlePostUpdate(){
+    navigate(`/update/post/${backdropPost._id}`)
+  }
+
   return (
     <>
     <Dialog
@@ -155,7 +161,7 @@ const PostWithUrl = (props) => {
       >
         <div className={classes.overlayPost}>
           <div className={classes.delete_edit}>
-            <FaEdit />
+            <FaEdit onClick={handlePostUpdate}/>
             <MdDelete onClick={handleDialogOpen}/>
           </div>
           {backdropPost ? (

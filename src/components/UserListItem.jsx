@@ -101,7 +101,6 @@ const UserListItem = (props) => {
     };
     getUser();
   }, [props.userId]);
-  console.log(user);
 
   function handleProfileClick() {
     setProfileClick((prevState) => !prevState);
@@ -150,7 +149,6 @@ const UserListItem = (props) => {
 
   return (
     <div className={classes.container}>
-      {console.log(props)}
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={profileClick}
