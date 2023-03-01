@@ -13,7 +13,6 @@ import UserMenu from "./UserMenu";
 import Sizes from "../../Sizes";
 import { useEffect } from "react";
 import axios from "axios";
-import noAvatar from "../../assets/noAvatar.png";
 
 const useStyles = makeStyles({
   container: {
@@ -278,7 +277,7 @@ const Navbar = (props) => {
               ? searchResult.map((user) => (
                   <div className={classes.searchResultItem}>
                     <img
-                      src={user.post ? user.post.url : noAvatar}
+                      src={user.post ? user.post.url : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`}
                       className={classes.searchUserImg}
                       alt=""
                     />

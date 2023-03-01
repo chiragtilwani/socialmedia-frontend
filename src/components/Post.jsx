@@ -19,7 +19,6 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 import Comment from "./Comment";
-import noAvatar from "../assets/noAvatar.png";
 import Sizes from "../Sizes";
 import Hdivider from "./Hdivider";
 import Loading from "./Loading";
@@ -308,7 +307,7 @@ const Post = (props) => {
                 src={
                   props.profilePicture
                     ? `${props.profilePicture.url}`
-                    : `${noAvatar}`
+                    : `https://api.dicebear.com/5.x/avataaars/svg?seed=${creator.username}`
                 }
                 alt=""
               />

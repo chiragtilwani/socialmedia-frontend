@@ -86,22 +86,24 @@ const useStyles = makeStyles({
 
 const PostWithUrl = (props) => {
   const classes = useStyles();
-  const navigate=useNavigate()
+  const navigate = useNavigate();
+  // const {user}=useSelector(state=>state.auth)
   const [backdropPost, setBackdropPost] = useState(null);
   const [open, setOpen] = useState(false);
   const [postsWithUrl, setPostsWithUrl] = useState(props.posts);
   const [dialogOpen, setDialogOpen] = useState(false);
+  // console.log(user)
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  function handleSetBackdropPost(post,openBackdrop) {
+  function handleSetBackdropPost(post, openBackdrop) {
     setBackdropPost(post);
-    setOpen(openBackdrop)
+    setOpen(openBackdrop);
   }
 
-  async function handlePostDelete(evt){
+  async function handlePostDelete(evt) {
     evt.stopPropagation();
     try {
       await axios.delete(
@@ -112,8 +114,8 @@ const PostWithUrl = (props) => {
         `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
       );
       setPostsWithUrl(res.data.filter((post) => post.post.url));
-      setOpen(false)
-      setDialogOpen(false)
+      setOpen(false);
+      setDialogOpen(false);
     } catch (e) {
       console.log(e);
     }
@@ -127,24 +129,24 @@ const PostWithUrl = (props) => {
     setDialogOpen(false);
   };
 
-  function handlePostUpdate(){
-    navigate(`/update/post/${backdropPost._id}`)
+  function handlePostUpdate() {
+    navigate(`/update/post/${backdropPost._id}`);
   }
 
   return (
     <>
-    <Dialog
+      <Dialog
         open={dialogOpen}
         onClose={handleDialogClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {"Delete Post?"}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">{"Delete Post?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            You are going to delete this post permanently.<br/>Are you sure ?
+            You are going to delete this post permanently.
+            <br />
+            Are you sure ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -160,9 +162,17 @@ const PostWithUrl = (props) => {
         onClick={handleClose}
       >
         <div className={classes.overlayPost}>
-          <div className={classes.delete_edit}>
-            <FaEdit onClick={handlePostUpdate}/>
-            <MdDelete onClick={handleDialogOpen}/>
+          <div
+            className={classes.delete_edit}
+            style={{
+              display:
+                backdropPost && backdropPost.creatorId !== props.currentUser._id
+                  ? "none"
+                  : "",
+            }}
+          >
+            <FaEdit onClick={handlePostUpdate} />
+            <MdDelete onClick={handleDialogOpen} />
           </div>
           {backdropPost ? (
             <>
@@ -194,13 +204,15 @@ const PostWithUrl = (props) => {
         }}
       >
         <div className={classes.innerContainer}>
-          {postsWithUrl.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((post) => (
-            <PostsWithUrlItem
-            key={post._id}
-              {...post}
-              handleSetBackdropPost={handleSetBackdropPost}
-            />
-          ))}
+          {postsWithUrl
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .map((post) => (
+              <PostsWithUrlItem
+                key={post._id}
+                {...post}
+                handleSetBackdropPost={handleSetBackdropPost}
+              />
+            ))}
         </div>
       </div>
     </>

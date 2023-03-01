@@ -5,6 +5,11 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "../components/Loading";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
+import noCover from "../assets/noCover.png";
+import * as React from "react";
 
 import Sizes from "../Sizes";
 
@@ -16,6 +21,8 @@ const useStyles = makeStyles({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "var(--purple-2)",
+    zIndex: 3,
+    position: "absolute",
   },
   container: {
     width: "100vw",
@@ -57,6 +64,13 @@ const useStyles = makeStyles({
     boxShadow: "0rem 0rem .5rem .05rem var(--purple-2)",
     marginBottom: "-2.5rem",
     cursor: "pointer",
+    position: "absolute",
+    bottom: "2.5rem",
+    '&:hover':{
+      '& $profileImgBackdrop':{
+        display:'none'
+      }
+    }
   },
   inputContainer: {
     display: "flex",
@@ -95,7 +109,7 @@ const useStyles = makeStyles({
   },
   postImgContainer: {
     width: "100%",
-    height: "15rem",
+    height: "50vh",
     position: "relative",
     "&:hover": {
       "& $postImgBackdrop": {
@@ -105,11 +119,37 @@ const useStyles = makeStyles({
   },
   postImg: {
     width: "100%",
-    height: "15rem",
+    height: "100%",
     objectFit: "fill",
     borderRadius: ".5rem .5rem 0 0",
   },
   postImgBackdrop: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    top: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    display: "none",
+    borderRadius: ".5rem .5rem 0 0",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  profileImgBackdrop: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    top: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    display: "flex",
+    borderRadius: ".5rem .5rem 0 0",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "white",
+    fontWeight: "bold",
+    fontSize: "1.3rem",
+    letterSpacing: ".2rem",
+  },
+  coverImgBackdrop: {
     position: "absolute",
     width: "100%",
     height: "100%",
@@ -128,17 +168,66 @@ const useStyles = makeStyles({
       opacity: 1,
     },
   },
+  coverProfileContainer: {
+    borderRadius: ".5rem .5rem 0 0",
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  coverContainer: {
+    position: "relative",
+    width: "100%",
+    "&:hover": {
+      "& $coverImgBackdrop": {
+        display: "flex",
+      },
+    },
+  },
+  profileContainer: {
+    width: "5rem",
+    height: "5rem",
+    borderRadius: "50%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    border: ".2rem solid red",
+    position: "absolute",
+    bottom: "-2.5rem",
+    overflow: "hidden",
+    "&:hover": {
+      "$ &profileImgBackdrop": {
+        display: "none",
+      },
+    },
+  },
 });
 
 const Update = (props) => {
   const classes = useStyles();
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
 
   const [post, setPost] = useState();
-  const [url,setUrl] = useState();
-  const [desc,setDesc] = useState();
-  const [loading,setLoading] = useState(false);
-  const {user}=useSelector(state=>state.auth);
+  const [url, setUrl] = useState();
+  const [desc, setDesc] = useState();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState();
+  const [open, setOpen] = useState(false);
+  const [profileImg, setProfileImg] = useState();
+  const [coverImg, setCoverImg] = useState();
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
 
   const { pid } = useParams();
   useEffect(() => {
@@ -147,7 +236,7 @@ const Update = (props) => {
         `${process.env.REACT_APP_BASE_URL}/posts/${pid}`
       );
       setPost(res.data);
-      setDesc(res.data.desc)
+      setDesc(res.data.desc);
     };
     if (pid) {
       fetchPost();
@@ -180,106 +269,238 @@ const Update = (props) => {
   function handleBack() {
     navigate(-1);
   }
-  function changePostImg(evt){
-    setLoading(true)
-    const fileName = evt.target.files[0].name
+
+  function changePostImg(evt) {
+    setLoading(true);
+    const fileName = evt.target.files[0].name;
     let idxDot = fileName.lastIndexOf(".") + 1;
     let extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
     if (extFile === "jpg" || extFile === "jpeg" || extFile === "png") {
       //TO DO
-      const file = evt.target.files[0]
+      const file = evt.target.files[0];
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
-        setUrl(reader.result)
-      }
-      setLoading(false)
+        setUrl(reader.result);
+      };
+      setLoading(false);
     } else {
       alert("Only jpg/jpeg and png files are allowed!");
     }
   }
   async function handleUpdate(evt) {
-    setLoading(true)
-    await axios.patch(`${process.env.REACT_APP_BASE_URL}/posts/${post._id}`,{userId:user._id,url:url,desc:desc})
-    setLoading(false)
-    navigate(-1);
+    setLoading(true);
+    try {
+      await axios.patch(`${process.env.REACT_APP_BASE_URL}/posts/${post._id}`, {
+        userId: user._id,
+        url: url,
+        desc: desc,
+      });
+      navigate(-1);
+    } catch (err) {
+      setError(err.response.data.message);
+      setOpen(true);
+    }
+    setLoading(false);
   }
-  function changeDescription(evt){
-    setDesc(evt.target.value)
+  function changeDescription(evt) {
+    setDesc(evt.target.value);
+  }
+
+  function changeProfileImg(evt) {
+    setLoading(true);
+    const fileName = evt.target.files[0].name;
+    let idxDot = fileName.lastIndexOf(".") + 1;
+    let extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+    if (extFile === "jpg" || extFile === "jpeg" || extFile === "png") {
+      //TO DO
+      const file = evt.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        setProfileImg(reader.result);
+      };
+      setLoading(false);
+    } else {
+      alert("Only jpg/jpeg and png files are allowed!");
+    }
+  }
+  function changeCoverImg(evt) {
+    setLoading(true);
+    const fileName = evt.target.files[0].name;
+    let idxDot = fileName.lastIndexOf(".") + 1;
+    let extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+    if (extFile === "jpg" || extFile === "jpeg" || extFile === "png") {
+      //TO DO
+      const file = evt.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        setCoverImg(reader.result);
+      };
+      setLoading(false);
+    } else {
+      alert("Only jpg/jpeg and png files are allowed!");
+    }
   }
   return (
-    <div className={classes.outterContainer}>
-      <div className={classes.container}>
-        <div className={classes.card}>
-          {props.postUpdate && post ? (
-            <div className={classes.postImgContainer} style={{display:post&&post.post.url?'block':'none'}}>
-              {loading?<Loading/>:<img src={url?url: post.post.url} className={classes.postImg} alt="" />}
-              <div className={classes.postImgBackdrop}>
-                <label htmlFor="updatePostImg">
-                  <span className={`${classes.btn} ${classes.updateBtn}`}>
-                    Edit
-                  </span>
-                </label>
-                <input
-                  type="file"
-                  id="updatePostImg"
-                  accept="image/png, image/jpg, image/jpeg"
-                  style={{ display: "none" }}
-                  value={""}
-                  onChange={changePostImg}
-                />
+    <>
+      <Stack spacing={2} sx={{ width: "100%" }}>
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+          <Alert
+            onClose={handleClose}
+            severity="warning"
+            sx={{ width: "100%" }}
+          >
+            {error}
+          </Alert>
+        </Snackbar>
+      </Stack>
+      <div className={classes.outterContainer}>
+        <div className={classes.container}>
+          <div className={classes.card}>
+            {props.postUpdate && post ? (
+              <div
+                className={classes.postImgContainer}
+                style={{ display: post && post.post.url ? "block" : "none" }}
+              >
+                {loading ? (
+                  <Loading />
+                ) : (
+                  <img
+                    src={url ? url : post.post.url}
+                    className={classes.postImg}
+                    alt=""
+                  />
+                )}
+                <div className={classes.postImgBackdrop}>
+                  <label htmlFor="updatePostImg">
+                    <span className={`${classes.btn} ${classes.updateBtn}`}>
+                      Edit
+                    </span>
+                  </label>
+                  <input
+                    type="file"
+                    id="updatePostImg"
+                    accept="image/png, image/jpg, image/jpeg"
+                    style={{ display: "none" }}
+                    value={""}
+                    onChange={changePostImg}
+                  />
+                </div>
               </div>
-            </div>
-          ) : (
-            <>{/*cover pic and profile pic*/}</>
-          )}
-          {props.postUpdate && post ? (
-            desc && <input
-              type="text"
-              className={`${classes.input}`}
-              value={desc}
-              placeholder="description"
-              onChange={changeDescription}
-            />
-          ) : (
-            <div className={classes.inputContainer}>
-              <div>
-                <span>Name : </span>
+            ) : (
+              <div className={classes.coverProfileContainer}>
+                {/*cover pic and profile pic*/}
+                <div className={classes.coverContainer}>
+                  <img
+                    src={
+                      coverImg
+                        ? `${coverImg}`
+                        : props.coverPicture.url
+                        ? `${props.coverPicture.url}`
+                        : `${noCover}`
+                    }
+                    className={classes.cover}
+                    alt=""
+                  />
+                  <div className={classes.coverImgBackdrop}>
+                    <label htmlFor="coverImgInput">
+                      <span className={`${classes.btn} ${classes.updateBtn}`}>
+                        Edit
+                      </span>
+                    </label>
+                  </div>
+                  <input
+                    type="file"
+                    id="coverImgInput"
+                    accept="image/png, image/jpg, image/jpeg"
+                    style={{ display: "none" }}
+                    value={""}
+                    onChange={changeCoverImg}
+                  />
+                </div>
+                <div className={classes.profileContainer}>
+                  <img
+                    src={
+                      profileImg
+                        ? `${profileImg}`
+                        : props.profilePicture.url
+                        ? `${props.profilePicture.url}`
+                        : `https://api.dicebear.com/5.x/avataaars/svg?seed=${props.username}`
+                    }
+                    className={classes.profile}
+                    alt=""
+                  />
+                  <div className={classes.profileImgBackdrop}>
+                    <label htmlFor="profileImgInput">
+                      <span className={classes.profileUpdateBtn}>Edit</span>
+                    </label>
+                  </div>
+                  <input
+                    type="file"
+                    id="profileImgInput"
+                    accept="image/png, image/jpg, image/jpeg"
+                    style={{ display: "none" }}
+                    value={""}
+                    onChange={changeProfileImg}
+                  />
+                </div>
+              </div>
+            )}
+            {props.postUpdate && post ? (
+              desc && (
                 <input
                   type="text"
                   className={`${classes.input}`}
-                  value={dummyUser.name}
+                  value={desc}
+                  placeholder="description"
+                  onChange={changeDescription}
                 />
+              )
+            ) : (
+              <div className={classes.inputContainer}>
+                <div>
+                  <span>Name : </span>
+                  <input
+                    type="text"
+                    className={`${classes.input}`}
+                    value={dummyUser.name}
+                  />
+                </div>
+                <div>
+                  <span>Username : </span>
+                  <input
+                    type="text"
+                    className={`${classes.input}`}
+                    value={dummyUser.username}
+                  />
+                </div>
+                <div>
+                  <span>Bio : </span>
+                  <input
+                    type="text"
+                    className={`${classes.name} ${classes.input}`}
+                    value={dummyUser.bio}
+                  />
+                </div>
               </div>
-              <div>
-                <span>Username : </span>
-                <input
-                  type="text"
-                  className={`${classes.input}`}
-                  value={dummyUser.username}
-                />
-              </div>
-              <div>
-                <span>Bio : </span>
-                <input
-                  type="text"
-                  className={`${classes.name} ${classes.input}`}
-                  value={dummyUser.bio}
-                />
-              </div>
+            )}
+            <div
+              className={classes.btnContainer}
+              style={{ marginTop: ".5rem" }}
+            >
+              <button className={classes.btn} onClick={handleBack}>
+                Back
+              </button>
+              <button className={classes.btn} onClick={handleUpdate}>
+                Update
+              </button>
             </div>
-          )}
-          <div className={classes.btnContainer} style={{marginTop:'.5rem'}}>
-            <button className={classes.btn} onClick={handleBack}>
-              Back
-            </button>
-            <button className={classes.btn} onClick={handleUpdate}>
-              Update
-            </button>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

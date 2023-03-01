@@ -12,7 +12,6 @@ import UsersList from "../components/UsersList";
 import Post from "../components/Post";
 import Sizes from "../Sizes";
 import BottomNavbar from "../components/navbar/BottomNavbar";
-import noAvatar from "../assets/noAvatar.png";
 import noCover from "../assets/noCover.png";
 import PostWithUrl from "../components/PostWithUrl";
 import NotificationBar from "../components/NotificationBar";
@@ -130,6 +129,7 @@ const useStyles = makeStyles({
     boxShadow: "0rem 0rem .5rem .05rem var(--purple-2)",
     marginLeft: "2rem",
     cursor: "pointer",
+    backgroundColor:'white'
   },
   details: {
     width: "100%",
@@ -207,8 +207,8 @@ const useStyles = makeStyles({
     marginBottom: "2rem",
   },
   profileOverlay: {
-    width: "100%",
-    height: "100%",
+    width: "25rem",
+    height: "25rem",
   },
   postTypeSelector: {
     backgroundColor: "white",
@@ -344,11 +344,11 @@ const Profile = (props) => {
             onClick={handleProfileClick}
           >
             <img
-              className={classes.profileCoverOverlay}
+              className={classes.profileOverlay}
               src={
                 user.profilePicture.url
                   ? `${user.profilePicture.url}`
-                  : `${noAvatar}`
+                  : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
               }
               alt=""
             />
@@ -405,7 +405,7 @@ const Profile = (props) => {
                 {/* profile pic */}
                 <img
                   className={classes.profilePic}
-                  src={user.profilePicture.url ? user.profilePicture.url : noAvatar}
+                  src={user.profilePicture.url ? user.profilePicture.url : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`}
                   alt=""
                   onClick={handleProfileClick}
                 ></img>
@@ -460,7 +460,7 @@ const Profile = (props) => {
               {/* post uploader */}
               <UploadPost
                 profile={
-                  user.profilePicture ? user.profilePicture.url : noAvatar
+                  user.profilePicture ? user.profilePicture.url : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
                 }
                 currentUser={user}
               />

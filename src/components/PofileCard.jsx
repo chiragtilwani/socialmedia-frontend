@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
 
 import noCover from "../assets/noCover.png";
-import noAvatar from "../assets/noAvatar.png";
 import axios from "axios";
 
 const useStyles = makeStyles({
@@ -46,6 +45,7 @@ const useStyles = makeStyles({
     width: "100%",
     height: "100%",
     objectFit: "fill",
+    backgroundColor:'white'
   },
   name: {
     marginTop: "-1.5rem",
@@ -86,8 +86,8 @@ const useStyles = makeStyles({
     backgroundColor: "var(--purple-3)",
   },
   profileCoverOverlay: {
-    width: "auto",
-    height: "auto",
+    width: "25rem",
+    height: "25rem",
     objectFit: "fill",
   },
 });
@@ -113,7 +113,7 @@ const PofileCard = (props) => {
         <img
           className={classes.profileCoverOverlay}
           src={
-            props.currentUser.profilePicture.url ? `${props.currentUser.profilePicture.url}` : `${noAvatar}`
+            props.currentUser.profilePicture.url ? `${props.currentUser.profilePicture.url}` : `https://api.dicebear.com/5.x/avataaars/svg?seed=${props.currentUser.username}`
           }
           alt=""
         />
@@ -151,7 +151,7 @@ const PofileCard = (props) => {
             src={
               props.currentUser.profilePicture.url
                 ? `${props.currentUser.profilePicture.url}`
-                : `${noAvatar}`
+                : `https://api.dicebear.com/5.x/avataaars/svg?seed=${props.currentUser.username}`
             }
             alt=""
           />

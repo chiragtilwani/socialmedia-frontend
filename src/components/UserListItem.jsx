@@ -1,7 +1,6 @@
 import { makeStyles } from "@mui/styles";
 import { useEffect, useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
-import noAvatar from "../assets/noAvatar.png";
 
 import Sizes from "../Sizes";
 import { Link } from "react-router-dom";
@@ -159,7 +158,7 @@ const UserListItem = (props) => {
           src={
             user.profilePicture && user.profilePicture.url
               ? `${user.profilePicture.url}`
-              : `${noAvatar}`
+              : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
           }
           alt=""
         />
@@ -170,7 +169,7 @@ const UserListItem = (props) => {
           src={
             user.profilePicture && user.profilePicture.url
               ? `${user.profilePicture.url}`
-              : `${noAvatar}`
+              : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
           }
           alt=""
         />

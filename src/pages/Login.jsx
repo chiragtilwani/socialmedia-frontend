@@ -21,6 +21,8 @@ const useStyles = makeStyles({
     alignItems: "center",
     flexDirection: "column",
     backgroundColor: "var(--purple-2)",
+    zIndex:3,
+    position: "absolute",
   },
   card: {
     width: "50%",

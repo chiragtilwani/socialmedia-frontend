@@ -41,7 +41,7 @@ function App() {
 
   return (
     <div className="App">
-      {window.location.pathname === '/register' || window.location.pathname === '/login' ? null : user&&<><NotificationBar
+      {window.location.pathname === '/register' || window.location.pathname === '/login'? null : user&&<><NotificationBar
         openSideBar={openSideBar}
         CloseSideBar={CloseSideBar}
         currentUser={currentUser}

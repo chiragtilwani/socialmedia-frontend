@@ -11,7 +11,6 @@ import axios from "axios";
 
 import Vdivider from "./Vdivider";
 import Hdivider from "./Hdivider";
-import noAvatar from '../assets/noAvatar.png'
 
 const useStyles = makeStyles({
   container: {
@@ -210,7 +209,7 @@ const UploadPost = (props) => {
             className={classes.profile}
             style={{
               // background: `url(${props.currentUser.profilePicture.url})`,
-              background:props.currentUser.profilePicture.url?`url(${props.currentUser.profilePicture.url})`:`url(${noAvatar})`,
+              background:props.currentUser.profilePicture.url?`url(${props.currentUser.profilePicture.url})`:`url(https://api.dicebear.com/5.x/avataaars/svg?seed=${props.currentUser.username})`,
               backgroundSize: "100% 100%",
               backgroundPosition: "center",
             }}
