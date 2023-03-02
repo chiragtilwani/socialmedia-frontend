@@ -17,11 +17,17 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
+import * as React from "react";
 
 import Comment from "./Comment";
 import Sizes from "../Sizes";
 import Hdivider from "./Hdivider";
 import Loading from "./Loading";
+import likeSound from "../assets/likeSound.mp3";
+import { useSelector } from "react-redux";
 
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(ru);
@@ -33,7 +39,7 @@ const useStyles = makeStyles({
     backgroundColor: "white",
     marginBottom: "2rem",
     padding: ".5rem 0rem",
-    boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+    w: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
     "&:hover": {
       "& $iconContainer": {
         transform: "scale(1)",
@@ -171,6 +177,22 @@ const Post = (props) => {
   const [currentPost, setCurrentPost] = useState(props);
   const [sharePost, setSharePost] = useState(false);
   const [changedCaption, setChangedCaption] = useState(props.desc);
+  const [error, setError] = useState();
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+
+  const {user}=useSelector(state=>state.auth)
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
 
   useEffect(() => {
     const fetchCreatorAndComment = async () => {
@@ -188,6 +210,8 @@ const Post = (props) => {
   }, [currentPost.creatorId, currentPost._id]);
 
   async function handleLikeClick() {
+    const audio = new Audio(likeSound);
+    audio.play();
     setLiked((prevProp) => !prevProp);
     await axios.patch(
       `${process.env.REACT_APP_BASE_URL}/posts/${currentPost._id}/likedislike`,
@@ -207,14 +231,22 @@ const Post = (props) => {
     try {
       await axios.delete(
         `${process.env.REACT_APP_BASE_URL}/posts/${props._id}`,
-        { data: { userId: props.currentUser._id } }
+        { data: { userId: props.currentUser._id },
+        
+          headers: {
+            authorization: "Bearer " + user.token,
+          },
+         }
       );
       const res = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
       );
       props.setPostsArray(res.data);
+      
     } catch (e) {
-      console.log(e);
+      console.log(e)
+     setError(e.response.data.message)
+     setOpenSnackbar(true)
     }
   }
 
@@ -250,6 +282,17 @@ const Post = (props) => {
   return (
     <>
       {/* diaglog box for delete post */}
+      <Stack spacing={2} sx={{ width: "100%" }}>
+        <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity="warning"
+            sx={{ width: "100%" }}
+          >
+            {error}
+          </Alert>
+        </Snackbar>
+      </Stack>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -302,11 +345,12 @@ const Post = (props) => {
         <div className={classes.header}>
           <div className={classes.profileImgContainer}>
             <Link to={`/profile/${creator.username}`} className={classes.name}>
+              {console.log(creator)}
               <img
                 className={classes.profileImg}
                 src={
-                  props.profilePicture
-                    ? `${props.profilePicture.url}`
+                  creator.profilePicture && creator.profilePicture.url
+                    ? `${creator.profilePicture.url}`
                     : `https://api.dicebear.com/5.x/avataaars/svg?seed=${creator.username}`
                 }
                 alt=""

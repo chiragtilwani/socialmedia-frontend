@@ -66,11 +66,11 @@ const useStyles = makeStyles({
     cursor: "pointer",
     position: "absolute",
     bottom: "2.5rem",
-    '&:hover':{
-      '& $profileImgBackdrop':{
-        display:'none'
-      }
-    }
+    // "&:hover": {
+    //   "& $profileImgBackdrop": {
+    //     display: "none",
+    //   },
+    // },
   },
   inputContainer: {
     display: "flex",
@@ -139,8 +139,8 @@ const useStyles = makeStyles({
     width: "100%",
     height: "100%",
     top: 0,
-    backgroundColor: "rgba(0,0,0,0.5)",
     display: "flex",
+    backgroundColor: "rgba(0,0,0,0.5)",
     borderRadius: ".5rem .5rem 0 0",
     alignItems: "center",
     justifyContent: "center",
@@ -148,6 +148,11 @@ const useStyles = makeStyles({
     fontWeight: "bold",
     fontSize: "1.3rem",
     letterSpacing: ".2rem",
+    transitionDuration: ".2s",
+    opacity: 0,
+    "&:hover": {
+      opacity: 1,
+    },
   },
   coverImgBackdrop: {
     position: "absolute",
@@ -155,10 +160,15 @@ const useStyles = makeStyles({
     height: "100%",
     top: 0,
     backgroundColor: "rgba(0,0,0,0.5)",
-    display: "none",
+    display: "flex",
     borderRadius: ".5rem .5rem 0 0",
     justifyContent: "center",
     alignItems: "center",
+    transitionDuration: ".2s",
+    opacity: 0,
+    "&:hover": {
+      opacity: 1,
+    },
   },
   updateBtn: {
     "&:hover": {
@@ -178,11 +188,6 @@ const useStyles = makeStyles({
   coverContainer: {
     position: "relative",
     width: "100%",
-    "&:hover": {
-      "& $coverImgBackdrop": {
-        display: "flex",
-      },
-    },
   },
   profileContainer: {
     width: "5rem",
@@ -195,6 +200,7 @@ const useStyles = makeStyles({
     position: "absolute",
     bottom: "-2.5rem",
     overflow: "hidden",
+    backgroundColor: "white",
     "&:hover": {
       "$ &profileImgBackdrop": {
         display: "none",
@@ -216,6 +222,11 @@ const Update = (props) => {
   const [open, setOpen] = useState(false);
   const [profileImg, setProfileImg] = useState();
   const [coverImg, setCoverImg] = useState();
+  const [userProfileData, setUserProfileData] = useState({
+    name: props.name,
+    username: props.username,
+    bio: props.bio,
+  });
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -243,29 +254,6 @@ const Update = (props) => {
     }
   }, [pid]);
 
-  const dummyUser = {
-    id: 1,
-    name: "rahul tilwani",
-    username: "rtilwani03",
-    profilePicture:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTazRa-UljlJ57z2tqmSNSz5X_C5RkD1S-Nfj46b_ZO&s",
-    coverPicture:
-      "https://images.pexels.com/photos/1323206/pexels-photo-1323206.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    bio: "this is dummy bio",
-    followers: 1234,
-    followings: 750,
-  };
-
-  const dummyPost = {
-    id: 3,
-    name: "chirag tilwani",
-    username: "chiragTilwani",
-    desc: "this is third dummy post",
-    postImg:
-      "https://images.pexels.com/photos/1004014/pexels-photo-1004014.jpeg?cs=srgb&dl=pexels-min-an-1004014.jpg&fm=jpg",
-    likes: 700,
-  };
-
   function handleBack() {
     navigate(-1);
   }
@@ -290,19 +278,54 @@ const Update = (props) => {
   }
   async function handleUpdate(evt) {
     setLoading(true);
-    try {
-      await axios.patch(`${process.env.REACT_APP_BASE_URL}/posts/${post._id}`, {
-        userId: user._id,
-        url: url,
-        desc: desc,
-      });
-      navigate(-1);
-    } catch (err) {
-      setError(err.response.data.message);
-      setOpen(true);
+    if (props.postUpdate) {
+      try {
+        await axios.patch(
+          `${process.env.REACT_APP_BASE_URL}/posts/${post._id}`,
+          {
+            userId: user._id,
+            url: url,
+            desc: desc,
+          },
+          {
+            headers: {
+              authorization: "Bearer " + user.token,
+            },
+          }
+        );
+        navigate(-1);
+      } catch (err) {
+        setError(err.response.data.message);
+        setOpen(true);
+      }
+    } else {
+      try {
+        const profileUrl = profileImg || null;
+        const coverUrl = coverImg || null;
+        await axios.patch(
+          `${process.env.REACT_APP_BASE_URL}/users/${props._id}`,
+          {
+            ...userProfileData,
+            profileUrl,
+            coverUrl,
+            userId: user._id,
+          },
+          {
+            headers: {
+              authorization: "Bearer " + user.token,
+            },
+          }
+        );
+        navigate(`/profile/${userProfileData.username}`);
+      } catch (err) {
+        setError(err.response.data.message);
+        setOpen(true);
+      }
     }
     setLoading(false);
   }
+
+  console.log(props);
   function changeDescription(evt) {
     setDesc(evt.target.value);
   }
@@ -343,6 +366,13 @@ const Update = (props) => {
       alert("Only jpg/jpeg and png files are allowed!");
     }
   }
+
+  function handleUpdateProfileInput(evt) {
+    setUserProfileData({
+      ...userProfileData,
+      [evt.target.name]: evt.target.value,
+    });
+  }
   return (
     <>
       <Stack spacing={2} sx={{ width: "100%" }}>
@@ -358,146 +388,156 @@ const Update = (props) => {
       </Stack>
       <div className={classes.outterContainer}>
         <div className={classes.container}>
-          <div className={classes.card}>
-            {props.postUpdate && post ? (
-              <div
-                className={classes.postImgContainer}
-                style={{ display: post && post.post.url ? "block" : "none" }}
-              >
-                {loading ? (
-                  <Loading />
-                ) : (
-                  <img
-                    src={url ? url : post.post.url}
-                    className={classes.postImg}
-                    alt=""
-                  />
-                )}
-                <div className={classes.postImgBackdrop}>
-                  <label htmlFor="updatePostImg">
-                    <span className={`${classes.btn} ${classes.updateBtn}`}>
-                      Edit
-                    </span>
-                  </label>
-                  <input
-                    type="file"
-                    id="updatePostImg"
-                    accept="image/png, image/jpg, image/jpeg"
-                    style={{ display: "none" }}
-                    value={""}
-                    onChange={changePostImg}
-                  />
-                </div>
-              </div>
-            ) : (
-              <div className={classes.coverProfileContainer}>
-                {/*cover pic and profile pic*/}
-                <div className={classes.coverContainer}>
-                  <img
-                    src={
-                      coverImg
-                        ? `${coverImg}`
-                        : props.coverPicture.url
-                        ? `${props.coverPicture.url}`
-                        : `${noCover}`
-                    }
-                    className={classes.cover}
-                    alt=""
-                  />
-                  <div className={classes.coverImgBackdrop}>
-                    <label htmlFor="coverImgInput">
+          {loading ? (
+            <Loading />
+          ) : (
+            <div className={classes.card}>
+              {props.postUpdate && post ? (
+                <div
+                  className={classes.postImgContainer}
+                  style={{ display: post && post.post.url ? "block" : "none" }}
+                >
+                  {loading ? (
+                    <Loading />
+                  ) : (
+                    <img
+                      src={url ? url : post.post.url}
+                      className={classes.postImg}
+                      alt=""
+                    />
+                  )}
+                  <div className={classes.postImgBackdrop}>
+                    <label htmlFor="updatePostImg">
                       <span className={`${classes.btn} ${classes.updateBtn}`}>
                         Edit
                       </span>
                     </label>
+                    <input
+                      type="file"
+                      id="updatePostImg"
+                      accept="image/png, image/jpg, image/jpeg"
+                      style={{ display: "none" }}
+                      value={""}
+                      onChange={changePostImg}
+                    />
                   </div>
-                  <input
-                    type="file"
-                    id="coverImgInput"
-                    accept="image/png, image/jpg, image/jpeg"
-                    style={{ display: "none" }}
-                    value={""}
-                    onChange={changeCoverImg}
-                  />
                 </div>
-                <div className={classes.profileContainer}>
-                  <img
-                    src={
-                      profileImg
-                        ? `${profileImg}`
-                        : props.profilePicture.url
-                        ? `${props.profilePicture.url}`
-                        : `https://api.dicebear.com/5.x/avataaars/svg?seed=${props.username}`
-                    }
-                    className={classes.profile}
-                    alt=""
-                  />
-                  <div className={classes.profileImgBackdrop}>
-                    <label htmlFor="profileImgInput">
-                      <span className={classes.profileUpdateBtn}>Edit</span>
-                    </label>
+              ) : (
+                <div className={classes.coverProfileContainer}>
+                  {/*cover pic and profile pic*/}
+                  <div className={classes.coverContainer}>
+                    <img
+                      src={
+                        coverImg
+                          ? `${coverImg}`
+                          : props.coverPicture&&props.coverPicture.url
+                          ? `${props.coverPicture.url}`
+                          : `${noCover}`
+                      }
+                      className={classes.cover}
+                      alt=""
+                    />
+                    <div className={classes.coverImgBackdrop}>
+                      <label htmlFor="coverImgInput">
+                        <span className={`${classes.btn} ${classes.updateBtn}`}>
+                          Edit
+                        </span>
+                      </label>
+                    </div>
+                    <input
+                      type="file"
+                      id="coverImgInput"
+                      accept="image/png, image/jpg, image/jpeg"
+                      style={{ display: "none" }}
+                      value={""}
+                      onChange={changeCoverImg}
+                    />
                   </div>
-                  <input
-                    type="file"
-                    id="profileImgInput"
-                    accept="image/png, image/jpg, image/jpeg"
-                    style={{ display: "none" }}
-                    value={""}
-                    onChange={changeProfileImg}
-                  />
+                  <div className={classes.profileContainer}>
+                    <img
+                      src={
+                        profileImg
+                          ? `${profileImg}`
+                          : props.profilePicture&&props.profilePicture.url
+                          ? `${props.profilePicture.url}`
+                          : `https://api.dicebear.com/5.x/avataaars/svg?seed=${props.username}`
+                      }
+                      className={classes.profile}
+                      alt=""
+                    />
+                    <div className={classes.profileImgBackdrop}>
+                      <label htmlFor="profileImgInput">
+                        <span className={classes.profileUpdateBtn}>Edit</span>
+                      </label>
+                    </div>
+                    <input
+                      type="file"
+                      id="profileImgInput"
+                      accept="image/png, image/jpg, image/jpeg"
+                      style={{ display: "none" }}
+                      value={""}
+                      onChange={changeProfileImg}
+                    />
+                  </div>
                 </div>
-              </div>
-            )}
-            {props.postUpdate && post ? (
-              desc && (
-                <input
-                  type="text"
-                  className={`${classes.input}`}
-                  value={desc}
-                  placeholder="description"
-                  onChange={changeDescription}
-                />
-              )
-            ) : (
-              <div className={classes.inputContainer}>
-                <div>
-                  <span>Name : </span>
+              )}
+              {props.postUpdate && post ? (
+                desc && (
                   <input
                     type="text"
                     className={`${classes.input}`}
-                    value={dummyUser.name}
+                    value={desc}
+                    placeholder="description"
+                    onChange={changeDescription}
                   />
+                )
+              ) : (
+                <div className={classes.inputContainer}>
+                  <div>
+                    <span>Name : </span>
+                    <input
+                      type="text"
+                      className={`${classes.input}`}
+                      value={userProfileData.name}
+                      name="name"
+                      onChange={handleUpdateProfileInput}
+                    />
+                  </div>
+                  <div>
+                    <span>Username : </span>
+                    <input
+                      type="text"
+                      className={`${classes.input}`}
+                      value={userProfileData.username}
+                      name="username"
+                      onChange={handleUpdateProfileInput}
+                    />
+                  </div>
+                  <div>
+                    <span>Bio : </span>
+                    <input
+                      type="text"
+                      className={`${classes.name} ${classes.input}`}
+                      value={userProfileData.bio}
+                      name="bio"
+                      onChange={handleUpdateProfileInput}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <span>Username : </span>
-                  <input
-                    type="text"
-                    className={`${classes.input}`}
-                    value={dummyUser.username}
-                  />
-                </div>
-                <div>
-                  <span>Bio : </span>
-                  <input
-                    type="text"
-                    className={`${classes.name} ${classes.input}`}
-                    value={dummyUser.bio}
-                  />
-                </div>
+              )}
+              <div
+                className={classes.btnContainer}
+                style={{ marginTop: ".5rem" }}
+              >
+                <button className={classes.btn} onClick={handleBack}>
+                  Back
+                </button>
+                <button className={classes.btn} onClick={handleUpdate}>
+                  Update
+                </button>
               </div>
-            )}
-            <div
-              className={classes.btnContainer}
-              style={{ marginTop: ".5rem" }}
-            >
-              <button className={classes.btn} onClick={handleBack}>
-                Back
-              </button>
-              <button className={classes.btn} onClick={handleUpdate}>
-                Update
-              </button>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </>

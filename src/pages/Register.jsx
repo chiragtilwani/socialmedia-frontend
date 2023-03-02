@@ -229,12 +229,6 @@ const Register = () => {
                 Login
               </Link>
             </p>
-            <p className={classes.homePageLink}>
-              Back to{" "}
-              <Link to="/" style={{ fontWeight: "900" }}>
-                Home
-              </Link>
-            </p>
           </div>
         </div>
         <div className={classes.right}>

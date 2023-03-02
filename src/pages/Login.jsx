@@ -198,30 +198,6 @@ const Login = () => {
       password: password.current.value,
     };
     dispatch(login(userData));
-    // dispatch(reset());
-    // if (isError) {
-    //   setErr(message);
-    //   setOpen(true);
-    // } else {
-    //   window.location.pathname = "/";
-    // }
-    // setIsFetching(true);
-    // try {
-    //   const res = await axios.post(
-    //     `${process.env.REACT_APP_BASE_URL}/users/login`,
-    //     {
-    //       username_email: username_email.current.value,
-    //       password: password.current.value,
-    //     }
-    //   );
-    //   dispatch({ type: "LOGIN", user: res.data });
-    //   window.localStorage.setItem("user", JSON.stringify(res.data));
-    //   navigate(-1);
-    // } catch (err) {
-    //   setErr(err.response.data.message); //for setting error
-    //   setOpen(true);
-    // }
-    // setIsFetching(false);
   }
 
   return (
@@ -298,12 +274,6 @@ const Login = () => {
             <Link to="/" style={{ fontWeight: "900" }}>
               Forgot Password
             </Link>
-            <p className={classes.homePageLink}>
-              Back to{" "}
-              <Link to="/" style={{ fontWeight: "900" }}>
-                Home
-              </Link>
-            </p>
           </div>
         </div>
       </div>

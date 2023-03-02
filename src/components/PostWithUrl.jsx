@@ -17,6 +17,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import PostsWithUrlItem from "./PostsWithUrlItem";
 import axios from "axios";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(ru);
@@ -87,11 +88,13 @@ const useStyles = makeStyles({
 const PostWithUrl = (props) => {
   const classes = useStyles();
   const navigate = useNavigate();
-  // const {user}=useSelector(state=>state.auth)
+  const {user}=useSelector(state=>state.auth)
   const [backdropPost, setBackdropPost] = useState(null);
   const [open, setOpen] = useState(false);
   const [postsWithUrl, setPostsWithUrl] = useState(props.posts);
   const [dialogOpen, setDialogOpen] = useState(false);
+
+
   // console.log(user)
 
   const handleClose = () => {
@@ -108,7 +111,12 @@ const PostWithUrl = (props) => {
     try {
       await axios.delete(
         `${process.env.REACT_APP_BASE_URL}/posts/${backdropPost._id}`,
-        { data: { userId: props.currentUser._id } }
+        { data: { userId: props.currentUser._id },
+        
+          headers: {
+            authorization: "Bearer " + user.token,
+          },
+         }
       );
       const res = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
@@ -116,6 +124,7 @@ const PostWithUrl = (props) => {
       setPostsWithUrl(res.data.filter((post) => post.post.url));
       setOpen(false);
       setDialogOpen(false);
+      props.setPostsArray(res.data.filter((post) => post.post.url))
     } catch (e) {
       console.log(e);
     }

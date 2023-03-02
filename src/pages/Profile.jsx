@@ -6,7 +6,6 @@ import axios from "axios";
 import { BsList } from "react-icons/bs";
 import { BsGrid3X3 } from "react-icons/bs";
 
-import Navbar from "../components/navbar/Navbar";
 import UploadPost from "../components/UploadPost";
 import UsersList from "../components/UsersList";
 import Post from "../components/Post";
@@ -14,7 +13,6 @@ import Sizes from "../Sizes";
 import BottomNavbar from "../components/navbar/BottomNavbar";
 import noCover from "../assets/noCover.png";
 import PostWithUrl from "../components/PostWithUrl";
-import NotificationBar from "../components/NotificationBar";
 
 const useStyles = makeStyles({
   outterContainer: {
@@ -109,6 +107,7 @@ const useStyles = makeStyles({
   infoContainer: {
     backgroundColor: "white",
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+    width:'100%'
   },
   coverPic: {
     width: "100%",
@@ -129,7 +128,7 @@ const useStyles = makeStyles({
     boxShadow: "0rem 0rem .5rem .05rem var(--purple-2)",
     marginLeft: "2rem",
     cursor: "pointer",
-    backgroundColor:'white'
+    backgroundColor: "white",
   },
   details: {
     width: "100%",
@@ -240,8 +239,6 @@ const Profile = (props) => {
   const [currentUser, setCurrentUser] = useState(props);
   const [userPosts, setUserPosts] = useState(null);
   const [showPostWithUrl, setShowPostWithUrl] = useState(true);
-  const [openSideBar, setOpenSideBar] = useState(false);
-  const [n_notifications, setN_notifications] = useState(0);
 
   const { uname } = useParams();
 
@@ -324,16 +321,10 @@ const Profile = (props) => {
     setUser(res.data);
   }
 
-  function OpenSideBar() {
-    setOpenSideBar(true);
-  }
-  function CloseSideBar() {
-    setOpenSideBar(false);
+  function setPostsArray(posts){
+    setUserPosts(posts)
   }
 
-  function handleNotificationCount(count) {
-    setN_notifications(count);
-  }
   return (
     <>
       {user ? (
@@ -361,23 +352,14 @@ const Profile = (props) => {
             <img
               className={classes.profileCoverOverlay}
               src={
-                user.coverPicture.url ? `${user.coverPicture.url}` : `${noCover}`
+                user.coverPicture.url
+                  ? `${user.coverPicture.url}`
+                  : `${noCover}`
               }
               alt=""
             />
           </Backdrop>
 
-          {/* <NotificationBar
-            openSideBar={openSideBar}
-            CloseSideBar={CloseSideBar}
-            currentUser={user}
-            handleNotificationCount={handleNotificationCount}
-          />
-          <Navbar
-            currentUser={user}
-            OpenSideBar={OpenSideBar}
-            n_notifications={n_notifications}
-          /> */}
           <div className={classes.container}>
             <div className={classes.left}>
               <h2 className={classes.h2}>Followers</h2>
@@ -385,12 +367,14 @@ const Profile = (props) => {
                 users={user.followers}
                 currentUser={currentUser}
                 setuser={setuser}
+                type="Follower"
               />
               <h2 className={classes.h2}>Followings</h2>
               <UsersList
                 users={user.followings}
                 currentUser={currentUser}
                 setuser={setuser}
+                type="Following"
               />
             </div>
             <div className={classes.right}>
@@ -405,7 +389,11 @@ const Profile = (props) => {
                 {/* profile pic */}
                 <img
                   className={classes.profilePic}
-                  src={user.profilePicture.url ? user.profilePicture.url : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`}
+                  src={
+                    user.profilePicture.url
+                      ? user.profilePicture.url
+                      : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
+                  }
                   alt=""
                   onClick={handleProfileClick}
                 ></img>
@@ -413,11 +401,7 @@ const Profile = (props) => {
                 <div className={classes.details}>
                   <span className={classes.name}>{user.name}</span>
                   <span className={classes.username}>@{user.username}</span>
-                  <p className={classes.p}>
-                    {user.bio}Lorem ipsum dolor sit amet consectetur adipisicing
-                    elit. Cumque quibusdam aut aperiam numquam sint odit
-                    sapiente ex iusto nihil molestiae! Eius, non optio!
-                  </p>
+                  <p className={classes.p}>{user.bio}</p>
                   <div className={classes.followers_following_counters}>
                     <div className={classes.innerDiv}>
                       <span className={classes.upperSpan}>Followers</span>
@@ -460,7 +444,9 @@ const Profile = (props) => {
               {/* post uploader */}
               <UploadPost
                 profile={
-                  user.profilePicture ? user.profilePicture.url : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
+                  user.profilePicture
+                    ? user.profilePicture.url
+                    : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
                 }
                 currentUser={user}
               />
@@ -495,7 +481,7 @@ const Profile = (props) => {
                         posts={userPosts.filter((post) => post.post.url)}
                         show={showPostWithUrl}
                         currentUser={currentUser}
-                        setUserPosts={setUserPosts}
+                        setPostsArray={setPostsArray}
                       />
                     ) : null
                   ) : null}
@@ -510,6 +496,7 @@ const Profile = (props) => {
                             key={post._id}
                             {...post}
                             currentUser={currentUser}
+                            setPostsArray={setPostsArray}
                           />
                         ))
                     : null}

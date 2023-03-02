@@ -13,6 +13,7 @@ import UserMenu from "./UserMenu";
 import Sizes from "../../Sizes";
 import { useEffect } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles({
   container: {
@@ -138,7 +139,7 @@ const useStyles = makeStyles({
   },
   searchName: {
     fontWeight: "bold",
-    textTransform:'capitalize'
+    textTransform: "capitalize",
   },
   searchUserName: {
     fontSize: ".8rem",
@@ -149,7 +150,7 @@ const useStyles = makeStyles({
     height: "3rem",
     borderRadius: "50%",
     border: ".2rem solid var(--purple-1)",
-    marginRight:'.5rem'
+    marginRight: ".5rem",
   },
   right: {
     display: "flex",
@@ -209,7 +210,20 @@ const Navbar = (props) => {
   const [searchWord, setSearchWord] = useState();
   const [allUsers, setAllUsers] = useState();
   const [searchResult, setSearchResult] = useState();
+  const [currentUser, setCurrentUser] = useState();
 
+  const { user } = useSelector((state) => state.auth);
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/users?userId=${user._id}`
+      );
+      setCurrentUser(res.data);
+    };
+    if (user) {
+      fetchCurrentUser();
+    }
+  }, [user]);
   useEffect(() => {
     async function fetchAllUsers() {
       const res = await axios.get(
@@ -235,19 +249,20 @@ const Navbar = (props) => {
     setSearchResult(
       allUsers.filter(
         (user) =>
-          user.username.includes(evt.target.value) || user.name.includes(evt.target.value)
+          user.username.includes(evt.target.value) ||
+          user.name.includes(evt.target.value)
       )
     );
-    if(evt.target.value===''){
-      setSearchResult(null)
+    if (evt.target.value === "") {
+      setSearchResult(null);
     }
   }
-  
-  function handleSearchUserClick(evt) {
-    setSearchWord('')
-    setSearchResult(null)
-  }
 
+  function handleSearchUserClick(evt) {
+    setSearchWord("");
+    setSearchResult(null);
+  }
+  console.log(props);
   return (
     <div className={classes.container} onClick={isOpen ? handleClick : null}>
       <div className={classes.innerContainer}>
@@ -277,7 +292,11 @@ const Navbar = (props) => {
               ? searchResult.map((user) => (
                   <div className={classes.searchResultItem}>
                     <img
-                      src={user.post ? user.post.url : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`}
+                      src={
+                        user.post
+                          ? user.post.url
+                          : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
+                      }
                       className={classes.searchUserImg}
                       alt=""
                     />
@@ -330,7 +349,16 @@ const Navbar = (props) => {
             onClick={handleClick}
             onMouseEnter={handleOpen}
           >
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+           {currentUser&& <Avatar
+              alt="Remy Sharp"
+              src={
+                currentUser.profilePicture.url
+                  ? `${currentUser.profilePicture.url}`
+                  : `https://api.dicebear.com/5.x/avataaars/svg?seed=${currentUser.username}`
+              }
+              style={{border:'.2rem solid white',boxShadow:
+              "rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px"}}
+            />}
           </div>
           <div
             className={classes.userMenu}

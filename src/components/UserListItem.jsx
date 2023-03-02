@@ -33,7 +33,7 @@ const useStyles = makeStyles({
   profileImg: {
     width: "100%",
     height: "100%",
-    objectFit: "fill",
+    objectFit:'fill',
   },
   name_username: {
     display: "flex",
@@ -183,12 +183,16 @@ const UserListItem = (props) => {
         </Link>
       </div>
       {props.currentUser.followings.includes(props.userId) ? (
-        props.userId === props.currentUser._id ? null : (
+        props.userId === props.currentUser._id ? (
+          <div style={{ width: "4rem" }}></div>
+        ) : (
           <button className={classes.btn} onClick={handleUnfollowClick}>
             Unfollow
           </button>
         )
-      ) : props.userId === props.currentUser._id ? null : (
+      ) : props.userId === props.currentUser._id ? (
+        <div style={{ width: "4rem" }}></div>
+      ) : (
         <button className={classes.btn} onClick={handleFollowClick}>
           Follow
         </button>

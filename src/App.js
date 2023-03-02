@@ -10,6 +10,7 @@ import Update from './pages/Update'
 import axios from 'axios'
 import NotificationBar from './components/NotificationBar'
 import Navbar from './components/navbar/Navbar'
+import notificationSound from './assets/notificationSound.wav'
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null)
@@ -38,6 +39,8 @@ function App() {
   function handleNotificationCount(count) {
     setN_notifications(count);
   }
+
+  
 
   return (
     <div className="App">

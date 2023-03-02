@@ -82,6 +82,16 @@ const useStyles = makeStyles({
     width: "90%",
     marginBottom: "2rem",
   },
+  noPosts:{
+    color:'var(--purple-1)',
+    width:'100%',
+    height:'60vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize:'1.5rem',
+    fontWeight:'bold'
+  }
 });
 const Home = (props) => {
   const classes = useStyles();
@@ -174,6 +184,7 @@ const Home = (props) => {
               setuser={setuser}
               setfriendSuggestion={setfriendSuggestion}
               setPosts={setPosts}
+              type="Suggestion"
             />
             {/*here we will send list of users whom you are following instead of users with propname user*/}
           </div>
@@ -194,6 +205,7 @@ const Home = (props) => {
                     setPostsArray={setPostsArray}
                   />
                 ))}
+                {(posts&&posts.length===0)&&<div className={classes.noPosts}>No Post Found!</div>}
             </div>
           </div>
           <div className={`${classes.right} ${classes.childContainer}`}>
@@ -204,6 +216,7 @@ const Home = (props) => {
               setuser={setuser}
               setfriendSuggestion={setfriendSuggestion}
               setPosts={setPosts}
+              type="Follower"
             />
             {/*here we will send list of users who are following currentUser instead of users with propname user*/}
             <h2 className={classes.h2} style={{ marginTop: "1rem" }}>
@@ -215,6 +228,7 @@ const Home = (props) => {
               setuser={setuser}
               setfriendSuggestion={setfriendSuggestion}
               setPosts={setPosts}
+              type="Following"
             />
             {/*here we will send list of users whom you are following instead of users with propname user*/}
           </div>

@@ -26,13 +26,23 @@ const useStyles = makeStyles({
       },
     },
   },
+  noUser:{
+    width:'100%',
+    height:'100%',
+    color:'var(--purple-1)',
+    display:'flex',
+    alignItems:'center',
+    justifyContent: 'center',
+    fontSize:'1.5rem',
+    fontWeight:'bold'
+  }
 });
 
 const UsersList = (props) => {
   const classes = useStyles();
   return (
     <div className={classes.container}>
-      {props.users?props.users.map((user) => (
+      {props.users&&props.users.length!==0?props.users.map((user) => (
         <UserListItem
           key={user}
           userId={user}
@@ -41,7 +51,7 @@ const UsersList = (props) => {
           setfriendSuggestion={props.setfriendSuggestion}
           setPosts={props.setPosts}
         />
-      )):null}
+      )):<div className={classes.noUser}>No {props.type} found!</div>}
     </div>
   );
 };
