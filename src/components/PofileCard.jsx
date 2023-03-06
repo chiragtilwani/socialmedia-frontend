@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
 
 import noCover from "../assets/noCover.png";
-import axios from "axios";
 
 const useStyles = makeStyles({
   container: {
@@ -86,7 +85,7 @@ const useStyles = makeStyles({
     backgroundColor: "var(--purple-3)",
   },
   profileCoverOverlay: {
-    width: "25rem",
+    maxWidth: "90vw",
     height: "25rem",
     objectFit: "fill",
   },

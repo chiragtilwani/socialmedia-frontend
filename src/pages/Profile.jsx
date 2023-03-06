@@ -107,7 +107,7 @@ const useStyles = makeStyles({
   infoContainer: {
     backgroundColor: "white",
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
-    width:'100%'
+    width: "100%",
   },
   coverPic: {
     width: "100%",
@@ -117,6 +117,19 @@ const useStyles = makeStyles({
     objectFit: "fill",
     [Sizes.up("xl")]: {
       height: "25rem",
+    },
+    [Sizes.down("sm")]: {
+      height: "15rem",
+    },
+    [Sizes.down("xs")]: {
+      height: "10rem",
+    },
+  },
+  profileContainer: {
+    [Sizes.down('sm')]:{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
     },
   },
   profilePic: {
@@ -129,6 +142,12 @@ const useStyles = makeStyles({
     marginLeft: "2rem",
     cursor: "pointer",
     backgroundColor: "white",
+    [Sizes.down("sm")]: {
+      margin:'0rem',
+      marginBottom:'.5rem',
+      width: '4rem',
+      height: '4rem',
+    },
   },
   details: {
     width: "100%",
@@ -137,6 +156,9 @@ const useStyles = makeStyles({
     flexDirection: "column",
     padding: ".5rem",
     marginTop: "-2rem",
+    [Sizes.down("sm")]: {
+      alignItems:'center',
+    },
   },
   name: {
     textTransform: "capitalize",
@@ -153,6 +175,9 @@ const useStyles = makeStyles({
       color: "black",
       cursor: "default",
     },
+    [Sizes.down("sm")]: {
+      marginLeft: "0rem",
+    },
   },
   p: {
     width: "100%",
@@ -167,6 +192,9 @@ const useStyles = makeStyles({
     margin: "0 auto",
     borderTop: ".2rem solid var(--purple-2)",
     borderBottom: ".2rem solid var(--purple-2)",
+    [Sizes.down("sm")]: {
+      width:'80%'
+    },
   },
   innerDiv: {
     display: "flex",
@@ -200,14 +228,35 @@ const useStyles = makeStyles({
     "&:hover": {
       opacity: 0.8,
     },
+    [Sizes.down("sm")]: {
+      fontSize:'.8rem',
+      width:'5rem'
+    },
   },
   postContainer: {
     width: "90%",
     marginBottom: "2rem",
+    [Sizes.down("md")]: {
+      paddingBottom:'2rem'
+    },
+    [Sizes.down("sm")]: {
+      width:'100%'
+    },
+  },
+  profileCoverOverlay:{
+    [Sizes.down("md")]: {
+      width:'80vw'
+    },
+    [Sizes.down("sm")]: {
+      width:'100vw'
+    },
   },
   profileOverlay: {
     width: "25rem",
     height: "25rem",
+    [Sizes.down("sm")]: {
+      height: "15rem",
+    },
   },
   postTypeSelector: {
     backgroundColor: "white",
@@ -219,6 +268,9 @@ const useStyles = makeStyles({
     marginBottom: ".5rem",
     borderRadius: ".5rem",
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+    [Sizes.down("sm")]: {
+      margin:'.5rem',
+    },
   },
   postTypeIcons: {
     color: "var(--purple-1)",
@@ -228,6 +280,20 @@ const useStyles = makeStyles({
     "&:hover": {
       transform: "scale(.8)",
     },
+    [Sizes.down("sm")]: {
+      fontSize:'1.2rem'
+    },
+  },
+  userNotFound: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "100vh",
+    width: "100vw",
+    fontSize: "3rem",
+    fontWeight: "bold",
+    color: "var(--purple-1)",
+    textShadow: "2px 2px 3px #333333",
   },
 });
 
@@ -239,15 +305,21 @@ const Profile = (props) => {
   const [currentUser, setCurrentUser] = useState(props);
   const [userPosts, setUserPosts] = useState(null);
   const [showPostWithUrl, setShowPostWithUrl] = useState(true);
+  const [error, setError] = useState();
+  const [userNotFound, setUserNotFound] = useState(false);
 
   const { uname } = useParams();
 
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/users?username=${uname}`
-      );
-      setUser(res.data);
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/users?username=${uname}`
+        );
+        setUser(res.data);
+      } catch (err) {
+        setUserNotFound(true);
+      }
     };
     if (uname) {
       fetchUser();
@@ -257,9 +329,12 @@ const Profile = (props) => {
   useEffect(() => {
     const fetchUserPost = async () => {
       const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/posts/user/${user._id}`
+        `${process.env.REACT_APP_BASE_URL}/posts/timeline/${user._id}`
       );
-      setUserPosts(res.data);
+      const currentUserPosts = res.data.filter(
+        (post) => post.creatorId === user._id
+      );
+      setUserPosts(currentUserPosts);
       setShowPostWithUrl(
         res.data.filter((post) => post.post.url).length === 0 ? false : true
       );
@@ -321,12 +396,17 @@ const Profile = (props) => {
     setUser(res.data);
   }
 
-  function setPostsArray(posts){
-    setUserPosts(posts)
+  function setPostsArray(posts) {
+    setUserPosts(posts);
   }
 
   return (
     <>
+      {userNotFound && (
+        <div className={classes.userNotFound}>
+          This account has been deleted!😕
+        </div>
+      )}
       {user ? (
         <div className={classes.outterContainer}>
           <Backdrop
@@ -387,16 +467,18 @@ const Profile = (props) => {
                   onClick={handleCoverClick}
                 ></img>
                 {/* profile pic */}
-                <img
-                  className={classes.profilePic}
-                  src={
-                    user.profilePicture.url
-                      ? user.profilePicture.url
-                      : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
-                  }
-                  alt=""
-                  onClick={handleProfileClick}
-                ></img>
+                <div className={classes.profileContainer}>
+                  <img
+                    className={classes.profilePic}
+                    src={
+                      user.profilePicture.url
+                        ? user.profilePicture.url
+                        : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
+                    }
+                    alt=""
+                    onClick={handleProfileClick}
+                  ></img>
+                </div>
                 {/* details */}
                 <div className={classes.details}>
                   <span className={classes.name}>{user.name}</span>
@@ -449,10 +531,18 @@ const Profile = (props) => {
                     : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
                 }
                 currentUser={user}
+                setPostsArray={setPostsArray}
+                homePage={false}
               />
               {/* posts by user */}
               {userPosts ? (
-                <div className={classes.postContainer}>
+                <div
+                  className={classes.postContainer}
+                  style={{
+                    marginTop:
+                      user.username !== currentUser.username ? "1rem" : "",
+                  }}
+                >
                   <div
                     className={classes.postTypeSelector}
                     style={{
@@ -482,6 +572,7 @@ const Profile = (props) => {
                         show={showPostWithUrl}
                         currentUser={currentUser}
                         setPostsArray={setPostsArray}
+                        user={user}
                       />
                     ) : null
                   ) : null}

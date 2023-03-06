@@ -7,6 +7,7 @@ import Stack from "@mui/material/Stack";
 import * as React from "react";
 
 import CommentItem from "./CommentItem";
+import Sizes from '../Sizes'
 
 const useStyles = makeStyles({
   container: {
@@ -30,6 +31,9 @@ const useStyles = makeStyles({
         backgroundColor: "var(--purple-1)",
       },
     },
+    [Sizes.down('sm')]:{
+      
+    }
   },
   form: {
     width: "100%",
@@ -46,6 +50,9 @@ const useStyles = makeStyles({
     border: ".2rem solid var(--purple-2)",
     padding: "1rem",
     margin: ".2rem",
+    [Sizes.down('sm')]:{
+      height:'3rem'
+    }
   },
   btn: {
     padding: ".5rem",

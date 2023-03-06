@@ -19,6 +19,7 @@ import Stack from "@mui/material/Stack";
 import * as React from "react";
 
 import Sizes from "../Sizes";
+import { useSelector } from "react-redux";
 
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(ru);
@@ -33,11 +34,17 @@ const useStyles = makeStyles({
       "rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset",
     padding: ".5rem 0rem",
     transitionDuration: ".2s",
+    [Sizes.down('sm')]:{
+
+    }
   },
   name_username: {
     display: "flex",
     flexDirection: "column",
     margin: ".5rem 1rem",
+    [Sizes.down('sm')]:{
+      margin: ".2rem .5rem",
+    }
   },
   name: {
     fontWeight: "bold",
@@ -67,7 +74,6 @@ const useStyles = makeStyles({
     },
   },
   desc: {
-    margin: "0rem 1.3rem",
     fontSize: "1.1rem",
     [Sizes.down("sm")]: {
       fontSize: ".8rem",
@@ -91,9 +97,9 @@ const useStyles = makeStyles({
   },
   descContainer: {
     display: "flex",
-    [Sizes.down("sm")]: {
-      flexDirection: "column",
-    },
+    flexDirection: "column",
+    justifyContent: "center",
+    paddingLeft: "1rem",
   },
   xMinAgo: {
     marginLeft: ".5rem",
@@ -110,12 +116,43 @@ const useStyles = makeStyles({
     alignItems: "center",
     justifyContent: "space-between",
     [Sizes.down("sm")]: {
-      margin: ".2rem 1.3rem",
+      width:'4rem',
+      margin: ".2rem 0rem",
       fontSize: ".8rem",
     },
   },
   edit_delete: {
     color: "var(--purple-2)",
+  },
+  textfield: {
+    width: "75%",
+    height: "2.5rem",
+    backgroundColor: "var(--purple-3)",
+    borderRadius: ".5rem",
+    outline: "none",
+    border: ".2rem solid var(--purple-2)",
+    padding: "1rem",
+    margin: ".2rem",
+    [Sizes.down('sm')]:{
+      width: "70%",
+    },
+    [Sizes.down('xs')]:{
+      width: "65%",
+    }
+  },
+  btn: {
+    padding: ".5rem",
+    height: "2rem",
+    cursor: "pointer",
+    backgroundColor: "var(--purple-1)",
+    color: "white",
+    outline: "none",
+    borderRadius: ".5rem",
+    fontWeight: "bold",
+    borderWidth: "0rem",
+    "&:hover": {
+      opacity: ".5",
+    },
   },
 });
 
@@ -128,7 +165,10 @@ const CommentItem = (props) => {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState();
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editedText, setEditedText] = useState(props.text);
 
+  const { user } = useSelector((state) => state.auth);
 
   const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -155,27 +195,42 @@ const CommentItem = (props) => {
   async function handleLikeClick() {
     setLiked((prevState) => !prevState);
     setDisliked(false);
-    await axios.patch(
-      `${process.env.REACT_APP_BASE_URL}/comments/${props._id}/likedislike`,
-      {
-        userId: props.currentUserId,
-      }
-    );
-    let res = await axios.get(
-      `${process.env.REACT_APP_BASE_URL}/comments/${props.postId}`
-    );
-    props.setComments(res.data);
+    try {
+      await axios.patch(
+        `${process.env.REACT_APP_BASE_URL}/comments/${props._id}/likedislike`,
+        {
+          userId: props.currentUserId,
+        }
+      );
+    } catch (err) {
+      setError(err.response.data.message);
+      setSnackbarOpen(true);
+    }
+    try {
+      let res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/comments/${props.postId}`
+      );
+      props.setComments(res.data);
+    } catch (err) {
+      setError(err.response.data.message);
+      setSnackbarOpen(true);
+    }
   }
 
   async function deleteComment() {
-    try{
+    try {
       await axios.delete(
         `${process.env.REACT_APP_BASE_URL}/comments/${props._id}`,
-        { data: { userId: props.currentUserId } }
+        {
+          data: { userId: props.currentUserId },
+          headers: {
+            authorization: "Bearer " + user.token,
+          },
+        }
       );
-    }catch(e){
-      setError(e.response.data.message)
-      setSnackbarOpen(true)
+    } catch (e) {
+      setError(e.response.data.message);
+      setSnackbarOpen(true);
     }
     try {
       const res = await axios.get(
@@ -190,6 +245,29 @@ const CommentItem = (props) => {
     setOpen(false);
   }
 
+  async function updateComment(evt) {
+    evt.preventDefault();
+    try {
+      await axios.patch(
+        `${process.env.REACT_APP_BASE_URL}/comments/${props._id}`,
+        { userId: user._id, text: editedText },
+        {
+          headers: {
+            authorization: "Bearer " + user.token,
+          },
+        }
+      );
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/comments/${props.postId}`
+      );
+      props.postComponentSetComments(res.data);
+      setCurrentComment({ ...props, text: editedText });
+      setEditing(false);
+    } catch (err) {
+      setError(err.response.data.message);
+    }
+  }
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -197,10 +275,24 @@ const CommentItem = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
+  function handleEditClick() {
+    setEditing(true);
+  }
+  function handleCancelClick(evt) {
+    evt.preventDefault();
+    setEditing(false);
+  }
+  function handleCommentTextChange(evt) {
+    setEditedText(evt.target.value);
+  }
   return (
     <>
-    <Stack spacing={2} sx={{ width: "100%" }}>
-        <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+      <Stack spacing={2} sx={{ width: "100%" }}>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+        >
           <Alert
             onClose={handleSnackbarClose}
             severity="warning"
@@ -231,7 +323,31 @@ const CommentItem = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <div className={classes.container}>
+      <div
+        className={classes.container}
+        style={{
+          display: editing ? "flex" : "none",
+          justifyContent: "space-evenly",
+        }}
+      >
+        <input
+          type="textfield"
+          className={classes.textfield}
+          placeholder="Drop a comment ..."
+          value={editedText}
+          onChange={handleCommentTextChange}
+        />
+        <button onClick={handleCancelClick} className={classes.btn}>
+          Cancel
+        </button>
+        <button className={classes.btn} onClick={updateComment}>
+          Edit
+        </button>
+      </div>
+      <div
+        className={classes.container}
+        style={{ display: !editing ? "flex" : "none" }}
+      >
         <div className={classes.name_text}>
           <div className={classes.name_username}>
             <div>
@@ -255,9 +371,17 @@ const CommentItem = (props) => {
             </Link>
           </div>
           <div className={classes.descContainer}>
-            <p className={classes.desc}>{props.text}</p>
-            <div className={classes.edit_delete_container} style={{display:props.creatorId===props.currentUserId?'flex':'none'}}>
-              <Link className={classes.edit_delete}>Edit</Link>
+            <p className={classes.desc}>{currentComment.text}</p>
+            <div
+              className={classes.edit_delete_container}
+              style={{
+                display:
+                  props.creatorId === props.currentUserId ? "flex" : "none",
+              }}
+            >
+              <Link className={classes.edit_delete} onClick={handleEditClick}>
+                Edit
+              </Link>
               <Link className={classes.edit_delete} onClick={handleClickOpen}>
                 Delete
               </Link>
@@ -268,7 +392,11 @@ const CommentItem = (props) => {
           <div>
             <AiFillLike
               className={classes.icons}
-              style={{ color: props.likes.includes(props.currentUserId) ? "var(--purple-1)" : "" }}
+              style={{
+                color: props.likes.includes(props.currentUserId)
+                  ? "var(--purple-1)"
+                  : "",
+              }}
               onClick={handleLikeClick}
             />
           </div>

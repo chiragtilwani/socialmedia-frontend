@@ -41,8 +41,12 @@ const useStyles = makeStyles({
   },
 });
 
-function BottomNavbar() {
+function BottomNavbar(props) {
   const classes = useStyles();
+
+  function handleNotificationIconClick() {
+    props.OpenSideBar();
+  }
   return (
     <div className={classes.container}>
       <div className={classes.innerContainer}>
@@ -56,9 +60,9 @@ function BottomNavbar() {
                 <MdDarkMode />
               </Badge>
             </Link>
-        <Link to="/" className={classes.iconLink}>
-          <Badge badgeContent={4} color="primary" variant="dot">
-            <IoMdNotifications />
+        <Link  className={classes.iconLink}>
+          <Badge badgeContent={props.n_notifications} color="primary" variant="dot">
+            <IoMdNotifications onClick={handleNotificationIconClick}/>
           </Badge>
         </Link>
         <Link to="/" className={classes.iconLink}>

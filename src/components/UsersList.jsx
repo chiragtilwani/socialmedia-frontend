@@ -34,7 +34,7 @@ const useStyles = makeStyles({
     alignItems:'center',
     justifyContent: 'center',
     fontSize:'1.5rem',
-    fontWeight:'bold'
+    fontWeight:'bold',
   }
 });
 
@@ -51,7 +51,7 @@ const UsersList = (props) => {
           setfriendSuggestion={props.setfriendSuggestion}
           setPosts={props.setPosts}
         />
-      )):<div className={classes.noUser}>No {props.type} found!</div>}
+      )):<div className={classes.noUser}>No {props.type} found!😕</div>}
     </div>
   );
 };

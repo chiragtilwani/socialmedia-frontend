@@ -1,15 +1,19 @@
 import { makeStyles } from "@mui/styles";
-import { useState } from "react";
-import axios from "axios";
 
+import Sizes from '../Sizes'
 
 const useStyles = makeStyles({
   container: {
     width: "32.666%",
+    maxHeight:'10rem',
     boxShadow: "0rem 0rem .5rem .05rem var(--purple-2)",
     cursor: "pointer",
     overflow: "hidden",
     borderRadius: ".5rem",
+    [Sizes.down("sm")]: {
+      width:'49%',
+      borderRadius:'.2rem'
+    },
   },
   postImg: {
     objectFit: "fill",

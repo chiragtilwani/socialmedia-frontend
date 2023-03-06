@@ -23,6 +23,8 @@ const useStyles = makeStyles({
     height: "70vh",
     display: "flex",
     flexDirection: "row",
+    boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+    borderRadius: "0rem 2rem 0rem 2rem",
     [Sizes.down("md")]: {
       width: "100vw",
       height: "100vh",

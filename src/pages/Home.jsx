@@ -9,8 +9,6 @@ import PofileCard from "../components/PofileCard";
 import UsersList from "../components/UsersList";
 import UploadPost from "../components/UploadPost";
 import Post from "../components/Post";
-// import { AuthContext } from "../context/AuthContext";
-import NotificationBar from "../components/NotificationBar";
 
 const useStyles = makeStyles({
   outterContainer: {
@@ -66,6 +64,14 @@ const useStyles = makeStyles({
       display: "none",
     },
   },
+  center: {
+    [Sizes.down("md")]: {
+      paddingBottom: "2rem",
+    },
+    [Sizes.down("sm")]: {
+      paddingBottom: "3rem",
+    },
+  },
   right: {
     paddingBottom: "4rem",
     [Sizes.down("md")]: {
@@ -81,6 +87,9 @@ const useStyles = makeStyles({
   postContainer: {
     width: "90%",
     marginBottom: "2rem",
+    [Sizes.down('sm')]:{
+     width:'100%',
+    },
   },
   noPosts:{
     color:'var(--purple-1)',
@@ -107,9 +116,6 @@ const Home = (props) => {
         )
         .map((user) => user._id)
   );
-  const [openSideBar, setOpenSideBar] = useState(false);
-  // const contextData = useContext(AuthContext);
-  const [n_notifications, setN_notifications] = useState(0);
 
   useEffect(() => {
     const getPost = async () => {
@@ -142,17 +148,6 @@ const Home = (props) => {
 
   function setfriendSuggestion(friendSuggestions) {
     setFriendSuggestion(friendSuggestions);
-  }
-
-  function OpenSideBar() {
-    setOpenSideBar(true);
-  }
-  function CloseSideBar() {
-    setOpenSideBar(false);
-  }
-
-  function handleNotificationCount(count) {
-    setN_notifications(count);
   }
 
   return (
@@ -193,6 +188,7 @@ const Home = (props) => {
               profile="https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg"
               currentUser={user}
               setPostsArray={setPostsArray}
+              homePage={true}
             />
             <div className={classes.postContainer}>
               {posts
@@ -205,7 +201,7 @@ const Home = (props) => {
                     setPostsArray={setPostsArray}
                   />
                 ))}
-                {(posts&&posts.length===0)&&<div className={classes.noPosts}>No Post Found!</div>}
+                {(posts&&posts.length===0)&&<div className={classes.noPosts}>No Post Found!😕</div>}
             </div>
           </div>
           <div className={`${classes.right} ${classes.childContainer}`}>
@@ -234,7 +230,6 @@ const Home = (props) => {
           </div>
         </div>
       </div>
-      <BottomNavbar />
     </>
   );
 };

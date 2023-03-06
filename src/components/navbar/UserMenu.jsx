@@ -1,7 +1,16 @@
 import { makeStyles } from "@mui/styles";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector,useDispatch } from "react-redux";
-import {reset,logout}from '../../features/auth/authSlice'
+import { useSelector, useDispatch } from "react-redux";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
+
+import { reset, logout } from "../../features/auth/authSlice";
+import { useState } from "react";
+import axios from "axios";
 
 const useStyles = makeStyles({
   container: {
@@ -36,16 +45,57 @@ const UserMenu = (props) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
 
-  const user = useSelector((state) => state.auth);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const {user} = useSelector((state) => state.auth);
 
   function handleLogoutClick() {
     navigate("/login");
     dispatch(logout());
-    dispatch(reset())
+    dispatch(reset());
+  }
+  async function handleDeleteAccount() {
+    setOpen(false);
+    await axios.delete(`${process.env.REACT_APP_BASE_URL}/users/${user._id}`, {
+      headers: { authorization: "Bearer " + user.token },
+      data: { userId: user._id }
+    });
+    //call logout func from dispatch to delete user from localstorage //navigate to /login
+    handleLogoutClick()
   }
   return (
     <div className={classes.container}>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Delete Connect Account?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete your <strong>CONNECT</strong> account?<br></br>{" "}
+            Account once deleted, all posts associated with your account will be
+            deleted and you can <strong>never</strong> rollback.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleDeleteAccount} autoFocus>
+            Continue
+          </Button>
+        </DialogActions>
+      </Dialog>
       {user ? (
         <>
           <Link
@@ -54,6 +104,9 @@ const UserMenu = (props) => {
           >
             {/*here instead of 1 we will use currentUser's id*/}
             Profile
+          </Link>
+          <Link to="" onClick={handleClickOpen} className={classes.item}>
+            Delete Account
           </Link>
           <Link to="" onClick={handleLogoutClick} className={classes.item}>
             Logout

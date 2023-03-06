@@ -26,7 +26,6 @@ import Comment from "./Comment";
 import Sizes from "../Sizes";
 import Hdivider from "./Hdivider";
 import Loading from "./Loading";
-import likeSound from "../assets/likeSound.mp3";
 import { useSelector } from "react-redux";
 
 TimeAgo.addDefaultLocale(en);
@@ -39,17 +38,27 @@ const useStyles = makeStyles({
     backgroundColor: "white",
     marginBottom: "2rem",
     padding: ".5rem 0rem",
-    w: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+    boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
     "&:hover": {
       "& $iconContainer": {
         transform: "scale(1)",
       },
     },
+    [Sizes.down('sm')]:{
+      borderRadius:0,
+      marginBottom:'1rem'
+    },
+    [Sizes.down('xs')]:{
+      padding:'0.2rem'
+    }
   },
   header: {
     display: "flex",
     alignItems: "center",
     margin: ".5rem 1rem",
+    [Sizes.down('xs')]:{
+      margin:'0.2rem'
+    }
   },
   name_username: {
     display: "flex",
@@ -61,6 +70,9 @@ const useStyles = makeStyles({
     cursor: "pointer",
     textDecoration: "none",
     color: "black",
+    [Sizes.down('xs')]:{
+      fontSize:'.8rem'
+    }
   },
   username: {
     marginLeft: ".3rem",
@@ -73,21 +85,40 @@ const useStyles = makeStyles({
     "&:hover": {
       color: "black",
     },
+    [Sizes.down('xs')]:{
+      fontSize:'.7rem'
+    }
   },
   postImg: {
     width: "95%",
     height: "25rem",
     margin: "1rem auto",
     borderRadius: ".6rem",
+    [Sizes.down('sm')]:{
+      margin:'0.5rem 0',
+      borderRadius:'0rem',
+      height: '20rem',
+      width:'100%'
+    },
+    [Sizes.down('xs')]:{
+      height: '15rem'
+    }
   },
   desc: {
     margin: "0rem 1.3rem",
     fontSize: "1.1rem",
+    [Sizes.down('xs')]:{
+      fontSize:'1rem',
+      margin: "0rem .2rem",
+    }
   },
   btnContainer: {
     margin: ".8rem",
     display: "flex",
     alignItems: "center",
+    [Sizes.down('xs')]:{
+      margin: "0.5rem 0rem",
+    }
   },
   btn: {
     marginRight: ".5rem",
@@ -104,6 +135,9 @@ const useStyles = makeStyles({
     [Sizes.down("md")]: {
       fontSize: "1.5rem",
     },
+    [Sizes.down('xs')]:{
+      margin: "0rem .2rem",
+    }
   },
   like_comment_count: {
     fontSize: ".9rem",
@@ -116,6 +150,9 @@ const useStyles = makeStyles({
     fontSize: ".8rem",
     color: "var(--purple-2)",
     fontWeight: "bold",
+    [Sizes.down('sm')]:{
+      fontSize:'.7rem',
+    }
   },
   iconContainer: {
     width: "4rem",
@@ -150,6 +187,11 @@ const useStyles = makeStyles({
     cursor: "pointer",
     overflow: "hidden",
     marginRight: "1rem",
+    [Sizes.down('xs')]:{
+      width: "2.5rem",
+      height: "2.5rem",
+      marginRight: ".5rem",
+    }
   },
   profileImg: {
     width: "100%",
@@ -180,7 +222,7 @@ const Post = (props) => {
   const [error, setError] = useState();
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
 
-  const {user}=useSelector(state=>state.auth)
+  const { user } = useSelector((state) => state.auth);
 
   const handleCloseSnackbar = (event, reason) => {
     if (reason === "clickaway") {
@@ -210,18 +252,20 @@ const Post = (props) => {
   }, [currentPost.creatorId, currentPost._id]);
 
   async function handleLikeClick() {
-    const audio = new Audio(likeSound);
-    audio.play();
     setLiked((prevProp) => !prevProp);
-    await axios.patch(
-      `${process.env.REACT_APP_BASE_URL}/posts/${currentPost._id}/likedislike`,
-      { userId: props.currentUser._id }
-    );
-    let res = await axios.get(
-      `${process.env.REACT_APP_BASE_URL}/posts/${currentPost._id}`
-    );
-    setCurrentPost(res.data);
-    //  res = await axios.get(`${process.env.REACT_APP_BASE_URL}/users?userId=${currentPost.creatorId}`)
+    try {
+      await axios.patch(
+        `${process.env.REACT_APP_BASE_URL}/posts/${currentPost._id}/likedislike`,
+        { userId: props.currentUser._id }
+      );
+      let res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/posts/${currentPost._id}`
+      );
+      setCurrentPost(res.data);
+    } catch (err) {
+      setError(err.response.data.message);
+      setOpenSnackbar(true);
+    }
   }
   function handleCommentClick() {
     setShowComments((prevProp) => !prevProp);
@@ -231,22 +275,21 @@ const Post = (props) => {
     try {
       await axios.delete(
         `${process.env.REACT_APP_BASE_URL}/posts/${props._id}`,
-        { data: { userId: props.currentUser._id },
-        
+        {
+          data: { userId: props.currentUser._id },
+
           headers: {
             authorization: "Bearer " + user.token,
           },
-         }
+        }
       );
       const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
+        `${process.env.REACT_APP_BASE_URL}/posts/user/${user._id}`
       );
       props.setPostsArray(res.data);
-      
     } catch (e) {
-      console.log(e)
-     setError(e.response.data.message)
-     setOpenSnackbar(true)
+      setError(e.response.data.message);
+      setOpenSnackbar(true);
     }
   }
 
@@ -268,22 +311,31 @@ const Post = (props) => {
     setChangedCaption(evt.target.value);
   }
   async function handlePost() {
-    await axios.post(`${process.env.REACT_APP_BASE_URL}/posts/`, {
-      creatorId: props.currentUser._id,
-      desc: changedCaption,
-      post: props.post.url,
-    });
-    const res = await axios.get(
-      `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
-    );
-    props.setPostsArray(res.data);
-    setSharePost(false);
+    try {
+      await axios.post(`${process.env.REACT_APP_BASE_URL}/posts/`, {
+        creatorId: props.currentUser._id,
+        desc: changedCaption,
+        post: props.post.url,
+      });
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
+      );
+      props.setPostsArray(res.data);
+      setSharePost(false);
+    } catch (err) {
+      setError(err.response.data.message);
+      setOpenSnackbar(true);
+    }
   }
   return (
     <>
       {/* diaglog box for delete post */}
       <Stack spacing={2} sx={{ width: "100%" }}>
-        <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+        >
           <Alert
             onClose={handleCloseSnackbar}
             severity="warning"

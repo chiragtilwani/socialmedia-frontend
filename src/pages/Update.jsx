@@ -44,8 +44,10 @@ const useStyles = makeStyles({
     borderRadius: ".5rem",
     boxShadow:
       "rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset",
-    [Sizes.down("md")]: {
+    [Sizes.down("sm")]: {
       width: "100vw",
+      borderRadius: "0",
+      alignItems: "center",
     },
   },
   cover: {
@@ -55,6 +57,7 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "flex-end",
     justifyContent: "center",
+    objectFit:'fill'
   },
   profile: {
     width: "5rem",
@@ -66,11 +69,6 @@ const useStyles = makeStyles({
     cursor: "pointer",
     position: "absolute",
     bottom: "2.5rem",
-    // "&:hover": {
-    //   "& $profileImgBackdrop": {
-    //     display: "none",
-    //   },
-    // },
   },
   inputContainer: {
     display: "flex",
@@ -196,7 +194,7 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    border: ".2rem solid red",
+    border: ".2rem solid var(--purple-1)",
     position: "absolute",
     bottom: "-2.5rem",
     overflow: "hidden",
@@ -430,7 +428,7 @@ const Update = (props) => {
                       src={
                         coverImg
                           ? `${coverImg}`
-                          : props.coverPicture&&props.coverPicture.url
+                          : props.coverPicture && props.coverPicture.url
                           ? `${props.coverPicture.url}`
                           : `${noCover}`
                       }
@@ -458,7 +456,7 @@ const Update = (props) => {
                       src={
                         profileImg
                           ? `${profileImg}`
-                          : props.profilePicture&&props.profilePicture.url
+                          : props.profilePicture && props.profilePicture.url
                           ? `${props.profilePicture.url}`
                           : `https://api.dicebear.com/5.x/avataaars/svg?seed=${props.username}`
                       }

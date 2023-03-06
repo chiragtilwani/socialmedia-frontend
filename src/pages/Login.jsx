@@ -25,6 +25,8 @@ const useStyles = makeStyles({
     position: "absolute",
   },
   card: {
+    boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+    borderRadius:'2rem 0rem 2rem 0rem',
     width: "50%",
     height: "70vh",
     display: "flex",

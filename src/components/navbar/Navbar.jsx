@@ -103,6 +103,7 @@ const useStyles = makeStyles({
     marginTop: ".5rem",
     maxHeight: "20rem",
     overflowY: "scroll",
+    overflowX: "hidden",
     position: "absolute",
     width: "100%",
     borderRadius: ".2rem",
@@ -121,6 +122,11 @@ const useStyles = makeStyles({
         backgroundColor: "var(--purple-1)",
       },
     },
+    [Sizes.down('sm')]:{
+      width:'100vw',
+      position:'fixed',
+      left:0
+    }
   },
   searchResultItem: {
     padding: ".5rem",
@@ -333,7 +339,7 @@ const Navbar = (props) => {
                 <MdDarkMode />
               </Badge>
             </Link>
-            <Link to="/" className={classes.iconLink}>
+            <Link  className={classes.iconLink}>
               <Badge badgeContent={props.n_notifications} color="primary">
                 <IoMdNotifications onClick={handleNotificationIconClick} />
               </Badge>

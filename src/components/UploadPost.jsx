@@ -8,9 +8,11 @@ import Stack from "@mui/material/Stack";
 import * as React from "react";
 import { ImCancelCircle } from "react-icons/im";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 import Vdivider from "./Vdivider";
 import Hdivider from "./Hdivider";
+import Sizes from '../Sizes'
 
 const useStyles = makeStyles({
   container: {
@@ -20,6 +22,10 @@ const useStyles = makeStyles({
     backgroundColor: "white",
     borderRadius: ".5rem",
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+    [Sizes.down('sm')]:{
+      width:'100%',
+      borderRadius:0,
+    }
   },
   profile_textfield: {
     display: "flex",
@@ -31,7 +37,16 @@ const useStyles = makeStyles({
     width: "5rem",
     height: "5rem",
     borderRadius: "50%",
+    objectFit: "fill",
     border: ".2rem solid var(--purple-1)",
+    [Sizes.down('sm')]:{
+      width:'4rem',
+      height:'4rem'
+    },
+    [Sizes.down('xs')]:{
+      width:'3rem',
+      height:'3rem'
+    }
   },
   textfield: {
     width: "80%",
@@ -41,6 +56,12 @@ const useStyles = makeStyles({
     outline: "none",
     border: ".2rem solid var(--purple-2)",
     padding: "1rem",
+    [Sizes.down('sm')]:{
+      height:'3rem'
+    },
+    [Sizes.down('xs')]:{
+      height:'2rem'
+    },
   },
   btnContainer: {
     display: "flex",
@@ -48,6 +69,9 @@ const useStyles = makeStyles({
     justifyContent: "space-evenly",
     width: "100%",
     height: "3rem",
+    [Sizes.down('sm')]:{
+      height:'2rem',
+    },
   },
   photoUploader: {
     color: "tomato",
@@ -98,6 +122,12 @@ const useStyles = makeStyles({
     height: "25rem",
     borderRadius: ".5rem",
     objectFit: "fill",
+    [Sizes.down('sm')]:{
+      height:'20rem'
+    },
+    [Sizes.down('xs')]:{
+      height:'15rem'
+    },
   },
   canclePreview: {
     fontSize: "1.8rem",
@@ -110,6 +140,9 @@ const useStyles = makeStyles({
       opacity: ".5",
       transform: "scale(.8)",
     },
+    [Sizes.down('sm')]:{
+      fontSize:'1.5rem'
+    },
   },
 });
 
@@ -121,6 +154,8 @@ const UploadPost = (props) => {
   const [open, setOpen] = useState(false);
 
   const whatsHappening = useRef("");
+
+  const { user } = useSelector((state) => state.auth);
 
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -163,35 +198,41 @@ const UploadPost = (props) => {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    // if (previewImg) {
-      try {
-        await axios.post(`${process.env.REACT_APP_BASE_URL}/posts/`, {
-          creatorId: props.currentUser._id,
-          desc: whatsHappening.current.value,
-          post: previewImg,
-        });
-        // else if(previewVideo){
-        //   await axios.post(`${process.env.REACT_APP_BASE_URL}/posts/`, {
-        //     creatorId: props.currentUser._id,
-        //     desc: whatsHappening.current.value,
-        //     post: previewVideo,
-        //   });
-        // }
-        const res = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
-        );
+    try {
+      await axios.post(`${process.env.REACT_APP_BASE_URL}/posts/`, {
+        creatorId: props.currentUser._id,
+        desc: whatsHappening.current.value,
+        post: previewImg,
+      });
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
+      );
+      if (props.homePage) {
         props.setPostsArray(res.data);
-      } catch (e) {
-        setError(e.response.data.message);
-        setOpen(true);
+      } else {
+        const currentUserPosts = res.data.filter(
+          (post) => post.creatorId === props.currentUser._id
+        );
+        props.setPostsArray(currentUserPosts);
       }
+    } catch (e) {
+      setError(e.response.data.message);
+      setOpen(true);
+    }
     // }
     setPreviewImg(null);
     setPreviewVideo(null);
     whatsHappening.current.value = "";
   }
+  console.log(props);
   return (
-    <div className={classes.container}>
+    <div
+      className={classes.container}
+      style={{
+        display:
+          user.username !== props.currentUser.username ? "none" : "block",
+      }}
+    >
       <Stack spacing={2} sx={{ width: "100%" }}>
         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
           <Alert
@@ -205,15 +246,15 @@ const UploadPost = (props) => {
       </Stack>
       <form onSubmit={handleSubmit}>
         <div className={classes.profile_textfield}>
-          <div
+          <img
             className={classes.profile}
-            style={{
-              // background: `url(${props.currentUser.profilePicture.url})`,
-              background:props.currentUser.profilePicture.url?`url(${props.currentUser.profilePicture.url})`:`url(https://api.dicebear.com/5.x/avataaars/svg?seed=${props.currentUser.username})`,
-              backgroundSize: "100% 100%",
-              backgroundPosition: "center",
-            }}
-          ></div>
+            src={
+              props.currentUser.profilePicture.url
+                ? `${props.currentUser.profilePicture.url}`
+                : `https://api.dicebear.com/5.x/avataaars/svg?seed=${props.currentUser.username}`
+            }
+            alt=""
+          />
           <input
             type="textfield"
             className={classes.textfield}
@@ -265,10 +306,7 @@ const UploadPost = (props) => {
             <MdVideoCall className={classes.videoUploader} title="VIDEO" />
           </label>
           <Vdivider />
-          <button
-            className={classes.btn}
-            type="submit"
-          >
+          <button className={classes.btn} type="submit">
             POST
           </button>
         </div>

@@ -13,11 +13,16 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-
-import PostsWithUrlItem from "./PostsWithUrlItem";
 import axios from "axios";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
+import * as React from "react";
+
+import PostsWithUrlItem from "./PostsWithUrlItem";
+import Sizes from '../Sizes'
 
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(ru);
@@ -33,7 +38,9 @@ const useStyles = makeStyles({
     borderRadius: ".5rem",
     transitionDuration: ".2s",
     marginBottom: "2rem",
-    // minHeight:'25rem'
+    [Sizes.down('sm')]:{
+      borderRadius:'0'
+    }
   },
   innerContainer: {
     display: "flex",
@@ -43,6 +50,10 @@ const useStyles = makeStyles({
     rowGap: ".5rem",
     padding: ".5rem",
     width: "100%",
+    [Sizes.down("sm")]: {
+      maxHeight:'20rem',
+      overflowY:'scroll'
+    },
   },
   overlayPost: {
     width: "40%",
@@ -57,9 +68,13 @@ const useStyles = makeStyles({
         width: "6rem",
       },
     },
+    [Sizes.down("sm")]: {
+      width:'90%'
+    },
   },
   overlayPostImg: {
     width: "100%",
+    maxHeight: "90vh",
   },
   delete_edit: {
     position: "absolute",
@@ -88,18 +103,44 @@ const useStyles = makeStyles({
 const PostWithUrl = (props) => {
   const classes = useStyles();
   const navigate = useNavigate();
-  const {user}=useSelector(state=>state.auth)
+  const { user } = useSelector((state) => state.auth);
   const [backdropPost, setBackdropPost] = useState(null);
   const [open, setOpen] = useState(false);
   const [postsWithUrl, setPostsWithUrl] = useState(props.posts);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [error, setError] = useState();
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
 
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenSnackbar(false);
+  };
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
 
   // console.log(user)
 
   const handleClose = () => {
     setOpen(false);
   };
+
+  React.useEffect(() => {
+    async function fetchPostWithUrl() {
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.user._id}`
+      );
+      const currentUserPosts = res.data.filter(
+        (post) => post.creatorId === props.user._id
+      );
+      setPostsWithUrl(currentUserPosts.filter((post) => post.post.url));
+    }
+    fetchPostWithUrl();
+  }, [props.user._id]);
 
   function handleSetBackdropPost(post, openBackdrop) {
     setBackdropPost(post);
@@ -111,22 +152,28 @@ const PostWithUrl = (props) => {
     try {
       await axios.delete(
         `${process.env.REACT_APP_BASE_URL}/posts/${backdropPost._id}`,
-        { data: { userId: props.currentUser._id },
-        
+        {
+          data: { userId: props.currentUser._id },
+
           headers: {
             authorization: "Bearer " + user.token,
           },
-         }
+        }
       );
       const res = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
       );
-      setPostsWithUrl(res.data.filter((post) => post.post.url));
+      const currentUserPosts = res.data.filter(
+        (post) => post.creatorId === props.currentUser._id
+      );
+      setPostsWithUrl(currentUserPosts.filter((post) => post.post.url));
       setOpen(false);
       setDialogOpen(false);
-      props.setPostsArray(res.data.filter((post) => post.post.url))
-    } catch (e) {
-      console.log(e);
+      // props.setPostsArray(res.data.filter((post) => post.post.url));
+      props.setPostsArray(currentUserPosts);
+    } catch (err) {
+      setOpenSnackbar(true);
+      setError(err.response.data.message);
     }
   }
 
@@ -144,6 +191,21 @@ const PostWithUrl = (props) => {
 
   return (
     <>
+      <Stack spacing={2} sx={{ width: "100%" }}>
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+        >
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity="warning"
+            sx={{ width: "100%" }}
+          >
+            {error}
+          </Alert>
+        </Snackbar>
+      </Stack>
       <Dialog
         open={dialogOpen}
         onClose={handleDialogClose}
