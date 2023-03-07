@@ -479,7 +479,7 @@ const Profile = (props) => {
           </Backdrop>
 
           <div
-            className={`${classes.followers} ${classes.smUserList}`}
+            className={classes.smUserList}
             style={{
               display:
                 window.innerWidth <= 768 && showFollowersSM ? "flex" : "none",
@@ -500,7 +500,7 @@ const Profile = (props) => {
             />
           </div>
           <div
-            className={`${classes.followings} ${classes.smUserList}`}
+            className={classes.smUserList}
             style={{
               display:
                 window.innerWidth <= 768 && showFollowingsSM ? "flex" : "none",

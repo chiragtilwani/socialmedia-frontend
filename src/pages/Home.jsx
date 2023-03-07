@@ -9,6 +9,7 @@ import PofileCard from "../components/PofileCard";
 import UsersList from "../components/UsersList";
 import UploadPost from "../components/UploadPost";
 import Post from "../components/Post";
+import Loading from "../components/Loading";
 
 const useStyles = makeStyles({
   outterContainer: {
@@ -87,20 +88,20 @@ const useStyles = makeStyles({
   postContainer: {
     width: "90%",
     marginBottom: "2rem",
-    [Sizes.down('sm')]:{
-     width:'100%',
+    [Sizes.down("sm")]: {
+      width: "100%",
     },
   },
-  noPosts:{
-    color:'var(--purple-1)',
-    width:'100%',
-    height:'60vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize:'1.5rem',
-    fontWeight:'bold'
-  }
+  noPosts: {
+    color: "var(--purple-1)",
+    width: "100%",
+    height: "60vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "1.5rem",
+    fontWeight: "bold",
+  },
 });
 const Home = (props) => {
   const classes = useStyles();
@@ -116,6 +117,7 @@ const Home = (props) => {
         )
         .map((user) => user._id)
   );
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getPost = async () => {
@@ -124,7 +126,9 @@ const Home = (props) => {
       );
       setPosts(res.data);
     };
+    setLoading(true);
     getPost();
+    setLoading(false);
   }, [user._id]);
 
   useEffect(() => {
@@ -136,7 +140,6 @@ const Home = (props) => {
     }
     fetchAllUsers();
   }, []);
-
 
   function setPostsArray(posts) {
     setPosts(posts);
@@ -190,19 +193,25 @@ const Home = (props) => {
               setPostsArray={setPostsArray}
               homePage={true}
             />
-            <div className={classes.postContainer}>
-              {posts
-                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                .map((post) => (
-                  <Post
-                    key={post._id}
-                    {...post}
-                    currentUser={user}
-                    setPostsArray={setPostsArray}
-                  />
-                ))}
-                {(posts&&posts.length===0)&&<div className={classes.noPosts}>No Post Found!😕</div>}
-            </div>
+            {loading ? (
+              <Loading />
+            ) : (
+              <div className={classes.postContainer}>
+                {posts
+                  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                  .map((post) => (
+                    <Post
+                      key={post._id}
+                      {...post}
+                      currentUser={user}
+                      setPostsArray={setPostsArray}
+                    />
+                  ))}
+                {posts && posts.length === 0 && (
+                  <div className={classes.noPosts}>No Post Found!😕</div>
+                )}
+              </div>
+            )}
           </div>
           <div className={`${classes.right} ${classes.childContainer}`}>
             <h2 className={classes.h2}>who is following you</h2>

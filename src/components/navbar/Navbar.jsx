@@ -344,11 +344,11 @@ const Navbar = (props) => {
                 <IoMdNotifications onClick={handleNotificationIconClick} />
               </Badge>
             </Link>
-            <Link to="/" className={classes.iconLink}>
+            {/* <Link to="/" className={classes.iconLink}>
               <Badge badgeContent={4} color="primary">
                 <BsFillChatDotsFill />
               </Badge>
-            </Link>
+            </Link> */}
           </div>
           <div
             className={classes.avatar}

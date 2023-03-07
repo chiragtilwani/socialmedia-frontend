@@ -16,6 +16,7 @@ import Update from './pages/Update'
 import NotificationBar from './components/NotificationBar'
 import Navbar from './components/navbar/Navbar'
 import BottomNavbar from './components/navbar/BottomNavbar';
+import Loading from './components/Loading';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null)
@@ -91,16 +92,16 @@ function App() {
           n_notifications={n_notifications}
         /></>}
       <Routes>
-        <Route path="/" element={user ? currentUser && <Home {...currentUser} /> : <Login />} />
+        <Route path="/" element={user ? currentUser ? <Home {...currentUser} />:<Loading/> : <Login />} />
         <Route path='/login' element={!user && <Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/profile/:uname' element={currentUser && <Profile {...currentUser} />} />
         <Route path='/update/post/:pid' element={<Update postUpdate={true} />} />
         <Route path='/update/user/:uid' element={currentUser && <Update postUpdate={false} {...currentUser} />} />
       </Routes>
-      <BottomNavbar currentUser={currentUser}
+      {currentUser && <BottomNavbar currentUser={currentUser}
         OpenSideBar={OpenSideBar}
-        n_notifications={n_notifications} />
+        n_notifications={n_notifications} />}
     </div>
   );
 }
