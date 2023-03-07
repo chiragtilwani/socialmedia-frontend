@@ -26,32 +26,42 @@ const useStyles = makeStyles({
       },
     },
   },
-  noUser:{
-    width:'100%',
-    height:'100%',
-    color:'var(--purple-1)',
-    display:'flex',
-    alignItems:'center',
-    justifyContent: 'center',
-    fontSize:'1.5rem',
-    fontWeight:'bold',
-  }
+  noUser: {
+    width: "100%",
+    height: "100%",
+    color: "var(--purple-1)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "1.5rem",
+    fontWeight: "bold",
+  },
 });
 
 const UsersList = (props) => {
   const classes = useStyles();
   return (
-    <div className={classes.container}>
-      {props.users&&props.users.length!==0?props.users.map((user) => (
-        <UserListItem
-          key={user}
-          userId={user}
-          currentUser={props.currentUser}
-          setuser={props.setuser}
-          setfriendSuggestion={props.setfriendSuggestion}
-          setPosts={props.setPosts}
-        />
-      )):<div className={classes.noUser}>No {props.type} found!😕</div>}
+    <div
+      className={classes.container}
+      style={{
+        width: props.width ? props.width : "",
+        height: props.height ? props.height : "",
+      }}
+    >
+      {props.users && props.users.length !== 0 ? (
+        props.users.map((user) => (
+          <UserListItem
+            key={user}
+            userId={user}
+            currentUser={props.currentUser}
+            setuser={props.setuser}
+            setfriendSuggestion={props.setfriendSuggestion}
+            setPosts={props.setPosts}
+          />
+        ))
+      ) : (
+        <div className={classes.noUser}>No {props.type} found!😕</div>
+      )}
     </div>
   );
 };

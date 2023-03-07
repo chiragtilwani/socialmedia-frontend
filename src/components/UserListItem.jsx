@@ -33,7 +33,7 @@ const useStyles = makeStyles({
   profileImg: {
     width: "100%",
     height: "100%",
-    objectFit:'fill',
+    objectFit: "fill",
   },
   name_username: {
     display: "flex",
@@ -114,7 +114,9 @@ const UserListItem = (props) => {
     let res = await axios.get(
       `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
     );
-    props.setPosts(res.data);
+    if (props.setPosts) {
+      props.setPosts(res.data);
+    }
     res = await axios.get(
       `${process.env.REACT_APP_BASE_URL}/users?userId=${props.currentUser._id}`
     );
@@ -134,7 +136,9 @@ const UserListItem = (props) => {
     let res = await axios.get(
       `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
     );
-    props.setPosts(res.data);
+    if (props.setPosts) {
+      props.setPosts(res.data);
+    }
     res = await axios.get(
       `${process.env.REACT_APP_BASE_URL}/users?userId=${props.currentUser._id}`
     );

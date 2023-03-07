@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { BsList } from "react-icons/bs";
 import { BsGrid3X3 } from "react-icons/bs";
+import { ImCancelCircle } from "react-icons/im";
 
 import UploadPost from "../components/UploadPost";
 import UsersList from "../components/UsersList";
@@ -126,7 +127,7 @@ const useStyles = makeStyles({
     },
   },
   profileContainer: {
-    [Sizes.down('sm')]:{
+    [Sizes.down("sm")]: {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
@@ -143,10 +144,10 @@ const useStyles = makeStyles({
     cursor: "pointer",
     backgroundColor: "white",
     [Sizes.down("sm")]: {
-      margin:'0rem',
-      marginBottom:'.5rem',
-      width: '4rem',
-      height: '4rem',
+      margin: "0rem",
+      marginBottom: ".5rem",
+      width: "4rem",
+      height: "4rem",
     },
   },
   details: {
@@ -157,7 +158,7 @@ const useStyles = makeStyles({
     padding: ".5rem",
     marginTop: "-2rem",
     [Sizes.down("sm")]: {
-      alignItems:'center',
+      alignItems: "center",
     },
   },
   name: {
@@ -193,7 +194,7 @@ const useStyles = makeStyles({
     borderTop: ".2rem solid var(--purple-2)",
     borderBottom: ".2rem solid var(--purple-2)",
     [Sizes.down("sm")]: {
-      width:'80%'
+      width: "80%",
     },
   },
   innerDiv: {
@@ -229,26 +230,26 @@ const useStyles = makeStyles({
       opacity: 0.8,
     },
     [Sizes.down("sm")]: {
-      fontSize:'.8rem',
-      width:'5rem'
+      fontSize: ".8rem",
+      width: "5rem",
     },
   },
   postContainer: {
     width: "90%",
     marginBottom: "2rem",
     [Sizes.down("md")]: {
-      paddingBottom:'2rem'
+      paddingBottom: "2rem",
     },
     [Sizes.down("sm")]: {
-      width:'100%'
+      width: "100%",
     },
   },
-  profileCoverOverlay:{
+  profileCoverOverlay: {
     [Sizes.down("md")]: {
-      width:'80vw'
+      width: "80vw",
     },
     [Sizes.down("sm")]: {
-      width:'100vw'
+      width: "100vw",
     },
   },
   profileOverlay: {
@@ -269,7 +270,7 @@ const useStyles = makeStyles({
     borderRadius: ".5rem",
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
     [Sizes.down("sm")]: {
-      margin:'.5rem',
+      margin: ".5rem",
     },
   },
   postTypeIcons: {
@@ -281,7 +282,7 @@ const useStyles = makeStyles({
       transform: "scale(.8)",
     },
     [Sizes.down("sm")]: {
-      fontSize:'1.2rem'
+      fontSize: "1.2rem",
     },
   },
   userNotFound: {
@@ -295,6 +296,34 @@ const useStyles = makeStyles({
     color: "var(--purple-1)",
     textShadow: "2px 2px 3px #333333",
   },
+  smUserList: {
+    position: "absolute",
+    zIndex: 3,
+    backgroundColor: "white",
+    width: "100vw",
+    height: "100vh",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  cancleButton: {
+    position: "absolute",
+    right: ".5rem",
+    top: ".5rem",
+    fontSize: "1.8rem",
+    color: "var(--purple-1)",
+    float: "right",
+    margin: ".5rem",
+    cursor: "pointer",
+    transitionDuration: ".2s",
+    "&:hover": {
+      opacity: ".5",
+      transform: "scale(.8)",
+    },
+    [Sizes.down("sm")]: {
+      fontSize: "1.5rem",
+    },
+  },
 });
 
 const Profile = (props) => {
@@ -307,6 +336,8 @@ const Profile = (props) => {
   const [showPostWithUrl, setShowPostWithUrl] = useState(true);
   const [error, setError] = useState();
   const [userNotFound, setUserNotFound] = useState(false);
+  const [showFollowersSM, setFollowersSM] = useState(false);
+  const [showFollowingsSM, setFollowingsSM] = useState(false);
 
   const { uname } = useParams();
 
@@ -400,6 +431,13 @@ const Profile = (props) => {
     setUserPosts(posts);
   }
 
+  function handleShowFollowersSM() {
+    setFollowersSM((prevState) => !prevState);
+  }
+  function handleShowFollowingsSM() {
+    setFollowingsSM((prevState) => !prevState);
+  }
+
   return (
     <>
       {userNotFound && (
@@ -439,6 +477,49 @@ const Profile = (props) => {
               alt=""
             />
           </Backdrop>
+
+          <div
+            className={`${classes.followers} ${classes.smUserList}`}
+            style={{
+              display:
+                window.innerWidth <= 768 && showFollowersSM ? "flex" : "none",
+            }}
+          >
+            <ImCancelCircle
+              className={classes.cancleButton}
+              onClick={handleShowFollowersSM}
+            />
+            <h1 className={classes.h2}>Followers</h1>
+            <UsersList
+              users={user.followers}
+              currentUser={currentUser}
+              setuser={setuser}
+              type="Follower"
+              height="90%"
+              width={window.innerWidth > 425 ? "60%" : "100%"}
+            />
+          </div>
+          <div
+            className={`${classes.followings} ${classes.smUserList}`}
+            style={{
+              display:
+                window.innerWidth <= 768 && showFollowingsSM ? "flex" : "none",
+            }}
+          >
+            <ImCancelCircle
+              className={classes.cancleButton}
+              onClick={handleShowFollowingsSM}
+            />
+            <h1 className={classes.h2}>Followings</h1>
+            <UsersList
+              users={user.followings}
+              currentUser={currentUser}
+              setuser={setuser}
+              type="Following"
+              height="90%"
+              width={window.innerWidth > 425 ? "60%" : "100%"}
+            />
+          </div>
 
           <div className={classes.container}>
             <div className={classes.left}>
@@ -485,14 +566,20 @@ const Profile = (props) => {
                   <span className={classes.username}>@{user.username}</span>
                   <p className={classes.p}>{user.bio}</p>
                   <div className={classes.followers_following_counters}>
-                    <div className={classes.innerDiv}>
+                    <div
+                      className={classes.innerDiv}
+                      onClick={handleShowFollowersSM}
+                    >
                       <span className={classes.upperSpan}>Followers</span>
                       <span className={classes.lowerSpan}>
                         {user.followers.length}
                       </span>
                     </div>
                     <div className={classes.centerLine} />
-                    <div className={classes.innerDiv}>
+                    <div
+                      className={classes.innerDiv}
+                      onClick={handleShowFollowingsSM}
+                    >
                       <span className={classes.upperSpan}>Followings</span>
                       <span className={classes.lowerSpan}>
                         {user.followings.length}
