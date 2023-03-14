@@ -4,16 +4,14 @@ import { AiTwotoneHome } from "react-icons/ai";
 import { RiSearchFill } from "react-icons/ri";
 import Badge from "@mui/material/Badge";
 import { IoMdNotifications } from "react-icons/io";
-import { BsFillChatDotsFill } from "react-icons/bs";
 import { MdDarkMode } from "react-icons/md";
 import Avatar from "@mui/material/Avatar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 import UserMenu from "./UserMenu";
 import Sizes from "../../Sizes";
-import { useEffect } from "react";
-import axios from "axios";
-import { useSelector } from "react-redux";
 
 const useStyles = makeStyles({
   container: {
@@ -122,11 +120,11 @@ const useStyles = makeStyles({
         backgroundColor: "var(--purple-1)",
       },
     },
-    [Sizes.down('sm')]:{
-      width:'100vw',
-      position:'fixed',
-      left:0
-    }
+    [Sizes.down("sm")]: {
+      width: "100vw",
+      position: "fixed",
+      left: 0,
+    },
   },
   searchResultItem: {
     padding: ".5rem",
@@ -212,6 +210,7 @@ const useStyles = makeStyles({
 
 const Navbar = (props) => {
   const classes = useStyles();
+
   const [isOpen, setIsOpen] = useState(false);
   const [searchWord, setSearchWord] = useState();
   const [allUsers, setAllUsers] = useState();
@@ -230,6 +229,7 @@ const Navbar = (props) => {
       fetchCurrentUser();
     }
   }, [user]);
+
   useEffect(() => {
     async function fetchAllUsers() {
       const res = await axios.get(
@@ -239,9 +239,11 @@ const Navbar = (props) => {
     }
     fetchAllUsers();
   }, []);
+
   function handleClick() {
     setIsOpen(!isOpen);
   }
+
   function handleOpen() {
     setIsOpen(true);
   }
@@ -268,7 +270,7 @@ const Navbar = (props) => {
     setSearchWord("");
     setSearchResult(null);
   }
-  console.log(props);
+
   return (
     <div className={classes.container} onClick={isOpen ? handleClick : null}>
       <div className={classes.innerContainer}>
@@ -339,32 +341,32 @@ const Navbar = (props) => {
                 <MdDarkMode />
               </Badge>
             </Link>
-            <Link  className={classes.iconLink}>
+            <Link className={classes.iconLink}>
               <Badge badgeContent={props.n_notifications} color="primary">
                 <IoMdNotifications onClick={handleNotificationIconClick} />
               </Badge>
             </Link>
-            {/* <Link to="/" className={classes.iconLink}>
-              <Badge badgeContent={4} color="primary">
-                <BsFillChatDotsFill />
-              </Badge>
-            </Link> */}
           </div>
           <div
             className={classes.avatar}
             onClick={handleClick}
             onMouseEnter={handleOpen}
           >
-           {currentUser&& <Avatar
-              alt="Remy Sharp"
-              src={
-                currentUser.profilePicture.url
-                  ? `${currentUser.profilePicture.url}`
-                  : `https://api.dicebear.com/5.x/avataaars/svg?seed=${currentUser.username}`
-              }
-              style={{border:'.2rem solid white',boxShadow:
-              "rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px"}}
-            />}
+            {currentUser && (
+              <Avatar
+                alt="Remy Sharp"
+                src={
+                  currentUser.profilePicture.url
+                    ? `${currentUser.profilePicture.url}`
+                    : `https://api.dicebear.com/5.x/avataaars/svg?seed=${currentUser.username}`
+                }
+                style={{
+                  border: ".2rem solid white",
+                  boxShadow:
+                    "rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px",
+                }}
+              />
+            )}
           </div>
           <div
             className={classes.userMenu}

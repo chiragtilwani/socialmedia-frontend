@@ -46,7 +46,7 @@ function App() {
         const res = await axios.get(`${process.env.REACT_APP_BASE_URL}/users?userId=${user._id}`)
         setCurrentUser(res.data)
       } catch (err) {
-        setError(err.response|| err.response.data||err.response.data.message)
+        setError(err.response || err.response.data || err.response.data.message)
         setOpen(true)
       }
     }
@@ -65,8 +65,6 @@ function App() {
   function handleNotificationCount(count) {
     setN_notifications(count);
   }
-
-
 
   return (
     <div className="App">
@@ -93,13 +91,13 @@ function App() {
           n_notifications={n_notifications}
         /></>}
       <Routes>
-        <Route path="/" element={user ? currentUser ? <Home {...currentUser} />:<Loading/> : <Login />} />
+        <Route path="/" element={user ? currentUser ? <Home {...currentUser} /> : <Loading /> : <Login />} />
         <Route path='/login' element={!user && <Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/profile/:uname' element={currentUser && <Profile {...currentUser} />} />
         <Route path='/update/post/:pid' element={<Update postUpdate={true} />} />
         <Route path='/update/user/:uid' element={currentUser && <Update postUpdate={false} {...currentUser} />} />
-        <Route path='/forgotPassword' element={<ForgotPassword/>} />
+        <Route path='/forgotPassword' element={<ForgotPassword />} />
       </Routes>
       {currentUser && <BottomNavbar currentUser={currentUser}
         OpenSideBar={OpenSideBar}

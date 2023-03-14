@@ -1,23 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Nerko+One&family=Permanent+Marker&display=swap');
+
 :root {
-    /* Colors */
-    --purple-1: #8A4FFF;
-    --purple-2: #C3BEF7;
-    --purple-3: #E5ECF4;
-    /* Fonts */
-    --logo:'Permanent Marker', cursive;
-  }
+  /* Colors */
+  --purple-1: #8A4FFF;
+  --purple-2: #C3BEF7;
+  --purple-3: #E5ECF4;
+  /* Fonts */
+  --logo: 'Permanent Marker', cursive;
+}
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-html::-webkit-scrollbar{
+
+html::-webkit-scrollbar {
   display: none;
 }
-html{
+
+html {
   overflow: hidden;
-  height:100vh;
-  width:100vw
+  height: 100vh;
+  width: 100vw
 }

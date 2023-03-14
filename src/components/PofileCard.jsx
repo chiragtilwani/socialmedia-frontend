@@ -1,6 +1,6 @@
 import { makeStyles } from "@mui/styles";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
 
 import noCover from "../assets/noCover.png";
@@ -23,7 +23,7 @@ const useStyles = makeStyles({
     borderRadius: "1rem 1rem 0rem 0rem",
     cursor: "pointer",
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
-    overflow: "hidden"
+    overflow: "hidden",
   },
   coverImg: {
     width: "100%",
@@ -38,13 +38,13 @@ const useStyles = makeStyles({
     transform: "translateY(-50%)",
     boxShadow: "0rem 0rem .5rem .05rem var(--purple-2)",
     cursor: "pointer",
-    overflow: "hidden"
+    overflow: "hidden",
   },
   profileImg: {
     width: "100%",
     height: "100%",
     objectFit: "fill",
-    backgroundColor:'white'
+    backgroundColor: "white",
   },
   name: {
     marginTop: "-1.5rem",
@@ -59,7 +59,7 @@ const useStyles = makeStyles({
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    textAlign:'center',
+    textAlign: "center",
   },
   line: {
     width: "90%",
@@ -93,6 +93,7 @@ const useStyles = makeStyles({
 
 const PofileCard = (props) => {
   const classes = useStyles();
+
   const [coverClick, setCoverClick] = useState(false);
   const [profileClick, setProfileClick] = useState(false);
 
@@ -102,6 +103,7 @@ const PofileCard = (props) => {
   function handleProfileClick() {
     setProfileClick((prevState) => !prevState);
   }
+
   return (
     <>
       <Backdrop
@@ -112,7 +114,9 @@ const PofileCard = (props) => {
         <img
           className={classes.profileCoverOverlay}
           src={
-            props.currentUser.profilePicture.url ? `${props.currentUser.profilePicture.url}` : `https://api.dicebear.com/5.x/avataaars/svg?seed=${props.currentUser.username}`
+            props.currentUser.profilePicture.url
+              ? `${props.currentUser.profilePicture.url}`
+              : `https://api.dicebear.com/5.x/avataaars/svg?seed=${props.currentUser.username}`
           }
           alt=""
         />
@@ -124,7 +128,11 @@ const PofileCard = (props) => {
       >
         <img
           className={classes.profileCoverOverlay}
-          src={props.currentUser.coverPicture.url ? `${props.currentUser.coverPicture.url}` : `${noCover}`}
+          src={
+            props.currentUser.coverPicture.url
+              ? `${props.currentUser.coverPicture.url}`
+              : `${noCover}`
+          }
           alt=""
         />
       </Backdrop>
@@ -158,7 +166,11 @@ const PofileCard = (props) => {
         <div className={classes.name}>
           <Link
             to={`/profile/${props.currentUser.username}`}
-            style={{ textDecoration: "none", color: "black",textTransform:'capitalize' }}
+            style={{
+              textDecoration: "none",
+              color: "black",
+              textTransform: "capitalize",
+            }}
           >
             {props.currentUser.name}
           </Link>
@@ -166,18 +178,32 @@ const PofileCard = (props) => {
         <div className={classes.line}></div>
         <div className={classes.stats}>
           <div className={classes.innerStats}>
-            <span style={{fontWeight: "bold", fontSize: ".9rem"  }}>Followers</span>
-            <span style={{ fontSize: ".8rem" }}>{props.currentUser.followers?props.currentUser.followers.length:0}</span>
+            <span style={{ fontWeight: "bold", fontSize: ".9rem" }}>
+              Followers
+            </span>
+            <span style={{ fontSize: ".8rem" }}>
+              {props.currentUser.followers
+                ? props.currentUser.followers.length
+                : 0}
+            </span>
           </div>
           <div className={classes.centerLine}></div>
           <div className={classes.innerStats}>
-            <span style={{ fontWeight: "bold", fontSize: ".9rem" }}>Followings</span>
-            <span style={{ fontSize: ".8rem" }}>{props.currentUser.followings?props.currentUser.followings.length:0}</span>
+            <span style={{ fontWeight: "bold", fontSize: ".9rem" }}>
+              Followings
+            </span>
+            <span style={{ fontSize: ".8rem" }}>
+              {props.currentUser.followings
+                ? props.currentUser.followings.length
+                : 0}
+            </span>
           </div>
           <div className={classes.centerLine}></div>
           <div className={classes.innerStats}>
             <span style={{ fontWeight: "bold", fontSize: ".9rem" }}>Posts</span>
-            <span style={{ fontSize: ".8rem" }}>{props.currentUserPost.length}</span>
+            <span style={{ fontSize: ".8rem" }}>
+              {props.currentUserPost.length}
+            </span>
           </div>
         </div>
         <div className={classes.line}></div>

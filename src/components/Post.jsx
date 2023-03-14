@@ -5,7 +5,7 @@ import { IoIosShare } from "react-icons/io";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import ru from "javascript-time-ago/locale/ru.json";
@@ -21,12 +21,11 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import * as React from "react";
+import { useSelector } from "react-redux";
 
 import Comment from "./Comment";
 import Sizes from "../Sizes";
 import Hdivider from "./Hdivider";
-import Loading from "./Loading";
-import { useSelector } from "react-redux";
 
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(ru);
@@ -44,21 +43,21 @@ const useStyles = makeStyles({
         transform: "scale(1)",
       },
     },
-    [Sizes.down('sm')]:{
-      borderRadius:0,
-      marginBottom:'1rem'
+    [Sizes.down("sm")]: {
+      borderRadius: 0,
+      marginBottom: "1rem",
     },
-    [Sizes.down('xs')]:{
-      padding:'0.2rem'
-    }
+    [Sizes.down("xs")]: {
+      padding: "0.2rem",
+    },
   },
   header: {
     display: "flex",
     alignItems: "center",
     margin: ".5rem 1rem",
-    [Sizes.down('xs')]:{
-      margin:'0.2rem'
-    }
+    [Sizes.down("xs")]: {
+      margin: "0.2rem",
+    },
   },
   name_username: {
     display: "flex",
@@ -70,9 +69,9 @@ const useStyles = makeStyles({
     cursor: "pointer",
     textDecoration: "none",
     color: "black",
-    [Sizes.down('xs')]:{
-      fontSize:'.8rem'
-    }
+    [Sizes.down("xs")]: {
+      fontSize: ".8rem",
+    },
   },
   username: {
     marginLeft: ".3rem",
@@ -85,40 +84,40 @@ const useStyles = makeStyles({
     "&:hover": {
       color: "black",
     },
-    [Sizes.down('xs')]:{
-      fontSize:'.7rem'
-    }
+    [Sizes.down("xs")]: {
+      fontSize: ".7rem",
+    },
   },
   postImg: {
     width: "95%",
     height: "25rem",
     margin: "1rem auto",
     borderRadius: ".6rem",
-    [Sizes.down('sm')]:{
-      margin:'0.5rem 0',
-      borderRadius:'0rem',
-      height: '20rem',
-      width:'100%'
+    [Sizes.down("sm")]: {
+      margin: "0.5rem 0",
+      borderRadius: "0rem",
+      height: "20rem",
+      width: "100%",
     },
-    [Sizes.down('xs')]:{
-      height: '15rem'
-    }
+    [Sizes.down("xs")]: {
+      height: "15rem",
+    },
   },
   desc: {
     margin: "0rem 1.3rem",
     fontSize: "1.1rem",
-    [Sizes.down('xs')]:{
-      fontSize:'1rem',
+    [Sizes.down("xs")]: {
+      fontSize: "1rem",
       margin: "0rem .2rem",
-    }
+    },
   },
   btnContainer: {
     margin: ".8rem",
     display: "flex",
     alignItems: "center",
-    [Sizes.down('xs')]:{
+    [Sizes.down("xs")]: {
       margin: "0.5rem 0rem",
-    }
+    },
   },
   btn: {
     marginRight: ".5rem",
@@ -135,9 +134,9 @@ const useStyles = makeStyles({
     [Sizes.down("md")]: {
       fontSize: "1.5rem",
     },
-    [Sizes.down('xs')]:{
+    [Sizes.down("xs")]: {
       margin: "0rem .2rem",
-    }
+    },
   },
   like_comment_count: {
     fontSize: ".9rem",
@@ -150,9 +149,9 @@ const useStyles = makeStyles({
     fontSize: ".8rem",
     color: "var(--purple-2)",
     fontWeight: "bold",
-    [Sizes.down('sm')]:{
-      fontSize:'.7rem',
-    }
+    [Sizes.down("sm")]: {
+      fontSize: ".7rem",
+    },
   },
   iconContainer: {
     width: "4rem",
@@ -187,11 +186,11 @@ const useStyles = makeStyles({
     cursor: "pointer",
     overflow: "hidden",
     marginRight: "1rem",
-    [Sizes.down('xs')]:{
+    [Sizes.down("xs")]: {
       width: "2.5rem",
       height: "2.5rem",
       marginRight: ".5rem",
-    }
+    },
   },
   profileImg: {
     width: "100%",
@@ -210,17 +209,16 @@ const useStyles = makeStyles({
 });
 const Post = (props) => {
   const classes = useStyles();
-  const [liked, setLiked] = useState(false);
+
   const [showComments, setShowComments] = useState(false);
   const [creator, setCreator] = useState({});
   const [comments, setComments] = useState([]);
-  const [nLikes, setNlikes] = useState(props.likes.length);
   const [open, setOpen] = useState(false);
   const [currentPost, setCurrentPost] = useState(props);
   const [sharePost, setSharePost] = useState(false);
   const [changedCaption, setChangedCaption] = useState(props.desc);
   const [error, setError] = useState();
-  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const { user } = useSelector((state) => state.auth);
 
@@ -252,7 +250,6 @@ const Post = (props) => {
   }, [currentPost.creatorId, currentPost._id]);
 
   async function handleLikeClick() {
-    setLiked((prevProp) => !prevProp);
     try {
       await axios.patch(
         `${process.env.REACT_APP_BASE_URL}/posts/${currentPost._id}/likedislike`,
@@ -267,6 +264,7 @@ const Post = (props) => {
       setOpenSnackbar(true);
     }
   }
+
   function handleCommentClick() {
     setShowComments((prevProp) => !prevProp);
   }
@@ -300,6 +298,7 @@ const Post = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
+
   function handleShareClick() {
     setSharePost(true);
   }
@@ -307,9 +306,11 @@ const Post = (props) => {
   function handleSharePostClose() {
     setSharePost(false);
   }
+
   function handleChangeCaption(evt) {
     setChangedCaption(evt.target.value);
   }
+
   async function handlePost() {
     try {
       await axios.post(`${process.env.REACT_APP_BASE_URL}/posts/`, {
@@ -327,9 +328,9 @@ const Post = (props) => {
       setOpenSnackbar(true);
     }
   }
+
   return (
     <>
-      {/* diaglog box for delete post */}
       <Stack spacing={2} sx={{ width: "100%" }}>
         <Snackbar
           open={openSnackbar}
@@ -448,7 +449,6 @@ const Post = (props) => {
               <Link to={`/update/post/${props._id}`} className={classes.link}>
                 <FaEdit className={classes.edit_delete_icon} title="Edit" />
               </Link>
-              {/*here instead of 1 in 'to' attribute post id must come*/}
               <MdDelete
                 className={classes.edit_delete_icon}
                 title="Delete"
@@ -457,7 +457,6 @@ const Post = (props) => {
             </div>
           </div>
         </div>
-        {/* {content} */}
         <div
           className={classes.postImg}
           style={{
@@ -488,7 +487,6 @@ const Post = (props) => {
               }}
               onClick={handleLikeClick}
             />
-            {/*will make tile dynamic like/unlike*/}
             <FaCommentAlt
               className={classes.icon}
               title="COMMENT"

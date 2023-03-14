@@ -1,10 +1,8 @@
 import { makeStyles } from "@mui/styles";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 import Sizes from "../Sizes";
-import Navbar from "../components/navbar/Navbar";
-import BottomNavbar from "../components/navbar/BottomNavbar";
 import PofileCard from "../components/PofileCard";
 import UsersList from "../components/UsersList";
 import UploadPost from "../components/UploadPost";
@@ -105,31 +103,23 @@ const useStyles = makeStyles({
   },
   noPostSpan1: {
     fontSize: "2rem",
-    [Sizes.down('xs')]:{
-      fontSize:'1rem'
-    }
+    [Sizes.down("xs")]: {
+      fontSize: "1rem",
+    },
   },
   noPostSpan2: {
     fontSize: "1rem",
-    [Sizes.down('xs')]:{
-      fontSize:'.5rem'
-    }
+    [Sizes.down("xs")]: {
+      fontSize: ".5rem",
+    },
   },
 });
 const Home = (props) => {
   const classes = useStyles();
+
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(props);
   const [allUsers, setAllUsers] = useState();
-  const [friendSuggestions, setFriendSuggestion] = useState(
-    allUsers &&
-      allUsers
-        .filter(
-          (user) =>
-            !props.followings.includes(user._id) && user._id !== props._id
-        )
-        .map((user) => user._id)
-  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -162,10 +152,6 @@ const Home = (props) => {
     setUser(followers);
   }
 
-  function setfriendSuggestion(friendSuggestions) {
-    setFriendSuggestion(friendSuggestions);
-  }
-
   return (
     <>
       <div className={classes.outterContainer}>
@@ -193,11 +179,9 @@ const Home = (props) => {
               }
               currentUser={user}
               setuser={setuser}
-              setfriendSuggestion={setfriendSuggestion}
               setPosts={setPosts}
               type="Suggestion"
             />
-            {/*here we will send list of users whom you are following instead of users with propname user*/}
           </div>
           <div className={`${classes.center} ${classes.childContainer}`}>
             <UploadPost
@@ -245,11 +229,9 @@ const Home = (props) => {
               users={user.followers}
               currentUser={user}
               setuser={setuser}
-              setfriendSuggestion={setfriendSuggestion}
               setPosts={setPosts}
               type="Follower"
             />
-            {/*here we will send list of users who are following currentUser instead of users with propname user*/}
             <h2 className={classes.h2} style={{ marginTop: "1rem" }}>
               Whom you follow
             </h2>
@@ -257,11 +239,9 @@ const Home = (props) => {
               users={user.followings}
               currentUser={user}
               setuser={setuser}
-              setfriendSuggestion={setfriendSuggestion}
               setPosts={setPosts}
               type="Following"
             />
-            {/*here we will send list of users whom you are following instead of users with propname user*/}
           </div>
         </div>
       </div>

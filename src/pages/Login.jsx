@@ -1,6 +1,5 @@
 import { makeStyles } from "@mui/styles";
-import axios from "axios";
-import { useRef,useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Snackbar from "@mui/material/Snackbar";
@@ -8,8 +7,8 @@ import MuiAlert from "@mui/material/Alert";
 import * as React from "react";
 import Stack from "@mui/material/Stack";
 import { useSelector, useDispatch } from "react-redux";
-import { login, reset } from "../features/auth/authSlice";
 
+import { login, reset } from "../features/auth/authSlice";
 import Sizes from "../Sizes";
 
 const useStyles = makeStyles({
@@ -21,12 +20,12 @@ const useStyles = makeStyles({
     alignItems: "center",
     flexDirection: "column",
     backgroundColor: "var(--purple-2)",
-    zIndex:3,
+    zIndex: 3,
     position: "absolute",
   },
   card: {
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
-    borderRadius:'2rem 0rem 2rem 0rem',
+    borderRadius: "2rem 0rem 2rem 0rem",
     width: "50%",
     height: "70vh",
     display: "flex",
@@ -158,7 +157,6 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 const Login = () => {
   const classes = useStyles();
-  // const { user, dispatch } = useContext(AuthContext);
   const [open, setOpen] = React.useState(false);
   const [err, setErr] = React.useState();
   const [isFetching, setIsFetching] = React.useState(false);
@@ -166,13 +164,13 @@ const Login = () => {
   const password = useRef();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, isLoading, isError, message, isSuccess } = useSelector(
+  const { user, isError, message, isSuccess } = useSelector(
     (state) => state.auth
   );
 
   useEffect(() => {
     if (isError) {
-      setOpen(true)
+      setOpen(true);
       setErr(message);
     }
     if (isSuccess || user) {
@@ -180,10 +178,6 @@ const Login = () => {
     }
     dispatch(reset());
   }, [user, isError, message, isSuccess, navigate, dispatch]);
-
-  const handleClick = () => {
-    setOpen(true);
-  };
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -273,7 +267,10 @@ const Login = () => {
                 Register
               </Link>
             </p>
-            <Link to="/forgotPassword" style={{ fontWeight: "900",color:'black' }}>
+            <Link
+              to="/forgotPassword"
+              style={{ fontWeight: "900", color: "black" }}
+            >
               Forgot Password
             </Link>
           </div>

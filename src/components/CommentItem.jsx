@@ -17,9 +17,9 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import * as React from "react";
+import { useSelector } from "react-redux";
 
 import Sizes from "../Sizes";
-import { useSelector } from "react-redux";
 
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(ru);
@@ -34,17 +34,15 @@ const useStyles = makeStyles({
       "rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset",
     padding: ".5rem 0rem",
     transitionDuration: ".2s",
-    [Sizes.down('sm')]:{
-
-    }
+    [Sizes.down("sm")]: {},
   },
   name_username: {
     display: "flex",
     flexDirection: "column",
     margin: ".5rem 1rem",
-    [Sizes.down('sm')]:{
+    [Sizes.down("sm")]: {
       margin: ".2rem .5rem",
-    }
+    },
   },
   name: {
     fontWeight: "bold",
@@ -116,7 +114,7 @@ const useStyles = makeStyles({
     alignItems: "center",
     justifyContent: "space-between",
     [Sizes.down("sm")]: {
-      width:'4rem',
+      width: "4rem",
       margin: ".2rem 0rem",
       fontSize: ".8rem",
     },
@@ -133,12 +131,12 @@ const useStyles = makeStyles({
     border: ".2rem solid var(--purple-2)",
     padding: "1rem",
     margin: ".2rem",
-    [Sizes.down('sm')]:{
+    [Sizes.down("sm")]: {
       width: "70%",
     },
-    [Sizes.down('xs')]:{
+    [Sizes.down("xs")]: {
       width: "65%",
-    }
+    },
   },
   btn: {
     padding: ".5rem",
@@ -158,8 +156,6 @@ const useStyles = makeStyles({
 
 const CommentItem = (props) => {
   const classes = useStyles();
-  const [liked, setLiked] = useState(false);
-  const [disliked, setDisliked] = useState(false);
   const [creator, setCreator] = useState({});
   const [currentComment, setCurrentComment] = useState(props);
   const [open, setOpen] = useState(false);
@@ -193,8 +189,6 @@ const CommentItem = (props) => {
   }, [props.creatorId]);
 
   async function handleLikeClick() {
-    setLiked((prevState) => !prevState);
-    setDisliked(false);
     try {
       await axios.patch(
         `${process.env.REACT_APP_BASE_URL}/comments/${props._id}/likedislike`,
@@ -275,16 +269,20 @@ const CommentItem = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
+
   function handleEditClick() {
     setEditing(true);
   }
+
   function handleCancelClick(evt) {
     evt.preventDefault();
     setEditing(false);
   }
+
   function handleCommentTextChange(evt) {
     setEditedText(evt.target.value);
   }
+
   return (
     <>
       <Stack spacing={2} sx={{ width: "100%" }}>

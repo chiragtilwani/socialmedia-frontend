@@ -1,7 +1,12 @@
 import { makeStyles } from "@mui/styles";
 import { useRef, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux"; //useSelector is for state and useDispatch is for reducer functions
+import { useSelector, useDispatch } from "react-redux";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
+import * as React from "react";
+
 import { register, reset } from "../features/auth/authSlice";
 import Sizes from "../Sizes";
 import Loading from "../components/Loading";
@@ -148,10 +153,12 @@ const useStyles = makeStyles({
 
 const Register = () => {
   const classes = useStyles();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [error, setError] = useState();
+  const [open, setOpen] = useState(false);
 
   const email = useRef();
   const password = useRef();
@@ -162,9 +169,22 @@ const Register = () => {
     (state) => state.auth
   );
 
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
   useEffect(() => {
     if (isError) {
       setError(message);
+      setOpen(true);
     }
     if (isSuccess || user) {
       navigate("/");
@@ -180,13 +200,25 @@ const Register = () => {
       password: password.current.value,
       username: username.current.value,
     };
-    dispatch(register(userData)); //sending user to register function in reducer
+    dispatch(register(userData));
   }
   if (isLoading) {
     return <Loading />;
   }
   return (
     <div className={classes.container}>
+      <Stack spacing={2} sx={{ width: "100%" }}>
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+          <Alert
+            onClose={handleClose}
+            severity="warning"
+            sx={{ width: "100%" }}
+          >
+            {error}
+          </Alert>
+        </Snackbar>
+      </Stack>
+
       <div className={classes.card}>
         <div className={classes.left}>
           <h1 className={classes.h2}>Register</h1>

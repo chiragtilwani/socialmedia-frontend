@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { makeStyles } from "@mui/styles";
 import Backdrop from "@mui/material/Backdrop";
 import { FaEdit } from "react-icons/fa";
@@ -14,7 +14,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -22,7 +22,7 @@ import Stack from "@mui/material/Stack";
 import * as React from "react";
 
 import PostsWithUrlItem from "./PostsWithUrlItem";
-import Sizes from '../Sizes'
+import Sizes from "../Sizes";
 
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(ru);
@@ -38,9 +38,9 @@ const useStyles = makeStyles({
     borderRadius: ".5rem",
     transitionDuration: ".2s",
     marginBottom: "2rem",
-    [Sizes.down('sm')]:{
-      borderRadius:'0'
-    }
+    [Sizes.down("sm")]: {
+      borderRadius: "0",
+    },
   },
   innerContainer: {
     display: "flex",
@@ -51,8 +51,8 @@ const useStyles = makeStyles({
     padding: ".5rem",
     width: "100%",
     [Sizes.down("sm")]: {
-      maxHeight:'20rem',
-      overflowY:'scroll'
+      maxHeight: "20rem",
+      overflowY: "scroll",
     },
   },
   overlayPost: {
@@ -69,7 +69,7 @@ const useStyles = makeStyles({
       },
     },
     [Sizes.down("sm")]: {
-      width:'90%'
+      width: "90%",
     },
   },
   overlayPostImg: {
@@ -102,14 +102,16 @@ const useStyles = makeStyles({
 
 const PostWithUrl = (props) => {
   const classes = useStyles();
+
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
+
   const [backdropPost, setBackdropPost] = useState(null);
   const [open, setOpen] = useState(false);
   const [postsWithUrl, setPostsWithUrl] = useState(props.posts);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [error, setError] = useState();
-  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const handleCloseSnackbar = (event, reason) => {
     if (reason === "clickaway") {
@@ -123,13 +125,11 @@ const PostWithUrl = (props) => {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
 
-  // console.log(user)
-
   const handleClose = () => {
     setOpen(false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function fetchPostWithUrl() {
       const res = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.user._id}`
@@ -169,7 +169,6 @@ const PostWithUrl = (props) => {
       setPostsWithUrl(currentUserPosts.filter((post) => post.post.url));
       setOpen(false);
       setDialogOpen(false);
-      // props.setPostsArray(res.data.filter((post) => post.post.url));
       props.setPostsArray(currentUserPosts);
     } catch (err) {
       setOpenSnackbar(true);

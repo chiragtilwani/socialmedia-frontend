@@ -7,7 +7,7 @@ import Stack from "@mui/material/Stack";
 import * as React from "react";
 
 import CommentItem from "./CommentItem";
-import Sizes from '../Sizes'
+import Sizes from "../Sizes";
 
 const useStyles = makeStyles({
   container: {
@@ -31,9 +31,7 @@ const useStyles = makeStyles({
         backgroundColor: "var(--purple-1)",
       },
     },
-    [Sizes.down('sm')]:{
-      
-    }
+    [Sizes.down("sm")]: {},
   },
   form: {
     width: "100%",
@@ -50,9 +48,9 @@ const useStyles = makeStyles({
     border: ".2rem solid var(--purple-2)",
     padding: "1rem",
     margin: ".2rem",
-    [Sizes.down('sm')]:{
-      height:'3rem'
-    }
+    [Sizes.down("sm")]: {
+      height: "3rem",
+    },
   },
   btn: {
     padding: ".5rem",
@@ -75,7 +73,9 @@ const Comment = (props) => {
 
   const [comments, setComments] = useState();
   const [error, setError] = useState();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+
+  const text = useRef("");
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -98,7 +98,7 @@ const Comment = (props) => {
     }
     fetchComments();
   }, [props.postId]);
-  const text = useRef("");
+
   async function handleSubmit(evt) {
     evt.preventDefault();
     try {
@@ -123,6 +123,7 @@ const Comment = (props) => {
       setOpen(true);
     }
   }
+
   return (
     <>
       <Stack spacing={2} sx={{ width: "100%" }}>

@@ -4,14 +4,13 @@ import Badge from "@mui/material/Badge";
 import { Link } from "react-router-dom";
 import { AiTwotoneHome } from "react-icons/ai";
 import { IoMdNotifications } from "react-icons/io";
-import { BsFillChatDotsFill } from "react-icons/bs";
 import { MdDarkMode } from "react-icons/md";
 import { ImUsers } from "react-icons/im";
 import { ImCancelCircle } from "react-icons/im";
+import axios from "axios";
 
 import Sizes from "../../Sizes";
 import UsersList from "../UsersList";
-import axios from "axios";
 
 const useStyles = makeStyles({
   container: {
@@ -53,7 +52,7 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    top:0
+    top: 0,
   },
   cancleButton: {
     position: "absolute",
@@ -83,9 +82,9 @@ const useStyles = makeStyles({
 
 function BottomNavbar(props) {
   const classes = useStyles();
+
   const [allUsers, setAllUsers] = useState();
   const [user, setUser] = useState(props.currentUser);
-  const [posts, setPosts] = useState([]);
   const [showSuggestionsSM, setSuggestionsSM] = useState(false);
 
   useEffect(() => {
@@ -109,7 +108,6 @@ function BottomNavbar(props) {
     setUser(followers);
   }
 
-  console.log(props.currentUser);
   return (
     <>
       <div className={classes.container}>
@@ -140,14 +138,13 @@ function BottomNavbar(props) {
               }
               currentUser={user}
               setuser={setuser}
-              setPosts={setPosts}
               type="Suggestion"
               height="90%"
               width={window.innerWidth > 425 ? "60%" : "100%"}
             />
           )}
         </div>
-        
+
         <div className={classes.innerContainer}>
           <Link to="/" className={classes.iconLink}>
             <Badge badgeContent={4} color="primary" variant="dot">

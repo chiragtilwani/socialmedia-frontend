@@ -1,10 +1,10 @@
 import { makeStyles } from "@mui/styles";
 import { useEffect, useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
-
-import Sizes from "../Sizes";
 import { Link } from "react-router-dom";
 import axios from "axios";
+
+import Sizes from "../Sizes";
 
 const useStyles = makeStyles({
   container: {
@@ -88,10 +88,10 @@ const useStyles = makeStyles({
 
 const UserListItem = (props) => {
   const classes = useStyles();
+
   const [profileClick, setProfileClick] = useState(false);
   const [user, setUser] = useState({});
 
-  console.log(props.userId)
   useEffect(() => {
     const getUser = async () => {
       const res = await axios.get(
@@ -128,6 +128,7 @@ const UserListItem = (props) => {
       );
     }
   }
+
   async function handleUnfollowClick(e) {
     e.preventDefault();
     await axios.patch(
@@ -203,8 +204,6 @@ const UserListItem = (props) => {
           Follow
         </button>
       )}
-      {/*later we will dynamically change this button's text to follow/following based on if current user's following list have this user or not*/}
-      {/* if it is following then on clicking this button we will alert user with msg 'if you change your mind,you'll have to request to follow username_of_user_we_are_unfollowing again. */}
     </div>
   );
 };

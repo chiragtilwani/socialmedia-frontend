@@ -1,18 +1,18 @@
 import { makeStyles } from "@mui/styles";
 
-import Sizes from '../Sizes'
+import Sizes from "../Sizes";
 
 const useStyles = makeStyles({
   container: {
     width: "32.666%",
-    maxHeight:'10rem',
+    maxHeight: "10rem",
     boxShadow: "0rem 0rem .5rem .05rem var(--purple-2)",
     cursor: "pointer",
     overflow: "hidden",
     borderRadius: ".5rem",
     [Sizes.down("sm")]: {
-      width:'49%',
-      borderRadius:'.2rem'
+      width: "49%",
+      borderRadius: ".2rem",
     },
   },
   postImg: {
@@ -30,7 +30,7 @@ const useStyles = makeStyles({
 function PostsWithUrlItem(props) {
   const classes = useStyles();
   const handleToggle = () => {
-    props.handleSetBackdropPost(props,true)
+    props.handleSetBackdropPost(props, true);
   };
 
   return (

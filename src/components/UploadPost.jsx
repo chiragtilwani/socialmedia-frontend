@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 
 import Vdivider from "./Vdivider";
 import Hdivider from "./Hdivider";
-import Sizes from '../Sizes'
+import Sizes from "../Sizes";
 
 const useStyles = makeStyles({
   container: {
@@ -22,10 +22,10 @@ const useStyles = makeStyles({
     backgroundColor: "white",
     borderRadius: ".5rem",
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
-    [Sizes.down('sm')]:{
-      width:'100%',
-      borderRadius:0,
-    }
+    [Sizes.down("sm")]: {
+      width: "100%",
+      borderRadius: 0,
+    },
   },
   profile_textfield: {
     display: "flex",
@@ -39,14 +39,14 @@ const useStyles = makeStyles({
     borderRadius: "50%",
     objectFit: "fill",
     border: ".2rem solid var(--purple-1)",
-    [Sizes.down('sm')]:{
-      width:'4rem',
-      height:'4rem'
+    [Sizes.down("sm")]: {
+      width: "4rem",
+      height: "4rem",
     },
-    [Sizes.down('xs')]:{
-      width:'3rem',
-      height:'3rem'
-    }
+    [Sizes.down("xs")]: {
+      width: "3rem",
+      height: "3rem",
+    },
   },
   textfield: {
     width: "80%",
@@ -56,11 +56,11 @@ const useStyles = makeStyles({
     outline: "none",
     border: ".2rem solid var(--purple-2)",
     padding: "1rem",
-    [Sizes.down('sm')]:{
-      height:'3rem'
+    [Sizes.down("sm")]: {
+      height: "3rem",
     },
-    [Sizes.down('xs')]:{
-      height:'2rem'
+    [Sizes.down("xs")]: {
+      height: "2rem",
     },
   },
   btnContainer: {
@@ -69,8 +69,8 @@ const useStyles = makeStyles({
     justifyContent: "space-evenly",
     width: "100%",
     height: "3rem",
-    [Sizes.down('sm')]:{
-      height:'2rem',
+    [Sizes.down("sm")]: {
+      height: "2rem",
     },
   },
   photoUploader: {
@@ -122,11 +122,11 @@ const useStyles = makeStyles({
     height: "25rem",
     borderRadius: ".5rem",
     objectFit: "fill",
-    [Sizes.down('sm')]:{
-      height:'20rem'
+    [Sizes.down("sm")]: {
+      height: "20rem",
     },
-    [Sizes.down('xs')]:{
-      height:'15rem'
+    [Sizes.down("xs")]: {
+      height: "15rem",
     },
   },
   canclePreview: {
@@ -140,14 +140,15 @@ const useStyles = makeStyles({
       opacity: ".5",
       transform: "scale(.8)",
     },
-    [Sizes.down('sm')]:{
-      fontSize:'1.5rem'
+    [Sizes.down("sm")]: {
+      fontSize: "1.5rem",
     },
   },
 });
 
 const UploadPost = (props) => {
   const classes = useStyles();
+
   const [previewImg, setPreviewImg] = useState(null);
   const [previewVideo, setPreviewVideo] = useState(null);
   const [error, setError] = useState(null);
@@ -166,7 +167,6 @@ const UploadPost = (props) => {
     let idxDot = fileName.lastIndexOf(".") + 1;
     let extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
     if (extFile === "jpg" || extFile === "jpeg" || extFile === "png") {
-      //TO DO
       const file = evt.target.files[0];
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -219,7 +219,6 @@ const UploadPost = (props) => {
       setError(e.response.data.message);
       setOpen(true);
     }
-    // }
     setPreviewImg(null);
     setPreviewVideo(null);
     whatsHappening.current.value = "";

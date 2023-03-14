@@ -4,13 +4,13 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import Loading from "../components/Loading";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
-import noCover from "../assets/noCover.png";
 import * as React from "react";
 
+import Loading from "../components/Loading";
+import noCover from "../assets/noCover.png";
 import Sizes from "../Sizes";
 
 const useStyles = makeStyles({
@@ -57,7 +57,7 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "flex-end",
     justifyContent: "center",
-    objectFit:'fill'
+    objectFit: "fill",
   },
   profile: {
     width: "5rem",
@@ -209,6 +209,7 @@ const useStyles = makeStyles({
 
 const Update = (props) => {
   const classes = useStyles();
+
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
@@ -262,7 +263,6 @@ const Update = (props) => {
     let idxDot = fileName.lastIndexOf(".") + 1;
     let extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
     if (extFile === "jpg" || extFile === "jpeg" || extFile === "png") {
-      //TO DO
       const file = evt.target.files[0];
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -316,7 +316,7 @@ const Update = (props) => {
         );
         navigate(`/profile/${userProfileData.username}`);
       } catch (err) {
-        setError(err|| err.response||err.response.data.message);
+        setError(err || err.response || err.response.data.message);
         setOpen(true);
       }
     }
@@ -334,7 +334,6 @@ const Update = (props) => {
     let idxDot = fileName.lastIndexOf(".") + 1;
     let extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
     if (extFile === "jpg" || extFile === "jpeg" || extFile === "png") {
-      //TO DO
       const file = evt.target.files[0];
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -352,7 +351,6 @@ const Update = (props) => {
     let idxDot = fileName.lastIndexOf(".") + 1;
     let extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
     if (extFile === "jpg" || extFile === "jpeg" || extFile === "png") {
-      //TO DO
       const file = evt.target.files[0];
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -422,7 +420,6 @@ const Update = (props) => {
                 </div>
               ) : (
                 <div className={classes.coverProfileContainer}>
-                  {/*cover pic and profile pic*/}
                   <div className={classes.coverContainer}>
                     <img
                       src={

@@ -1,5 +1,6 @@
 import { makeStyles } from "@mui/styles";
 import { useRef, useState } from "react";
+
 import Sizes from "../Sizes";
 
 const useStyles = makeStyles({
@@ -61,26 +62,21 @@ const useStyles = makeStyles({
 const ForgotPassword = () => {
   const classes = useStyles();
   const [showEmailInput, setShowEmailInput] = useState(true);
-  let otp = Math.floor(Math.random() * (999999 - 100000+1) + 100000);
+  // let otp = Math.floor(Math.random() * (999999 - 100000+1) + 100000);
 
-  const email=useRef('')
-
+  const email = useRef("");
 
   function handleSendOtpClick(evt) {
     evt.preventDefault();
     setShowEmailInput((prevState) => !prevState);
-    email.current.value=''
+    email.current.value = "";
   }
-  function handleSubmitClick(evt) {
-    evt.preventDefault();
-  }
+
   return (
     <div className={classes.container}>
       <div className={classes.card}>
         <h1 className={classes.h1}>Forgot Password</h1>
-        <form
-          onSubmit={handleSendOtpClick }
-        >
+        <form onSubmit={handleSendOtpClick}>
           {showEmailInput ? (
             <input
               placeholder="Enter your Email..."

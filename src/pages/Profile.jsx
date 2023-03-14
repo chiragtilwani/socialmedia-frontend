@@ -328,13 +328,13 @@ const useStyles = makeStyles({
 
 const Profile = (props) => {
   const classes = useStyles();
+
   const [coverClick, setCoverClick] = useState(false);
   const [profileClick, setProfileClick] = useState(false);
   const [user, setUser] = useState(null);
   const [currentUser, setCurrentUser] = useState(props);
   const [userPosts, setUserPosts] = useState(null);
   const [showPostWithUrl, setShowPostWithUrl] = useState(true);
-  const [error, setError] = useState();
   const [userNotFound, setUserNotFound] = useState(false);
   const [showFollowersSM, setFollowersSM] = useState(false);
   const [showFollowingsSM, setFollowingsSM] = useState(false);
@@ -378,12 +378,15 @@ const Profile = (props) => {
   function handleCoverClick() {
     setCoverClick((prevState) => !prevState);
   }
+
   function handleProfileClick(evt) {
     setProfileClick((prevState) => !prevState);
   }
+
   function handleGridClick() {
     setShowPostWithUrl(true);
   }
+
   function handleListClick() {
     setShowPostWithUrl(false);
   }
@@ -420,7 +423,6 @@ const Profile = (props) => {
 
   async function setuser(user) {
     setCurrentUser(user);
-    //also updating followers/followings list of user who's profile we are checking
     const res = await axios.get(
       `${process.env.REACT_APP_BASE_URL}/users?username=${uname}`
     );
@@ -540,14 +542,12 @@ const Profile = (props) => {
             </div>
             <div className={classes.right}>
               <div className={classes.infoContainer}>
-                {/* cover pic */}
                 <img
                   className={classes.coverPic}
                   src={user.coverPicture.url ? user.coverPicture.url : noCover}
                   alt=""
                   onClick={handleCoverClick}
                 ></img>
-                {/* profile pic */}
                 <div className={classes.profileContainer}>
                   <img
                     className={classes.profilePic}
@@ -560,7 +560,6 @@ const Profile = (props) => {
                     onClick={handleProfileClick}
                   ></img>
                 </div>
-                {/* details */}
                 <div className={classes.details}>
                   <span className={classes.name}>{user.name}</span>
                   <span className={classes.username}>@{user.username}</span>
@@ -586,7 +585,6 @@ const Profile = (props) => {
                       </span>
                     </div>
                   </div>
-                  {/* edit profile btn / follow btn if profile of other people */}
                   <div className={classes.btnContainer}>
                     <Link
                       to={
@@ -605,12 +603,9 @@ const Profile = (props) => {
                         ? "Unfollow"
                         : "Follow"}
                     </Link>
-                    {/*here in 'to' attribute instead of  1 userId must come */}
-                    {/* we weill make text dynamic b/w Edit profile/Follow/Following if current_userId!=uid from params */}
                   </div>
                 </div>
               </div>
-              {/* post uploader */}
               <UploadPost
                 profile={
                   user.profilePicture
@@ -621,7 +616,6 @@ const Profile = (props) => {
                 setPostsArray={setPostsArray}
                 homePage={false}
               />
-              {/* posts by user */}
               {userPosts ? (
                 <div
                   className={classes.postContainer}
