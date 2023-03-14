@@ -188,7 +188,6 @@ const UserListItem = (props) => {
           {user.username}
         </Link>
       </div>
-      {console.log(props)}
       {props.currentUser.followings.includes(props.userId) ? (
         props.userId === props.currentUser._id ? (
           <div style={{ width: "4rem" }}></div>

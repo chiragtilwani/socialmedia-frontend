@@ -398,7 +398,6 @@ const Post = (props) => {
         <div className={classes.header}>
           <div className={classes.profileImgContainer}>
             <Link to={`/profile/${creator.username}`} className={classes.name}>
-              {console.log(creator)}
               <img
                 className={classes.profileImg}
                 src={

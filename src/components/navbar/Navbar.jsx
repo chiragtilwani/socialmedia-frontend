@@ -257,20 +257,20 @@ const Navbar = (props) => {
     setSearchResult(
       allUsers.filter(
         (user) =>
-          user.username.includes(evt.target.value) ||
-          user.name.includes(evt.target.value)
-      )
+        user.username.includes(evt.target.value) ||
+        user.name.includes(evt.target.value)
+        )
     );
     if (evt.target.value === "") {
       setSearchResult(null);
     }
   }
-
+  
   function handleSearchUserClick(evt) {
     setSearchWord("");
     setSearchResult(null);
   }
-
+  
   return (
     <div className={classes.container} onClick={isOpen ? handleClick : null}>
       <div className={classes.innerContainer}>
@@ -332,7 +332,7 @@ const Navbar = (props) => {
         <div className={classes.right}>
           <div style={{ marginRight: "1rem" }}>
             <Link to="/" className={classes.iconLink}>
-              <Badge badgeContent={0} color="primary" variant="dot">
+              <Badge badgeContent={0} color="primary" >
                 <AiTwotoneHome />
               </Badge>
             </Link>
@@ -356,7 +356,7 @@ const Navbar = (props) => {
               <Avatar
                 alt="Remy Sharp"
                 src={
-                  currentUser.profilePicture.url
+                  (currentUser && currentUser.profilePicture.url)
                     ? `${currentUser.profilePicture.url}`
                     : `https://api.dicebear.com/5.x/avataaars/svg?seed=${currentUser.username}`
                 }

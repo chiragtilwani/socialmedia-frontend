@@ -323,7 +323,6 @@ const Update = (props) => {
     setLoading(false);
   }
 
-  console.log(props);
   function changeDescription(evt) {
     setDesc(evt.target.value);
   }

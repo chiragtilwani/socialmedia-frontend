@@ -223,7 +223,6 @@ const UploadPost = (props) => {
     setPreviewVideo(null);
     whatsHappening.current.value = "";
   }
-  console.log(props);
   return (
     <div
       className={classes.container}
