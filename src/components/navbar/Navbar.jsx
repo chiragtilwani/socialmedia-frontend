@@ -299,8 +299,8 @@ const Navbar = (props) => {
                   <div className={classes.searchResultItem}>
                     <img
                       src={
-                        user.post
-                          ? user.post.url
+                        user.profilePicture.url
+                          ? user.profilePicture.url
                           : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
                       }
                       className={classes.searchUserImg}

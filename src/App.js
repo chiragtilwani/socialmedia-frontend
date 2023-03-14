@@ -17,6 +17,7 @@ import NotificationBar from './components/NotificationBar'
 import Navbar from './components/navbar/Navbar'
 import BottomNavbar from './components/navbar/BottomNavbar';
 import Loading from './components/Loading';
+import ForgotPassword from './pages/ForgotPassword';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null)
@@ -45,7 +46,7 @@ function App() {
         const res = await axios.get(`${process.env.REACT_APP_BASE_URL}/users?userId=${user._id}`)
         setCurrentUser(res.data)
       } catch (err) {
-        setError(err.response.data.message)
+        setError(err.response|| err.response.data||err.response.data.message)
         setOpen(true)
       }
     }
@@ -98,6 +99,7 @@ function App() {
         <Route path='/profile/:uname' element={currentUser && <Profile {...currentUser} />} />
         <Route path='/update/post/:pid' element={<Update postUpdate={true} />} />
         <Route path='/update/user/:uid' element={currentUser && <Update postUpdate={false} {...currentUser} />} />
+        <Route path='/forgotPassword' element={<ForgotPassword/>} />
       </Routes>
       {currentUser && <BottomNavbar currentUser={currentUser}
         OpenSideBar={OpenSideBar}

@@ -316,7 +316,7 @@ const Update = (props) => {
         );
         navigate(`/profile/${userProfileData.username}`);
       } catch (err) {
-        setError(err.response.data.message);
+        setError(err|| err.response||err.response.data.message);
         setOpen(true);
       }
     }

@@ -273,7 +273,7 @@ const Login = () => {
                 Register
               </Link>
             </p>
-            <Link to="/" style={{ fontWeight: "900" }}>
+            <Link to="/forgotPassword" style={{ fontWeight: "900",color:'black' }}>
               Forgot Password
             </Link>
           </div>

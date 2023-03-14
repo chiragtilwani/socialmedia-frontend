@@ -101,6 +101,19 @@ const useStyles = makeStyles({
     justifyContent: "center",
     fontSize: "1.5rem",
     fontWeight: "bold",
+    flexDirection: "column",
+  },
+  noPostSpan1: {
+    fontSize: "2rem",
+    [Sizes.down('xs')]:{
+      fontSize:'1rem'
+    }
+  },
+  noPostSpan2: {
+    fontSize: "1rem",
+    [Sizes.down('xs')]:{
+      fontSize:'.5rem'
+    }
   },
 });
 const Home = (props) => {
@@ -208,7 +221,20 @@ const Home = (props) => {
                     />
                   ))}
                 {posts && posts.length === 0 && (
-                  <div className={classes.noPosts}>No Post Found!😕</div>
+                  <div className={classes.noPosts}>
+                    <span
+                      className={classes.noPostSpan1}
+                      style={{ fontSize: "2rem" }}
+                    >
+                      No Post Found!😕
+                    </span>
+                    <span
+                      className={classes.noPostSpan2}
+                      style={{ fontSize: "1rem" }}
+                    >
+                      Follow other people to see their posts on your timeline
+                    </span>
+                  </div>
                 )}
               </div>
             )}

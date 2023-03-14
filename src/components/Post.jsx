@@ -5,7 +5,7 @@ import { IoIosShare } from "react-icons/io";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect} from "react";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import ru from "javascript-time-ago/locale/ru.json";
@@ -288,7 +288,7 @@ const Post = (props) => {
       );
       props.setPostsArray(res.data);
     } catch (e) {
-      setError(e.response.data.message);
+      setError(e);
       setOpenSnackbar(true);
     }
   }
