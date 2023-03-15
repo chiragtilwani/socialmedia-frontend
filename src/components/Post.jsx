@@ -219,6 +219,7 @@ const Post = (props) => {
   const [changedCaption, setChangedCaption] = useState(props.desc);
   const [error, setError] = useState();
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [liked, setLiked] = useState(false);
 
   const { user } = useSelector((state) => state.auth);
 
@@ -251,6 +252,7 @@ const Post = (props) => {
 
   async function handleLikeClick() {
     try {
+      setLiked(prevState=>!prevState)
       await axios.patch(
         `${process.env.REACT_APP_BASE_URL}/posts/${currentPost._id}/likedislike`,
         { userId: props.currentUser._id }
@@ -480,9 +482,10 @@ const Post = (props) => {
               className={classes.icon}
               title="LIKE"
               style={{
-                color: currentPost.likes.includes(props.currentUser._id)
-                  ? "tomato"
-                  : "",
+                color:
+                  currentPost.likes.includes(props.currentUser._id) || liked
+                    ? "tomato"
+                    : "",
               }}
               onClick={handleLikeClick}
             />

@@ -12,6 +12,7 @@ import Loading from "../components/Loading";
 const useStyles = makeStyles({
   outterContainer: {
     width: "100vw",
+    height:'100vh',
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -129,20 +130,17 @@ const Home = (props) => {
       );
       setPosts(res.data);
     };
-    setLoading(true);
-    getPost();
-    setLoading(false);
-  }, [user._id]);
-
-  useEffect(() => {
     async function fetchAllUsers() {
       const res = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/users/allUsers`
       );
       setAllUsers(res.data);
     }
+    setLoading(true);
+    getPost();
     fetchAllUsers();
-  }, []);
+    setLoading(false);
+  }, [user._id]);
 
   function setPostsArray(posts) {
     setPosts(posts);
@@ -155,95 +153,101 @@ const Home = (props) => {
   return (
     <>
       <div className={classes.outterContainer}>
-        <div className={classes.container}>
-          <div className={`${classes.left} ${classes.childContainer}`}>
-            <PofileCard
-              currentUser={user}
-              currentUserPost={posts.filter(
-                (post) => post.creatorId === user._id
-              )}
-            />
-            <h2 className={classes.h2} style={{ marginTop: "1rem" }}>
-              Suggestions for you
-            </h2>
-            <UsersList
-              users={
-                allUsers &&
-                allUsers
-                  .filter(
-                    (user) =>
-                      !props.followings.includes(user._id) &&
-                      user._id !== props._id
-                  )
-                  .map((user) => user._id)
-              }
-              currentUser={user}
-              setuser={setuser}
-              setPosts={setPosts}
-              type="Suggestion"
-            />
-          </div>
-          <div className={`${classes.center} ${classes.childContainer}`}>
-            <UploadPost
-              profile="https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg"
-              currentUser={user}
-              setPostsArray={setPostsArray}
-              homePage={true}
-            />
-            {loading ? (
-              <Loading />
-            ) : (
-              <div className={classes.postContainer}>
-                {posts
-                  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                  .map((post) => (
-                    <Post
-                      key={post._id}
-                      {...post}
-                      currentUser={user}
-                      setPostsArray={setPostsArray}
-                    />
-                  ))}
-                {posts && posts.length === 0 && (
-                  <div className={classes.noPosts}>
-                    <span
-                      className={classes.noPostSpan1}
-                      style={{ fontSize: "2rem" }}
-                    >
-                      No Post Found!😕
-                    </span>
-                    <span
-                      className={classes.noPostSpan2}
-                      style={{ fontSize: "1rem" }}
-                    >
-                      Follow other people to see their posts on your timeline
-                    </span>
-                  </div>
+        {loading ? (
+          <Loading />
+        ) : (
+          <div className={classes.container}>
+            <div className={`${classes.left} ${classes.childContainer}`}>
+              <PofileCard
+                currentUser={user}
+                currentUserPost={posts.filter(
+                  (post) => post.creatorId === user._id
                 )}
-              </div>
-            )}
+              />
+              <h2 className={classes.h2} style={{ marginTop: "1rem" }}>
+                Suggestions for you
+              </h2>
+              <UsersList
+                users={
+                  allUsers &&
+                  allUsers
+                    .filter(
+                      (user) =>
+                        !props.followings.includes(user._id) &&
+                        user._id !== props._id
+                    )
+                    .map((user) => user._id)
+                }
+                currentUser={user}
+                setuser={setuser}
+                setPosts={setPosts}
+                type="Suggestion"
+              />
+            </div>
+            <div className={`${classes.center} ${classes.childContainer}`}>
+              <UploadPost
+                profile="https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg"
+                currentUser={user}
+                setPostsArray={setPostsArray}
+                homePage={true}
+              />
+              {loading ? (
+                <Loading />
+              ) : (
+                <div className={classes.postContainer}>
+                  {posts
+                    .sort(
+                      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+                    )
+                    .map((post) => (
+                      <Post
+                        key={post._id}
+                        {...post}
+                        currentUser={user}
+                        setPostsArray={setPostsArray}
+                      />
+                    ))}
+                  {posts && posts.length === 0 && (
+                    <div className={classes.noPosts}>
+                      <span
+                        className={classes.noPostSpan1}
+                        style={{ fontSize: "2rem" }}
+                      >
+                        No Post Found!😕
+                      </span>
+                      <span
+                        className={classes.noPostSpan2}
+                        style={{ fontSize: "1rem" }}
+                      >
+                        Follow other people to see their posts on your timeline
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <div className={`${classes.right} ${classes.childContainer}`}>
+              <h2 className={classes.h2}>who is following you</h2>
+              <UsersList
+                users={user.followers}
+                currentUser={user}
+                setuser={setuser}
+                setPosts={setPosts}
+                type="Follower"
+              />
+              <h2 className={classes.h2} style={{ marginTop: "1rem" }}>
+                Whom you follow
+              </h2>
+              <UsersList
+                users={user.followings}
+                currentUser={user}
+                setuser={setuser}
+                setPosts={setPosts}
+                type="Following"
+              />
+            </div>
           </div>
-          <div className={`${classes.right} ${classes.childContainer}`}>
-            <h2 className={classes.h2}>who is following you</h2>
-            <UsersList
-              users={user.followers}
-              currentUser={user}
-              setuser={setuser}
-              setPosts={setPosts}
-              type="Follower"
-            />
-            <h2 className={classes.h2} style={{ marginTop: "1rem" }}>
-              Whom you follow
-            </h2>
-            <UsersList
-              users={user.followings}
-              currentUser={user}
-              setuser={setuser}
-              setPosts={setPosts}
-              type="Following"
-            />
-          </div>
-        </div>
+        )}
       </div>
     </>
   );

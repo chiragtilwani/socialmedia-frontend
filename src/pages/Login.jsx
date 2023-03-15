@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { login, reset } from "../features/auth/authSlice";
 import Sizes from "../Sizes";
+import Loading from "../components/Loading";
 
 const useStyles = makeStyles({
   container: {
@@ -169,14 +170,18 @@ const Login = () => {
   );
 
   useEffect(() => {
+    setIsFetching(true)
     if (isError) {
+      setIsFetching(false)
       setOpen(true);
       setErr(message);
     }
     if (isSuccess || user) {
+      setIsFetching(false)
       navigate("/");
     }
     dispatch(reset());
+    setIsFetching(false)
   }, [user, isError, message, isSuccess, navigate, dispatch]);
 
   const handleClose = (event, reason) => {
@@ -193,7 +198,9 @@ const Login = () => {
       username_email: username_email.current.value,
       password: password.current.value,
     };
+    setIsFetching(true);
     dispatch(login(userData));
+    setIsFetching(false);
   }
 
   return (
@@ -209,73 +216,77 @@ const Login = () => {
           </Alert>
         </Snackbar>
       </Stack>
-      <div className={classes.card}>
-        <div className={classes.left}>
-          <h1 className={classes.h1}>Hello World.</h1>
-          <p className={classes.p}>
-            Welcome to <span className={classes.span}>CONNECT</span>.
-          </p>
-          <p className={classes.p}>
-            Stay connected with friends and the world around you on{" "}
-            <span className={classes.span}>CONNECT</span>.
-          </p>
-          <p className={classes.p} style={{ marginTop: "1.5rem" }}>
-            Don't have an account ?
-          </p>
-          <Link to="/register" className={classes.link} disabled={isFetching}>
-            {isFetching ? (
-              <CircularProgress style={{ color: "white", width: "2rem" }} />
-            ) : (
-              "Register"
-            )}
-          </Link>
-        </div>
-        <div className={classes.right}>
-          <h1 className={classes.h2}>Login</h1>
-          <form className={classes.form} onSubmit={handleSubmit}>
-            <input
-              type="text"
-              placeholder="Username or Email"
-              ref={username_email}
-              required
-              className={classes.input}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              ref={password}
-              required
-              className={classes.input}
-            />
-            <button
-              type="submit"
-              className={classes.btn}
-              disabled={isFetching}
-              style={{ cursor: isFetching ? "not-allowed" : "pointer" }}
-            >
+      {isFetching ? (
+        <Loading />
+      ) : (
+        <div className={classes.card}>
+          <div className={classes.left}>
+            <h1 className={classes.h1}>Hello World.</h1>
+            <p className={classes.p}>
+              Welcome to <span className={classes.span}>CONNECT</span>.
+            </p>
+            <p className={classes.p}>
+              Stay connected with friends and the world around you on{" "}
+              <span className={classes.span}>CONNECT</span>.
+            </p>
+            <p className={classes.p} style={{ marginTop: "1.5rem" }}>
+              Don't have an account ?
+            </p>
+            <Link to="/register" className={classes.link} disabled={isFetching}>
               {isFetching ? (
                 <CircularProgress style={{ color: "white", width: "2rem" }} />
               ) : (
-                "Login"
+                "Register"
               )}
-            </button>
-          </form>
-          <div className={classes.linkContainer}>
-            <p className={classes.registerLink}>
-              Don't have an account ?
-              <Link to="/register" style={{ fontWeight: "900" }}>
-                Register
-              </Link>
-            </p>
-            <Link
-              to="/forgotPassword"
-              style={{ fontWeight: "900", color: "black" }}
-            >
-              Forgot Password
             </Link>
           </div>
+          <div className={classes.right}>
+            <h1 className={classes.h2}>Login</h1>
+            <form className={classes.form} onSubmit={handleSubmit}>
+              <input
+                type="text"
+                placeholder="Username or Email"
+                ref={username_email}
+                required
+                className={classes.input}
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                ref={password}
+                required
+                className={classes.input}
+              />
+              <button
+                type="submit"
+                className={classes.btn}
+                disabled={isFetching}
+                style={{ cursor: isFetching ? "not-allowed" : "pointer" }}
+              >
+                {isFetching ? (
+                  <CircularProgress style={{ color: "white", width: "2rem" }} />
+                ) : (
+                  "Login"
+                )}
+              </button>
+            </form>
+            <div className={classes.linkContainer}>
+              <p className={classes.registerLink}>
+                Don't have an account ?
+                <Link to="/register" style={{ fontWeight: "900" }}>
+                  Register
+                </Link>
+              </p>
+              <Link
+                to="/forgotPassword"
+                style={{ fontWeight: "900", color: "black" }}
+              >
+                Forgot Password
+              </Link>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
