@@ -165,7 +165,7 @@ const Login = () => {
   const password = useRef();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, isError, message, isSuccess } = useSelector(
+  const { user, isError,isLoading, message, isSuccess } = useSelector(
     (state) => state.auth
   );
 
@@ -216,7 +216,7 @@ const Login = () => {
           </Alert>
         </Snackbar>
       </Stack>
-      {isFetching ? (
+      {isLoading ? (
         <Loading />
       ) : (
         <div className={classes.card}>

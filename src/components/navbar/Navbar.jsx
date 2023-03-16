@@ -258,7 +258,7 @@ const Navbar = (props) => {
       allUsers.filter(
         (user) =>
         user.username.includes(evt.target.value) ||
-        user.name.includes(evt.target.value)
+        user.name.includes(evt.target.value) 
         )
     );
     if (evt.target.value === "") {

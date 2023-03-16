@@ -202,86 +202,90 @@ const Register = () => {
     };
     dispatch(register(userData));
   }
-  if (isLoading) {
-    return <Loading />;
-  }
+  
   return (
     <div className={classes.container}>
-      <Stack spacing={2} sx={{ width: "100%" }}>
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-          <Alert
-            onClose={handleClose}
-            severity="warning"
-            sx={{ width: "100%" }}
-          >
-            {error}
-          </Alert>
-        </Snackbar>
-      </Stack>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <>
+          <Stack spacing={2} sx={{ width: "100%" }}>
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+              <Alert
+                onClose={handleClose}
+                severity="warning"
+                sx={{ width: "100%" }}
+              >
+                {error}
+              </Alert>
+            </Snackbar>
+          </Stack>
 
-      <div className={classes.card}>
-        <div className={classes.left}>
-          <h1 className={classes.h2}>Register</h1>
-          <form className={classes.form} onSubmit={handleSubmit}>
-            <input
-              type="text"
-              placeholder="Name"
-              required
-              ref={name}
-              className={classes.input}
-            />
-            <input
-              type="text"
-              placeholder="Username"
-              required
-              ref={username}
-              className={classes.input}
-            />
+          <div className={classes.card}>
+            <div className={classes.left}>
+              <h1 className={classes.h2}>Register</h1>
+              <form className={classes.form} onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  placeholder="Name"
+                  required
+                  ref={name}
+                  className={classes.input}
+                />
+                <input
+                  type="text"
+                  placeholder="Username"
+                  required
+                  ref={username}
+                  className={classes.input}
+                />
 
-            <input
-              type="email"
-              required
-              placeholder="Email"
-              ref={email}
-              className={classes.input}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              required
-              ref={password}
-              className={classes.input}
-            />
-            <button type="submit" className={classes.btn}>
-              Register
-            </button>
-          </form>
-          <div className={classes.linkContainer}>
-            <p className={classes.loginLink}>
-              Already have an account ?
-              <Link to="/login" style={{ fontWeight: "900" }}>
+                <input
+                  type="email"
+                  required
+                  placeholder="Email"
+                  ref={email}
+                  className={classes.input}
+                />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  required
+                  ref={password}
+                  className={classes.input}
+                />
+                <button type="submit" className={classes.btn}>
+                  Register
+                </button>
+              </form>
+              <div className={classes.linkContainer}>
+                <p className={classes.loginLink}>
+                  Already have an account ?
+                  <Link to="/login" style={{ fontWeight: "900" }}>
+                    Login
+                  </Link>
+                </p>
+              </div>
+            </div>
+            <div className={classes.right}>
+              <h1 className={classes.h1}>Connect.</h1>
+              <p className={classes.p}>
+                Welcome to <span className={classes.span}>CONNECT</span>.
+              </p>
+              <p className={classes.p}>
+                Stay connected with friends and the world around you on{" "}
+                <span className={classes.span}>CONNECT</span>.
+              </p>
+              <p className={classes.p} style={{ marginTop: "1.5rem" }}>
+                Already have an account ?
+              </p>
+              <Link to="/login" className={classes.link}>
                 Login
               </Link>
-            </p>
+            </div>
           </div>
-        </div>
-        <div className={classes.right}>
-          <h1 className={classes.h1}>Connect.</h1>
-          <p className={classes.p}>
-            Welcome to <span className={classes.span}>CONNECT</span>.
-          </p>
-          <p className={classes.p}>
-            Stay connected with friends and the world around you on{" "}
-            <span className={classes.span}>CONNECT</span>.
-          </p>
-          <p className={classes.p} style={{ marginTop: "1.5rem" }}>
-            Already have an account ?
-          </p>
-          <Link to="/login" className={classes.link}>
-            Login
-          </Link>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 };
