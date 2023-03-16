@@ -204,6 +204,11 @@ const UploadPost = (props) => {
         desc: whatsHappening.current.value,
         post: previewImg,
       });
+    } catch (e) {
+      setError(e.response.data.message);
+      setOpen(true);
+    }
+    try{
       const res = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
       );
@@ -215,8 +220,8 @@ const UploadPost = (props) => {
         );
         props.setPostsArray(currentUserPosts);
       }
-    } catch (e) {
-      setError(e.response.data.message);
+    }catch(err){
+      setError(err.response.data.message);
       setOpen(true);
     }
     setPreviewImg(null);

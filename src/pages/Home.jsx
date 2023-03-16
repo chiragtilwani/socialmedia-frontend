@@ -136,7 +136,6 @@ const Home = (props) => {
       );
       setAllUsers(res.data);
     }
-    setLoading(true);
     getPost();
     fetchAllUsers();
     setLoading(false);

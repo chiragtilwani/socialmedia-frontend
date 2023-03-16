@@ -25,6 +25,7 @@ function App() {
   const [openSideBar, setOpenSideBar] = useState(false);
   const [error, setError] = useState()
   const [open, setOpen] = React.useState(false);
+  const [loading,setLoading] = useState(true)
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -52,6 +53,7 @@ function App() {
     }
     if (user) {
       fetchCurrentUser()
+      setLoading(false)
     }
   }, [user])
 
@@ -68,6 +70,7 @@ function App() {
 
   return (
     <div className="App">
+      {loading&& <Loading/>}
       <Stack spacing={2} sx={{ width: "100%" }}>
         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
           <Alert
