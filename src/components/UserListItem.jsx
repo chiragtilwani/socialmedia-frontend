@@ -160,7 +160,6 @@ const UserListItem = (props) => {
 
     return (
       <div className={classes.container}>
-        
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={profileClick}
