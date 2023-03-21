@@ -84,6 +84,11 @@ const useStyles = makeStyles({
     width: "50%",
     height: "80vh",
   },
+  deletedAccountName:{
+    fontWeight:'bold',
+    textDecoration:'none',
+    color:'red',
+  }
 });
 
 const UserListItem = (props) => {
@@ -100,8 +105,6 @@ const UserListItem = (props) => {
       if (res) {
         setUser(res.data);
       }
-      // console.log(props.userId);
-      // console.log(res.data);
     };
     getUser();
   }, [props.userId]);
@@ -156,62 +159,62 @@ const UserListItem = (props) => {
     }
   }
 
-  if(user.username){
-
-    return (
-      <div className={classes.container}>
-        <Backdrop
-          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={profileClick}
-          onClick={handleProfileClick}
-        >
-          <img
-            className={classes.profileOverlay}
-            src={
-              user.profilePicture && user.profilePicture.url
-                ? `${user.profilePicture.url}`
-                : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
-            }
-            alt=""
-          />
-        </Backdrop>
-        <div className={classes.profileImgContainer} onClick={handleProfileClick}>
-          <img
-            className={classes.profileImg}
-            src={
-              user.profilePicture && user.profilePicture.url
-                ? `${user.profilePicture.url}`
-                : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
-            }
-            alt=""
-          />
-        </div>
-        <div className={classes.name_username}>
-          <Link to={`/profile/${user.username}`} className={classes.name}>
-            {user.name}
-          </Link>
-          <Link to={`/profile/${user.username}`} className={classes.username}>
-            {user.username}
-          </Link>
-        </div>
-        {props.currentUser.followings.includes(props.userId) ? (
-          props.userId === props.currentUser._id ? (
-            <div style={{ width: "4rem" }}></div>
-          ) : (
-            <button className={classes.btn} onClick={handleUnfollowClick}>
-              Unfollow
-            </button>
-          )
-        ) : props.userId === props.currentUser._id ? (
+  return (
+    <div className={classes.container}>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={profileClick}
+        onClick={handleProfileClick}
+      >
+        <img
+          className={classes.profileOverlay}
+          src={
+            user.profilePicture && user.profilePicture.url
+              ? `${user.profilePicture.url}`
+              : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
+          }
+          alt=""
+        />
+      </Backdrop>
+      <div className={classes.profileImgContainer} onClick={handleProfileClick}>
+        <img
+          className={classes.profileImg}
+          src={
+            user.profilePicture && user.profilePicture.url
+              ? `${user.profilePicture.url}`
+              : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
+          }
+          alt=""
+        />
+      </div>
+      <div className={classes.name_username}>
+        {user.username?<><Link to={`/profile/${user.username}`} className={classes.name}>
+          {user.name}
+        </Link>
+        <Link to={`/profile/${user.username}`} className={classes.username}>
+          {user.username}
+        </Link></>:<Link to={`/profile/${user.username}`} className={classes.deletedAccountName}>
+          Account Deleted
+        </Link>}
+        
+      </div>
+      {props.currentUser.followings.includes(props.userId) ? (
+        props.userId === props.currentUser._id ? (
           <div style={{ width: "4rem" }}></div>
         ) : (
-          <button className={classes.btn} onClick={handleFollowClick}>
-            Follow
+          <button className={classes.btn} onClick={handleUnfollowClick}>
+            Unfollow
           </button>
-        )}
-      </div>
-    );
-  }
+        )
+      ) : props.userId === props.currentUser._id || !user.username ? (
+        <div style={{ width: "4rem" }}></div>
+      ) : (
+      <button className={classes.btn} onClick={handleFollowClick}>
+          Follow
+        </button>
+      )}
+    </div>
+  );
 };
 
 export default UserListItem;

@@ -293,7 +293,6 @@ const Update = (props) => {
         );
         navigate(-1);
       } catch (err) {
-        console.log(err.response)
         setError(err.response.data.message);
         setOpen(true);
       }
@@ -317,7 +316,6 @@ const Update = (props) => {
         );
         navigate(`/profile/${userProfileData.username}`);
       } catch (err) {
-        console.log(err)
         setError(err || err.response || err.response.data.message);
         setOpen(true);
       }
