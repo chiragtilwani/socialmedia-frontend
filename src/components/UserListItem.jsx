@@ -199,7 +199,7 @@ const UserListItem = (props) => {
         
       </div>
       {props.currentUser.followings.includes(props.userId) ? (
-        props.userId === props.currentUser._id ? (
+        props.userId === props.currentUser._id || !user.username ? (
           <div style={{ width: "4rem" }}></div>
         ) : (
           <button className={classes.btn} onClick={handleUnfollowClick}>
