@@ -283,131 +283,133 @@ const CommentItem = (props) => {
     setEditedText(evt.target.value);
   }
 
-  return (
-    <>
-      <Stack spacing={2} sx={{ width: "100%" }}>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={handleSnackbarClose}
-        >
-          <Alert
+  if (creator.username) {
+    return (
+      <>
+        <Stack spacing={2} sx={{ width: "100%" }}>
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={6000}
             onClose={handleSnackbarClose}
-            severity="warning"
-            sx={{ width: "100%" }}
           >
-            {error}
-          </Alert>
-        </Snackbar>
-      </Stack>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"Delete Comment?"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            You are going to delete this comment.
-            <br />
-            Are you sure ?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>No</Button>
-          <Button onClick={deleteComment} autoFocus>
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <div
-        className={classes.container}
-        style={{
-          display: editing ? "flex" : "none",
-          justifyContent: "space-evenly",
-        }}
-      >
-        <input
-          type="textfield"
-          className={classes.textfield}
-          placeholder="Drop a comment ..."
-          value={editedText}
-          onChange={handleCommentTextChange}
-        />
-        <button onClick={handleCancelClick} className={classes.btn}>
-          Cancel
-        </button>
-        <button className={classes.btn} onClick={updateComment}>
-          Edit
-        </button>
-      </div>
-      <div
-        className={classes.container}
-        style={{ display: !editing ? "flex" : "none" }}
-      >
-        <div className={classes.name_text}>
-          <div className={classes.name_username}>
-            <div>
+            <Alert
+              onClose={handleSnackbarClose}
+              severity="warning"
+              sx={{ width: "100%" }}
+            >
+              {error}
+            </Alert>
+          </Snackbar>
+        </Stack>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Delete Comment?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              You are going to delete this comment.
+              <br />
+              Are you sure ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>No</Button>
+            <Button onClick={deleteComment} autoFocus>
+              Yes
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <div
+          className={classes.container}
+          style={{
+            display: editing ? "flex" : "none",
+            justifyContent: "space-evenly",
+          }}
+        >
+          <input
+            type="textfield"
+            className={classes.textfield}
+            placeholder="Drop a comment ..."
+            value={editedText}
+            onChange={handleCommentTextChange}
+          />
+          <button onClick={handleCancelClick} className={classes.btn}>
+            Cancel
+          </button>
+          <button className={classes.btn} onClick={updateComment}>
+            Edit
+          </button>
+        </div>
+        <div
+          className={classes.container}
+          style={{ display: !editing ? "flex" : "none" }}
+        >
+          <div className={classes.name_text}>
+            <div className={classes.name_username}>
+              <div>
+                <Link
+                  to={`/profile/${creator.username}`}
+                  className={classes.name}
+                >
+                  {creator.name}
+                </Link>
+                <ReactTimeAgo
+                  date={props.createdAt}
+                  locale="en-US"
+                  className={classes.xMinAgo}
+                />
+              </div>
               <Link
                 to={`/profile/${creator.username}`}
-                className={classes.name}
+                className={classes.username}
               >
-                {creator.name}
+                <i>@{creator.username}</i>
               </Link>
-              <ReactTimeAgo
-                date={props.createdAt}
-                locale="en-US"
-                className={classes.xMinAgo}
+            </div>
+            <div className={classes.descContainer}>
+              <p className={classes.desc}>{currentComment.text}</p>
+              <div
+                className={classes.edit_delete_container}
+                style={{
+                  display:
+                    props.creatorId === props.currentUserId ? "flex" : "none",
+                }}
+              >
+                <Link className={classes.edit_delete} onClick={handleEditClick}>
+                  Edit
+                </Link>
+                <Link className={classes.edit_delete} onClick={handleClickOpen}>
+                  Delete
+                </Link>
+              </div>
+            </div>
+          </div>
+          <div className={classes.btns}>
+            <div>
+              <AiFillLike
+                className={classes.icons}
+                style={{
+                  color: props.likes.includes(props.currentUserId)
+                    ? "var(--purple-1)"
+                    : "",
+                }}
+                onClick={handleLikeClick}
               />
             </div>
-            <Link
-              to={`/profile/${creator.username}`}
-              className={classes.username}
-            >
-              <i>@{creator.username}</i>
-            </Link>
-          </div>
-          <div className={classes.descContainer}>
-            <p className={classes.desc}>{currentComment.text}</p>
-            <div
-              className={classes.edit_delete_container}
-              style={{
-                display:
-                  props.creatorId === props.currentUserId ? "flex" : "none",
-              }}
-            >
-              <Link className={classes.edit_delete} onClick={handleEditClick}>
-                Edit
-              </Link>
-              <Link className={classes.edit_delete} onClick={handleClickOpen}>
-                Delete
-              </Link>
-            </div>
+            <span style={{ fontSize: ".9rem" }}>
+              <strong>
+                {props.likes.length === 0 ? null : props.likes.length}
+              </strong>{" "}
+              {props.likes.length === 0 ? null : "likes"}
+            </span>
           </div>
         </div>
-        <div className={classes.btns}>
-          <div>
-            <AiFillLike
-              className={classes.icons}
-              style={{
-                color: props.likes.includes(props.currentUserId)
-                  ? "var(--purple-1)"
-                  : "",
-              }}
-              onClick={handleLikeClick}
-            />
-          </div>
-          <span style={{ fontSize: ".9rem" }}>
-            <strong>
-              {props.likes.length === 0 ? null : props.likes.length}
-            </strong>{" "}
-            {props.likes.length === 0 ? null : "likes"}
-          </span>
-        </div>
-      </div>
-    </>
-  );
+      </>
+    );
+  }
 };
 
 export default CommentItem;
