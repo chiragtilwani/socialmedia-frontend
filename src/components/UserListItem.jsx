@@ -97,7 +97,11 @@ const UserListItem = (props) => {
       const res = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/users?userId=${props.userId}`
       );
-      setUser(res.data);
+      if (res) {
+        setUser(res.data);
+      }
+      // console.log(props.userId);
+      // console.log(res.data);
     };
     getUser();
   }, [props.userId]);
@@ -152,59 +156,63 @@ const UserListItem = (props) => {
     }
   }
 
-  return (
-    <div className={classes.container}>
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={profileClick}
-        onClick={handleProfileClick}
-      >
-        <img
-          className={classes.profileOverlay}
-          src={
-            user.profilePicture && user.profilePicture.url
-              ? `${user.profilePicture.url}`
-              : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
-          }
-          alt=""
-        />
-      </Backdrop>
-      <div className={classes.profileImgContainer} onClick={handleProfileClick}>
-        <img
-          className={classes.profileImg}
-          src={
-            user.profilePicture && user.profilePicture.url
-              ? `${user.profilePicture.url}`
-              : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
-          }
-          alt=""
-        />
-      </div>
-      <div className={classes.name_username}>
-        <Link to={`/profile/${user.username}`} className={classes.name}>
-          {user.name}
-        </Link>
-        <Link to={`/profile/${user.username}`} className={classes.username}>
-          {user.username}
-        </Link>
-      </div>
-      {props.currentUser.followings.includes(props.userId) ? (
-        props.userId === props.currentUser._id ? (
+  if(user.username){
+
+    return (
+      <div className={classes.container}>
+        
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={profileClick}
+          onClick={handleProfileClick}
+        >
+          <img
+            className={classes.profileOverlay}
+            src={
+              user.profilePicture && user.profilePicture.url
+                ? `${user.profilePicture.url}`
+                : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
+            }
+            alt=""
+          />
+        </Backdrop>
+        <div className={classes.profileImgContainer} onClick={handleProfileClick}>
+          <img
+            className={classes.profileImg}
+            src={
+              user.profilePicture && user.profilePicture.url
+                ? `${user.profilePicture.url}`
+                : `https://api.dicebear.com/5.x/avataaars/svg?seed=${user.username}`
+            }
+            alt=""
+          />
+        </div>
+        <div className={classes.name_username}>
+          <Link to={`/profile/${user.username}`} className={classes.name}>
+            {user.name}
+          </Link>
+          <Link to={`/profile/${user.username}`} className={classes.username}>
+            {user.username}
+          </Link>
+        </div>
+        {props.currentUser.followings.includes(props.userId) ? (
+          props.userId === props.currentUser._id ? (
+            <div style={{ width: "4rem" }}></div>
+          ) : (
+            <button className={classes.btn} onClick={handleUnfollowClick}>
+              Unfollow
+            </button>
+          )
+        ) : props.userId === props.currentUser._id ? (
           <div style={{ width: "4rem" }}></div>
         ) : (
-          <button className={classes.btn} onClick={handleUnfollowClick}>
-            Unfollow
+          <button className={classes.btn} onClick={handleFollowClick}>
+            Follow
           </button>
-        )
-      ) : props.userId === props.currentUser._id ? (
-        <div style={{ width: "4rem" }}></div>
-      ) : (
-        <button className={classes.btn} onClick={handleFollowClick}>
-          Follow
-        </button>
-      )}
-    </div>
-  );
+        )}
+      </div>
+    );
+  }
 };
 
 export default UserListItem;

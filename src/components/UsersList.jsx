@@ -50,6 +50,7 @@ const UsersList = (props) => {
     >
       {props.users && props.users.length !== 0 ? (
         props.users.map((user) => (
+          
           <UserListItem
             key={user}
             userId={user}
