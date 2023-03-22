@@ -152,6 +152,12 @@ const useStyles = makeStyles({
       opacity: ".5",
     },
   },
+  accountDeletedName:{
+    color:'red',
+    textDecoration:'none',
+    fontWeight:'bold',
+  }
+
 });
 
 const CommentItem = (props) => {
@@ -405,6 +411,107 @@ const CommentItem = (props) => {
               </strong>{" "}
               {props.likes.length === 0 ? null : "likes"}
             </span>
+          </div>
+        </div>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Stack spacing={2} sx={{ width: "100%" }}>
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={6000}
+            onClose={handleSnackbarClose}
+          >
+            <Alert
+              onClose={handleSnackbarClose}
+              severity="warning"
+              sx={{ width: "100%" }}
+            >
+              {error}
+            </Alert>
+          </Snackbar>
+        </Stack>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Delete Comment?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              You are going to delete this comment.
+              <br />
+              Are you sure ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>No</Button>
+            <Button onClick={deleteComment} autoFocus>
+              Yes
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <div
+          className={classes.container}
+          style={{
+            display: editing ? "flex" : "none",
+            justifyContent: "space-evenly",
+          }}
+        >
+          <input
+            type="textfield"
+            className={classes.textfield}
+            placeholder="Drop a comment ..."
+            value={editedText}
+            onChange={handleCommentTextChange}
+          />
+          <button onClick={handleCancelClick} className={classes.btn}>
+            Cancel
+          </button>
+          <button className={classes.btn} onClick={updateComment}>
+            Edit
+          </button>
+        </div>
+        <div
+          className={classes.container}
+          style={{ display: !editing ? "flex" : "none" }}
+        >
+          <div className={classes.name_text}>
+            <div className={classes.name_username}>
+              <div>
+                <Link
+                  to={`/profile/${creator.username}`}
+                  className={classes.accountDeletedName}
+                >
+                  Account Deleted
+                </Link>
+                <ReactTimeAgo
+                  date={props.createdAt}
+                  locale="en-US"
+                  className={classes.xMinAgo}
+                />
+              </div>
+            </div>
+            <div className={classes.descContainer}>
+              <p className={classes.desc}>{currentComment.text}</p>
+              <div
+                className={classes.edit_delete_container}
+                style={{
+                  display:
+                    props.creatorId === props.currentUserId ? "flex" : "none",
+                }}
+              >
+                <Link className={classes.edit_delete} onClick={handleEditClick}>
+                  Edit
+                </Link>
+                <Link className={classes.edit_delete} onClick={handleClickOpen}>
+                  Delete
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </>
