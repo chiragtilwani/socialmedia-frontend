@@ -110,6 +110,7 @@ const useStyles = makeStyles({
   },
   noPostSpan2: {
     fontSize: "1rem",
+    textAlign:'center',
     [Sizes.down("xs")]: {
       fontSize: ".5rem",
     },
@@ -218,7 +219,7 @@ const Home = (props) => {
                         className={classes.noPostSpan2}
                         style={{ fontSize: "1rem" }}
                       >
-                        Follow other people to see their posts on your timeline
+                        Follow other people to see their posts on your timeline.
                       </span>
                     </div>
                   )}

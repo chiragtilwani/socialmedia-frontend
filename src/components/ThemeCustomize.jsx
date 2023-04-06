@@ -27,12 +27,12 @@ const useStyles = makeStyles({
     color: "var(--text1)",
     [SIZES.down("md")]: {
       width: "70vw",
-      height: "50vh",
+    //   height: "50vh",
       borderRadius: ".5rem",
     },
     [SIZES.down("sm")]: {
       width: "95vw",
-      height: "50vh",
+    //   height: "50vh",
       borderRadius: ".5rem",
     },
   },
