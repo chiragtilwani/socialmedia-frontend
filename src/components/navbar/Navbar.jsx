@@ -80,6 +80,7 @@ const useStyles = makeStyles({
     transition: "all .5s",
     padding: "0 .5rem",
     backgroundColor:'var(--bg)',
+    color:'var(--text1)',
     "&:focus": {
       width: "25rem",
     },
@@ -264,7 +265,7 @@ const Navbar = (props) => {
       allUsers.filter(
         (user) =>
         user.username.includes(evt.target.value) ||
-        user.name.includes(evt.target.value) 
+        user.name.includes(evt.target.value) || user.email.includes(evt.target.value)
         )
     );
     if (evt.target.value === "") {

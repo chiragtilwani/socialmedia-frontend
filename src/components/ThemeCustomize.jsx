@@ -17,28 +17,41 @@ const useStyles = makeStyles({
   card: {
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
     borderRadius: "2rem",
-    width: "30%",
-    height: "40vh",
+    width: "40vw",
+    height: "60vh",
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
     justifyContent: "center",
     backgroundColor: "var(--bg)",
-    color:'var(--text1)',
+    color: "var(--text1)",
     [SIZES.down("md")]: {
-      width: "100vw",
-      height: "100vh",
+      width: "70vw",
+      height: "50vh",
+      borderRadius: ".5rem",
+    },
+    [SIZES.down("sm")]: {
+      width: "95vw",
+      height: "50vh",
+      borderRadius: ".5rem",
     },
   },
   heading: {
-    marginBottom: "1.5rem",
+    margin: "1.5rem 0",
     fontSize: "2rem",
+    [SIZES.down("sm")]: {
+      fontSize: "1.5rem",
+    },
   },
   para: {
     marginBottom: "1.5rem",
     fontSize: "1.2rem",
     width: "80%",
     textAlign: "center",
+    [SIZES.down("sm")]: {
+      width: "80%",
+      fontSize: "1rem",
+    },
   },
   colorOutterContainer: {
     width: "100%",
@@ -55,6 +68,9 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-evenly",
+    [SIZES.down("sm")]: {
+      width: "80%",
+    },
   },
   span: {
     width: "2rem",
@@ -72,13 +88,22 @@ const useStyles = makeStyles({
     margin: "2rem",
   },
   backgroundColorContainer: {
-    backgroundColor: "var(--purple-2)",
     height: "3rem",
     width: "70%",
     borderRadius: "2rem",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-evenly",
+    [SIZES.down("sm")]: {
+      width: "90%",
+    },
+    [SIZES.down("xs")]: {
+      flexDirection: "column",
+      backgroundColor: "transparent",
+      height: "10rem",
+      alignItems: "center",
+      justifyContent: "space-evenly",
+    },
   },
   BackgroundColorspan: {
     width: "7rem",
@@ -102,8 +127,6 @@ const useStyles = makeStyles({
 
 const ThemeCustomize = (props) => {
   const classes = useStyles();
-
-  const [open,setOpen]=useState(props.openThemeCustomizeOption)
 
   function colorSelected(index) {
     const colors = ["purple", "yellow", "red", "green", "blue"];
@@ -137,13 +160,20 @@ const ThemeCustomize = (props) => {
     }
   }
 
-  function handleClick(evt){
-    evt.stopPropagation()
-   props.changeOpenThemeCustomizeOption()
+  function handleClick() {
+    props.changeOpenThemeCustomizeOption();
+  }
+
+  function handleCardClick(evt) {
+    evt.stopPropagation();
   }
   return (
-    <div className={classes.container} style={{display:props.openColorCustomize?'flex':'none'}} onClick={handleClick}>
-      <div className={classes.card}>
+    <div
+      className={classes.container}
+      style={{ display: props.openColorCustomize ? "flex" : "none" }}
+      onClick={handleClick}
+    >
+      <div className={classes.card} onClick={handleCardClick}>
         <h1 className={classes.heading}>Customize your view</h1>
         <p className={classes.para}>
           Set <strong>Color</strong> and <strong>Background color </strong>
@@ -213,10 +243,9 @@ const ThemeCustomize = (props) => {
                 bgColorSelected(0);
               }}
               className={classes.BackgroundColorspan}
-              style={{ backgroundColor: "var(--bg-1)",color:'black' }}
+              style={{ backgroundColor: "var(--bg-1)", color: "black" }}
             >
-              <span className={classes.backgroundColorInnerSpan}>
-              </span>
+              <span className={classes.backgroundColorInnerSpan}></span>
               <p>Light</p>
             </span>
             <span
@@ -226,8 +255,7 @@ const ThemeCustomize = (props) => {
               className={classes.BackgroundColorspan}
               style={{ backgroundColor: "var(--bg-2)", color: "white" }}
             >
-              <span className={classes.backgroundColorInnerSpan}>
-              </span>
+              <span className={classes.backgroundColorInnerSpan}></span>
               <p>Dim</p>
             </span>
             <span
@@ -237,8 +265,7 @@ const ThemeCustomize = (props) => {
               className={classes.BackgroundColorspan}
               style={{ backgroundColor: "var(--bg-3)", color: "white" }}
             >
-              <span className={classes.backgroundColorInnerSpan}>
-              </span>
+              <span className={classes.backgroundColorInnerSpan}></span>
               <p>Light out</p>
             </span>
           </div>

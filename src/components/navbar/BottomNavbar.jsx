@@ -11,6 +11,7 @@ import axios from "axios";
 
 import Sizes from "../../Sizes";
 import UsersList from "../UsersList";
+import ThemeCustomize from "../ThemeCustomize";
 
 const useStyles = makeStyles({
   container: {
@@ -87,6 +88,7 @@ function BottomNavbar(props) {
   const [allUsers, setAllUsers] = useState();
   const [user, setUser] = useState(props.currentUser);
   const [showSuggestionsSM, setSuggestionsSM] = useState(false);
+  const [openColorCustomize,setOpenColorCustomize] = useState(false)
 
   useEffect(() => {
     async function fetchAllUsers() {
@@ -109,8 +111,13 @@ function BottomNavbar(props) {
     setUser(followers);
   }
 
+  function changeOpenThemeCustomizeOption(){
+    setOpenColorCustomize(prevState=>!prevState)
+  }
+
   return (
     <>
+    <ThemeCustomize openColorCustomize={openColorCustomize} changeOpenThemeCustomizeOption={changeOpenThemeCustomizeOption}/>
       <div className={classes.container}>
         <div
           className={classes.suggestionsSM}
@@ -152,7 +159,7 @@ function BottomNavbar(props) {
               <AiTwotoneHome />
             </Badge>
           </Link>
-          <Link className={classes.iconLink}>
+          <Link className={classes.iconLink} onClick={changeOpenThemeCustomizeOption}>
             <Badge badgeContent={0} color="primary">
               <IoIosColorPalette />
             </Badge>
