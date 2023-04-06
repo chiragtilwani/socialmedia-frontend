@@ -59,7 +59,7 @@ const useStyles = makeStyles({
     flexDirection: "column",
     justifyContent: "center",
     padding: "2rem",
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",color:'var(--text1)',
     borderRadius: "0rem 0rem 0rem 2rem",
     [Sizes.down("md")]: {
       borderRadius: "0rem",
@@ -92,7 +92,7 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",
     color: "var(--purple-1)",
     textDecoration: "none",
     fontSize: "1.5rem",

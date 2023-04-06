@@ -106,7 +106,8 @@ const useStyles = makeStyles({
     color: "var(--purple-1)",
   },
   infoContainer: {
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",
+    color:'var(--text1)',
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
     width: "100%",
   },
@@ -142,7 +143,8 @@ const useStyles = makeStyles({
     boxShadow: "0rem 0rem .5rem .05rem var(--purple-2)",
     marginLeft: "2rem",
     cursor: "pointer",
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",
+    color:'var(--text1)',
     [Sizes.down("sm")]: {
       margin: "0rem",
       marginBottom: ".5rem",
@@ -173,7 +175,7 @@ const useStyles = makeStyles({
     transitionDuration: ".2s",
     cursor: "pointer",
     "&:hover": {
-      color: "black",
+      color:'var(--text1)',
       cursor: "default",
     },
     [Sizes.down("sm")]: {
@@ -260,7 +262,7 @@ const useStyles = makeStyles({
     },
   },
   postTypeSelector: {
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",color:'var(--text1)',
     display: "flex",
     width: "7rem",
     height: "3rem",
@@ -299,7 +301,7 @@ const useStyles = makeStyles({
   smUserList: {
     position: "absolute",
     zIndex: 3,
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",color:'var(--text1)',
     width: "100vw",
     height: "100vh",
     display: "flex",

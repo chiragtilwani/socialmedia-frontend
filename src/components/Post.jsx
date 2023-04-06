@@ -34,7 +34,8 @@ const useStyles = makeStyles({
   container: {
     width: "100%",
     borderRadius: ".5rem",
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",
+    color:'var(--text1)',
     marginBottom: "2rem",
     padding: ".5rem 0rem",
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
@@ -68,7 +69,7 @@ const useStyles = makeStyles({
     textTransform: "capitalize",
     cursor: "pointer",
     textDecoration: "none",
-    color: "black",
+    color:'var(--text1)',
     [Sizes.down("xs")]: {
       fontSize: ".8rem",
     },
@@ -82,7 +83,7 @@ const useStyles = makeStyles({
     cursor: "pointer",
     textDecoration: "none",
     "&:hover": {
-      color: "black",
+      color:'var(--text1)',
     },
     [Sizes.down("xs")]: {
       fontSize: ".7rem",
@@ -171,7 +172,7 @@ const useStyles = makeStyles({
     },
   },
   link: {
-    color: "black",
+    color:'var(--text1)',
     textDecoration: "none",
     display: "flex",
     alignItems: "center",

@@ -19,7 +19,8 @@ const useStyles = makeStyles({
     height: "70vh",
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",
+    color:'var(--text1)',
     alignItems: "center",
     justifyContent: "center",
     [Sizes.down("xs")]: {

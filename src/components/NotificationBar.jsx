@@ -20,7 +20,8 @@ const useStyles = makeStyles({
     right: 0,
     top: 0,
     zIndex: 5,
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",
+    color:'var(--text1)',
     boxShadow:
       "rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px",
     transitionDuration: ".2s",
@@ -78,7 +79,7 @@ const useStyles = makeStyles({
     justifyContent: "center",
     padding: "0 .5rem",
     textDecoration: "none",
-    color: "black",
+    color:'var(--text1)',
   },
 });
 function NotificationBar(props) {

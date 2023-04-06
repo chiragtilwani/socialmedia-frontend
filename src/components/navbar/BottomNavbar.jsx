@@ -4,7 +4,7 @@ import Badge from "@mui/material/Badge";
 import { Link } from "react-router-dom";
 import { AiTwotoneHome } from "react-icons/ai";
 import { IoMdNotifications } from "react-icons/io";
-import { MdDarkMode } from "react-icons/md";
+import { IoIosColorPalette } from "react-icons/io";
 import { ImUsers } from "react-icons/im";
 import { ImCancelCircle } from "react-icons/im";
 import axios from "axios";
@@ -46,7 +46,8 @@ const useStyles = makeStyles({
   suggestionsSM: {
     position: "fixed",
     zIndex: 3,
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",
+    color:'var(--text1)',
     width: "100vw",
     height: "100vh",
     display: "flex",
@@ -153,7 +154,7 @@ function BottomNavbar(props) {
           </Link>
           <Link className={classes.iconLink}>
             <Badge badgeContent={0} color="primary">
-              <MdDarkMode />
+              <IoIosColorPalette />
             </Badge>
           </Link>
           <Link className={classes.iconLink}>

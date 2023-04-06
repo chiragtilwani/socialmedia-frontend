@@ -33,7 +33,7 @@ const useStyles = makeStyles({
     fontWeight: "bold",
     transitionDuration: ".2s",
     textDecoration: "none",
-    color: "black",
+    color:'var(--text1)',
     "&:hover": {
       backgroundColor: "var(--purple-1)",
       color: "white",

@@ -4,7 +4,7 @@ import { AiTwotoneHome } from "react-icons/ai";
 import { RiSearchFill } from "react-icons/ri";
 import Badge from "@mui/material/Badge";
 import { IoMdNotifications } from "react-icons/io";
-import { MdDarkMode } from "react-icons/md";
+import { IoIosColorPalette } from "react-icons/io";
 import Avatar from "@mui/material/Avatar";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 
 import UserMenu from "./UserMenu";
 import Sizes from "../../Sizes";
+import ThemeCustomize from "../ThemeCustomize";
 
 const useStyles = makeStyles({
   container: {
@@ -61,7 +62,8 @@ const useStyles = makeStyles({
     position: "relative",
   },
   searchBar: {
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",
+    color:'var(--text1)',
     height: "2.5rem",
     display: "flex",
     alignItems: "center",
@@ -77,6 +79,7 @@ const useStyles = makeStyles({
     width: "15rem",
     transition: "all .5s",
     padding: "0 .5rem",
+    backgroundColor:'var(--bg)',
     "&:focus": {
       width: "25rem",
     },
@@ -94,10 +97,12 @@ const useStyles = makeStyles({
     },
   },
   searchIcon: {
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",
+    color:'var(--text1)',
   },
   searchResult: {
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",
+    color:'var(--text1)',
     marginTop: ".5rem",
     maxHeight: "20rem",
     overflowY: "scroll",
@@ -139,7 +144,7 @@ const useStyles = makeStyles({
   },
   searchLink: {
     textDecoration: "none",
-    color: "black",
+    color:'var(--text1)',
   },
   searchName: {
     fontWeight: "bold",
@@ -216,6 +221,7 @@ const Navbar = (props) => {
   const [allUsers, setAllUsers] = useState();
   const [searchResult, setSearchResult] = useState();
   const [currentUser, setCurrentUser] = useState();
+  const [openColorCustomize,setOpenColorCustomize] = useState(false)
 
   const { user } = useSelector((state) => state.auth);
   useEffect(() => {
@@ -270,9 +276,14 @@ const Navbar = (props) => {
     setSearchWord("");
     setSearchResult(null);
   }
+
+  function changeOpenThemeCustomizeOption(){
+    setOpenColorCustomize(prevState=>!prevState)
+  }
   
   return (
     <div className={classes.container} onClick={isOpen ? handleClick : null}>
+    <ThemeCustomize openColorCustomize={openColorCustomize} changeOpenThemeCustomizeOption={changeOpenThemeCustomizeOption}/>
       <div className={classes.innerContainer}>
         <div className={classes.left}>
           <Link to="/" className={classes.logo}>
@@ -336,9 +347,9 @@ const Navbar = (props) => {
                 <AiTwotoneHome />
               </Badge>
             </Link>
-            <Link className={classes.iconLink}>
+            <Link className={classes.iconLink} onClick={changeOpenThemeCustomizeOption}>
               <Badge badgeContent={0} color="primary">
-                <MdDarkMode />
+                <IoIosColorPalette />
               </Badge>
             </Link>
             <Link className={classes.iconLink}>

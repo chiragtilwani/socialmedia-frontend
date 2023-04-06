@@ -5,6 +5,23 @@
   --purple-1: #8A4FFF;
   --purple-2: #C3BEF7;
   --purple-3: #E5ECF4;
+  --bg:#ffffff;
+  --text1:black;
+  --text2:white;
+
+  --purple:#8A4FFF;
+  --yellow:hsl(52,75%,60%);
+  --red:hsl(352,75%,60%);
+  --green:hsl(152,75%,60%);
+  --blue:hsl(202,75%,60%);
+
+  --bg-1:#ffffff;
+  --bg-2:hsl(252,30%,30%);
+  --bg-3:hsl(252,30%,10%);
+
+  --page-color-1:hsl(252,30%,50%);
+  --page-color-2:hsl(252,30%,20%);
+
   /* Fonts */
   --logo: 'Permanent Marker', cursive;
 }

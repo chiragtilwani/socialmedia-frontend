@@ -19,7 +19,8 @@ const useStyles = makeStyles({
     width: "90%",
     margin: "1rem 0rem",
     padding: ".5rem",
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",
+    color:'var(--text1)',
     borderRadius: ".5rem",
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
     [Sizes.down("sm")]: {

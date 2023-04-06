@@ -49,7 +49,7 @@ const useStyles = makeStyles({
     textTransform: "capitalize",
     cursor: "pointer",
     textDecoration: "none",
-    color: "black",
+    color:'var(--text1)',
     [Sizes.down("sm")]: {
       fontSize: ".9rem",
     },
@@ -57,7 +57,7 @@ const useStyles = makeStyles({
   username: {
     marginLeft: ".3rem",
     fontSize: ".8rem",
-    color: "var(--purple-2)",
+    color: "purple-2)",
     fontWeight: "bold",
     transitionDuration: ".2s",
     cursor: "pointer",
@@ -65,7 +65,7 @@ const useStyles = makeStyles({
     display: "inline-block",
     width: "fit-content",
     "&:hover": {
-      color: "black",
+      color:'var(--text1)',
     },
     [Sizes.down("sm")]: {
       fontSize: ".7rem",
@@ -152,12 +152,11 @@ const useStyles = makeStyles({
       opacity: ".5",
     },
   },
-  accountDeletedName:{
-    color:'red',
-    textDecoration:'none',
-    fontWeight:'bold',
-  }
-
+  accountDeletedName: {
+    color: "red",
+    textDecoration: "none",
+    fontWeight: "bold",
+  },
 });
 
 const CommentItem = (props) => {

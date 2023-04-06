@@ -60,7 +60,8 @@ const useStyles = makeStyles({
     flexDirection: "column",
     justifyContent: "center",
     padding: "2rem",
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",
+    color:'var(--text1)',
     borderRadius: "0rem 0rem 2rem 0rem",
     [Sizes.down("md")]: {
       borderRadius: "0rem",
@@ -93,7 +94,7 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",
     color: "var(--purple-1)",
     textDecoration: "none",
     fontSize: "1.5rem",
@@ -279,7 +280,7 @@ const Login = () => {
               </p>
               <Link
                 to="/forgotPassword"
-                style={{ fontWeight: "900", color: "black" }}
+                style={{ fontWeight: "900", color:'var(--text1)',}}
               >
                 Forgot Password
               </Link>

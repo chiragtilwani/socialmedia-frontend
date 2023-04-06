@@ -9,14 +9,15 @@ const useStyles = makeStyles({
     minHeight: "50%",
     overflowY: "scroll",
     overflowX: "hidden",
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",
+    color:'var(--text1)',
     borderRadius: ".6rem",
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
     "&::-webkit-scrollbar": {
       width: ".25rem",
     },
     "&::-webkit-scrollbar-track": {
-      backgroundColor: "white",
+      backgroundColor: "var(--bg)",
     },
     "&::-webkit-scrollbar-thumb": {
       backgroundColor: "var(--purple-2)",

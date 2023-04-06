@@ -33,7 +33,8 @@ const useStyles = makeStyles({
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",
+    color:'var(--text1)',
     boxShadow: "0rem 0rem .5rem .05rem var(--purple-2)",
     borderRadius: ".5rem",
     transitionDuration: ".2s",
@@ -58,7 +59,7 @@ const useStyles = makeStyles({
   overlayPost: {
     width: "40%",
     backgroundColor: "var(--purple-3)",
-    color: "black",
+    color:'var(--text1)',
     position: "relative",
     paddingBottom: ".5rem",
     "&:hover": {
@@ -86,13 +87,13 @@ const useStyles = makeStyles({
     right: "0",
     width: "0",
     transitionDuration: ".2s",
-    color: "black",
+    color:'var(--text1)',
     backgroundColor: "rgba(255,255,255,.2)",
   },
   xMinAgo: {
     margin: ".5rem",
     fontSize: ".8rem",
-    color: "black",
+    color:'var(--text1)',
   },
   desc: {
     margin: "0rem .5rem",

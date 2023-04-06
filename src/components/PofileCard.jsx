@@ -9,7 +9,8 @@ const useStyles = makeStyles({
   container: {
     width: "90%",
     minHeight: "20rem",
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",
+    color:'var(--text1)',
     marginTop: "1rem",
     borderRadius: "1rem",
     display: "flex",
@@ -44,7 +45,8 @@ const useStyles = makeStyles({
     width: "100%",
     height: "100%",
     objectFit: "fill",
-    backgroundColor: "white",
+    backgroundColor: "var(--bg)",
+    color:'var(--text1)',
   },
   name: {
     marginTop: "-1.5rem",
@@ -168,7 +170,7 @@ const PofileCard = (props) => {
             to={`/profile/${props.currentUser.username}`}
             style={{
               textDecoration: "none",
-              color: "black",
+              color:'var(--text1)',
               textTransform: "capitalize",
             }}
           >
