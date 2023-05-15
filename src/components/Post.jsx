@@ -288,8 +288,8 @@ const Post = (props) => {
         `${process.env.REACT_APP_BASE_URL}/posts/user/${user._id}`
       );
       props.setPostsArray(res.data);
-    } catch (e) {
-      setError(e);
+    } catch (err) {
+      setError(err.response.data.message)
       setOpenSnackbar(true);
     }
   }
