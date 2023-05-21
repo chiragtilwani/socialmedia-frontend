@@ -107,7 +107,7 @@ const useStyles = makeStyles({
   },
   infoContainer: {
     backgroundColor: "var(--bg)",
-    color:'var(--text1)',
+    color: "var(--text1)",
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
     width: "100%",
   },
@@ -144,7 +144,7 @@ const useStyles = makeStyles({
     marginLeft: "2rem",
     cursor: "pointer",
     backgroundColor: "var(--bg)",
-    color:'var(--text1)',
+    color: "var(--text1)",
     [Sizes.down("sm")]: {
       margin: "0rem",
       marginBottom: ".5rem",
@@ -175,7 +175,7 @@ const useStyles = makeStyles({
     transitionDuration: ".2s",
     cursor: "pointer",
     "&:hover": {
-      color:'var(--text1)',
+      color: "var(--text1)",
       cursor: "default",
     },
     [Sizes.down("sm")]: {
@@ -262,7 +262,8 @@ const useStyles = makeStyles({
     },
   },
   postTypeSelector: {
-    backgroundColor: "var(--bg)",color:'var(--text1)',
+    backgroundColor: "var(--bg)",
+    color: "var(--text1)",
     display: "flex",
     width: "7rem",
     height: "3rem",
@@ -301,7 +302,8 @@ const useStyles = makeStyles({
   smUserList: {
     position: "absolute",
     zIndex: 3,
-    backgroundColor: "var(--bg)",color:'var(--text1)',
+    backgroundColor: "var(--bg)",
+    color: "var(--text1)",
     width: "100vw",
     height: "100vh",
     display: "flex",
@@ -362,12 +364,9 @@ const Profile = (props) => {
   useEffect(() => {
     const fetchUserPost = async () => {
       const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/posts/timeline/${user._id}`
+        `${process.env.REACT_APP_BASE_URL}/posts/user/${user._id}`
       );
-      const currentUserPosts = res.data.filter(
-        (post) => post.creatorId === user._id
-      );
-      setUserPosts(currentUserPosts);
+      setUserPosts(res.data);
       setShowPostWithUrl(
         res.data.filter((post) => post.post.url).length === 0 ? false : true
       );
@@ -441,7 +440,7 @@ const Profile = (props) => {
   function handleShowFollowingsSM() {
     setFollowingsSM((prevState) => !prevState);
   }
-
+  console.log(userPosts);
   return (
     <>
       {userNotFound && (
@@ -630,6 +629,7 @@ const Profile = (props) => {
                     className={classes.postTypeSelector}
                     style={{
                       marginBottom:
+                        userPosts &&
                         userPosts.filter((post) => post.post.url).length === 0
                           ? "2rem"
                           : null,

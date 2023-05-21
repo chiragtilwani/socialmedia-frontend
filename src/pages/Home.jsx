@@ -8,11 +8,13 @@ import UsersList from "../components/UsersList";
 import UploadPost from "../components/UploadPost";
 import Post from "../components/Post";
 import Loading from "../components/Loading";
+import Pagination from "../components/Pagination";
+import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles({
   outterContainer: {
     width: "100vw",
-    height:'100vh',
+    height: "100vh",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -87,9 +89,19 @@ const useStyles = makeStyles({
   postContainer: {
     width: "90%",
     marginBottom: "2rem",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
     [Sizes.down("sm")]: {
       width: "100%",
     },
+  },
+  nextBtn: {
+    width: "6rem",
+    height: "2.5rem",
+    boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+    cursor: "pointer",
   },
   noPosts: {
     color: "var(--purple-1)",
@@ -110,7 +122,7 @@ const useStyles = makeStyles({
   },
   noPostSpan2: {
     fontSize: "1rem",
-    textAlign:'center',
+    textAlign: "center",
     [Sizes.down("xs")]: {
       fontSize: ".5rem",
     },
@@ -118,18 +130,22 @@ const useStyles = makeStyles({
 });
 const Home = (props) => {
   const classes = useStyles();
-
+  const { pagenum } = useParams();
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(props);
   const [allUsers, setAllUsers] = useState();
   const [loading, setLoading] = useState(true);
+  const [numCurrentUserPosts, setNumCurrentUserPosts] = useState();
+  const [pageNum, setPageNum] = useState(pagenum || 1);
+  const [totalPages, setTotalPages] = useState();
 
   useEffect(() => {
     const getPost = async () => {
       const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/posts/timeline/${user._id}`
+        `${process.env.REACT_APP_BASE_URL}/posts/timeline/${user._id}?page=${pageNum}`
       );
-      setPosts(res.data);
+      setPosts(res.data.posts);
+      setTotalPages(res.data.pages);
     };
     async function fetchAllUsers() {
       const res = await axios.get(
@@ -137,10 +153,18 @@ const Home = (props) => {
       );
       setAllUsers(res.data);
     }
+
+    async function getCurrentUserPosts() {
+      const res = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/posts/user/${user._id}`
+      );
+      setNumCurrentUserPosts(res.data.length);
+    }
     getPost();
     fetchAllUsers();
+    getCurrentUserPosts();
     setLoading(false);
-  }, [user._id]);
+  }, [user._id, pageNum, numCurrentUserPosts, totalPages]);
 
   function setPostsArray(posts) {
     setPosts(posts);
@@ -160,9 +184,7 @@ const Home = (props) => {
             <div className={`${classes.left} ${classes.childContainer}`}>
               <PofileCard
                 currentUser={user}
-                currentUserPost={posts.filter(
-                  (post) => post.creatorId === user._id
-                )}
+                numCurrentUserPosts={numCurrentUserPosts}
               />
               <h2 className={classes.h2} style={{ marginTop: "1rem" }}>
                 Suggestions for you
@@ -189,6 +211,7 @@ const Home = (props) => {
                 profile="https://newprofilepic2.photo-cdn.net//assets/images/article/profile.jpg"
                 currentUser={user}
                 setPostsArray={setPostsArray}
+                setNumCurrentUserPosts={setNumCurrentUserPosts}
                 homePage={true}
               />
               {loading ? (
@@ -205,8 +228,17 @@ const Home = (props) => {
                         {...post}
                         currentUser={user}
                         setPostsArray={setPostsArray}
+                        setNumCurrentUserPosts={setNumCurrentUserPosts}
                       />
                     ))}
+                  {numCurrentUserPosts > 10 ? (
+                    <Pagination
+                      pageNum={pageNum}
+                      totalPages={totalPages}
+                      setPageNum={setPageNum}
+                    />
+                  ) : null}
+
                   {posts && posts.length === 0 && (
                     <div className={classes.noPosts}>
                       <span

@@ -20,7 +20,7 @@ const useStyles = makeStyles({
     margin: "1rem 0rem",
     padding: ".5rem",
     backgroundColor: "var(--bg)",
-    color:'var(--text1)',
+    color: "var(--text1)",
     borderRadius: ".5rem",
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
     [Sizes.down("sm")]: {
@@ -57,6 +57,7 @@ const useStyles = makeStyles({
     outline: "none",
     border: ".2rem solid var(--purple-2)",
     padding: "1rem",
+    overflowY: "scroll",
     [Sizes.down("sm")]: {
       height: "3rem",
     },
@@ -118,7 +119,6 @@ const useStyles = makeStyles({
     },
   },
   previewImg: {
-    border: ".2rem solid",
     width: "100%",
     height: "25rem",
     borderRadius: ".5rem",
@@ -209,19 +209,20 @@ const UploadPost = (props) => {
       setError(e.response.data.message);
       setOpen(true);
     }
-    try{
+    try {
       const res = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
       );
       if (props.homePage) {
-        props.setPostsArray(res.data);
+        props.setPostsArray(res.data.posts);
+        props.setNumCurrentUserPosts(res.data.posts.length);
       } else {
-        const currentUserPosts = res.data.filter(
-          (post) => post.creatorId === props.currentUser._id
+        const currentUserPosts = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/posts/user/${props.currentUser._id}`
         );
-        props.setPostsArray(currentUserPosts);
+        props.setPostsArray(currentUserPosts.data);
       }
-    }catch(err){
+    } catch (err) {
       setError(err.response.data.message);
       setOpen(true);
     }

@@ -132,12 +132,7 @@ const PostWithUrl = (props) => {
 
   useEffect(() => {
     async function fetchPostWithUrl() {
-      const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.user._id}`
-      );
-      const currentUserPosts = res.data.filter(
-        (post) => post.creatorId === props.user._id
-      );
+      const currentUserPosts=await axios.get(`${process.env.REACT_APP_BASE_URL}/posts/user/${props.user._id}`)
       setPostsWithUrl(currentUserPosts.filter((post) => post.post.url));
     }
     fetchPostWithUrl();
@@ -161,12 +156,10 @@ const PostWithUrl = (props) => {
           },
         }
       );
-      const res = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
+      const currentUserPosts= await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/posts/user/${props.currentUser._id}`
       );
-      const currentUserPosts = res.data.filter(
-        (post) => post.creatorId === props.currentUser._id
-      );
+       
       setPostsWithUrl(currentUserPosts.filter((post) => post.post.url));
       setOpen(false);
       setDialogOpen(false);

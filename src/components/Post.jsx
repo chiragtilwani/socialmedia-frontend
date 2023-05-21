@@ -35,7 +35,7 @@ const useStyles = makeStyles({
     width: "100%",
     borderRadius: ".5rem",
     backgroundColor: "var(--bg)",
-    color:'var(--text1)',
+    color: "var(--text1)",
     marginBottom: "2rem",
     padding: ".5rem 0rem",
     boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
@@ -69,7 +69,7 @@ const useStyles = makeStyles({
     textTransform: "capitalize",
     cursor: "pointer",
     textDecoration: "none",
-    color:'var(--text1)',
+    color: "var(--text1)",
     [Sizes.down("xs")]: {
       fontSize: ".8rem",
     },
@@ -83,7 +83,7 @@ const useStyles = makeStyles({
     cursor: "pointer",
     textDecoration: "none",
     "&:hover": {
-      color:'var(--text1)',
+      color: "var(--text1)",
     },
     [Sizes.down("xs")]: {
       fontSize: ".7rem",
@@ -172,7 +172,7 @@ const useStyles = makeStyles({
     },
   },
   link: {
-    color:'var(--text1)',
+    color: "var(--text1)",
     textDecoration: "none",
     display: "flex",
     alignItems: "center",
@@ -253,7 +253,7 @@ const Post = (props) => {
 
   async function handleLikeClick() {
     try {
-      setLiked(prevState=>!prevState)
+      setLiked((prevState) => !prevState);
       await axios.patch(
         `${process.env.REACT_APP_BASE_URL}/posts/${currentPost._id}/likedislike`,
         { userId: props.currentUser._id }
@@ -288,8 +288,9 @@ const Post = (props) => {
         `${process.env.REACT_APP_BASE_URL}/posts/user/${user._id}`
       );
       props.setPostsArray(res.data);
+      props.setNumCurrentUserPosts(res.data.length);
     } catch (err) {
-      setError(err.response.data.message)
+      setError(err.response.data.message);
       setOpenSnackbar(true);
     }
   }
@@ -324,7 +325,7 @@ const Post = (props) => {
       const res = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
       );
-      props.setPostsArray(res.data);
+      props.setPostsArray(res.data.posts);
       setSharePost(false);
     } catch (err) {
       setError(err.response.data.message);

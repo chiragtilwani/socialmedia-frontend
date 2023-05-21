@@ -12,7 +12,7 @@ const useStyles = makeStyles({
     justifyContent: "space-evenly",
     alignItems: "center",
     backgroundColor: "var(--bg)",
-    color:'var(--text1)',
+    color: "var(--text1)",
     border: ".1rem solid",
     borderLeft: 0,
     borderRight: 0,
@@ -50,7 +50,7 @@ const useStyles = makeStyles({
     marginBottom: ".1rem",
     fontWeight: "bold",
     textTransform: "capitalize",
-    color:'var(--text1)',
+    color: "var(--text1)",
     width: "100%",
     whiteSpace: "nowrap",
     overflow: "hidden",
@@ -84,11 +84,11 @@ const useStyles = makeStyles({
     width: "50%",
     height: "80vh",
   },
-  deletedAccountName:{
-    fontWeight:'bold',
-    textDecoration:'none',
-    color:'red',
-  }
+  deletedAccountName: {
+    fontWeight: "bold",
+    textDecoration: "none",
+    color: "red",
+  },
 });
 
 const UserListItem = (props) => {
@@ -123,7 +123,7 @@ const UserListItem = (props) => {
       `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
     );
     if (props.setPosts) {
-      props.setPosts(res.data);
+      props.setPosts(res.data.posts);
     }
     res = await axios.get(
       `${process.env.REACT_APP_BASE_URL}/users?userId=${props.currentUser._id}`
@@ -146,7 +146,7 @@ const UserListItem = (props) => {
       `${process.env.REACT_APP_BASE_URL}/posts/timeline/${props.currentUser._id}`
     );
     if (props.setPosts) {
-      props.setPosts(res.data);
+      props.setPosts(res.data.posts);
     }
     res = await axios.get(
       `${process.env.REACT_APP_BASE_URL}/users?userId=${props.currentUser._id}`
@@ -188,15 +188,23 @@ const UserListItem = (props) => {
         />
       </div>
       <div className={classes.name_username}>
-        {user.username?<><Link to={`/profile/${user.username}`} className={classes.name}>
-          {user.name}
-        </Link>
-        <Link to={`/profile/${user.username}`} className={classes.username}>
-          {user.username}
-        </Link></>:<Link to={`/profile/${user.username}`} className={classes.deletedAccountName}>
-          Account Deleted
-        </Link>}
-        
+        {user.username ? (
+          <>
+            <Link to={`/profile/${user.username}`} className={classes.name}>
+              {user.name}
+            </Link>
+            <Link to={`/profile/${user.username}`} className={classes.username}>
+              {user.username}
+            </Link>
+          </>
+        ) : (
+          <Link
+            to={`/profile/${user.username}`}
+            className={classes.deletedAccountName}
+          >
+            Account Deleted
+          </Link>
+        )}
       </div>
       {props.currentUser.followings.includes(props.userId) ? (
         props.userId === props.currentUser._id || !user.username ? (
@@ -209,7 +217,7 @@ const UserListItem = (props) => {
       ) : props.userId === props.currentUser._id || !user.username ? (
         <div style={{ width: "4rem" }}></div>
       ) : (
-      <button className={classes.btn} onClick={handleFollowClick}>
+        <button className={classes.btn} onClick={handleFollowClick}>
           Follow
         </button>
       )}

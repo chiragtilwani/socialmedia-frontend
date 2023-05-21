@@ -25,7 +25,7 @@ function App() {
   const [openSideBar, setOpenSideBar] = useState(false);
   const [error, setError] = useState()
   const [open, setOpen] = React.useState(false);
-  const [loading,setLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -94,6 +94,7 @@ function App() {
         /></>}
       <Routes>
         <Route path="/" element={user ? currentUser ? <Home {...currentUser} /> : <Loading /> : <Login />} />
+        <Route path="/page/:pagenum" element={user ? currentUser ? <Home {...currentUser} /> : <Loading /> : <Login />} />
         <Route path='/login' element={!user && <Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/profile/:uname' element={currentUser && <Profile {...currentUser} />} />
