@@ -2,17 +2,25 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+### `Backend link` : https://github.com/chiragtilwani/socialmedia-backend
+
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+### `1. npm install or npm i`
 
-Runs the app in the development mode.\
+To install all the necessary packages used in this project.
+
+
+### `2. npm start`
+
+Runs the app in the development mode.\To install all the necessary packages used in this project.
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
+
 
 ### `npm test`
 
